@@ -16,5 +16,16 @@ namespace BillAutomatorUI
         {
             InitializeComponent();
         }
+
+        private void openFileButton_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Title = "Open Draft Bill";
+            ofd.Filter = "Word Document|*.docx";
+            if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                MessageBox.Show(ofd.FileName); //Or safeFileName
+            }
+        }
     }
 }
