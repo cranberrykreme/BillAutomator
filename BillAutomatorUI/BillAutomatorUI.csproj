@@ -12,6 +12,21 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -46,6 +61,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BillForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BillForm.Designer.cs">
+      <DependentUpon>BillForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CounselDisbursementForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CounselDisbursementForm.Designer.cs">
+      <DependentUpon>CounselDisbursementForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CounselManagementForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CounselManagementForm.Designer.cs">
+      <DependentUpon>CounselManagementForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="CreateNewForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -58,13 +91,64 @@
     <Compile Include="DashboardForm.Designer.cs">
       <DependentUpon>DashboardForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="DisbursementForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DisbursementForm.Designer.cs">
+      <DependentUpon>DisbursementForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EditCreateCounselForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditCreateCounselForm.Designer.cs">
+      <DependentUpon>EditCreateCounselForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EditCreateSolicitorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditCreateSolicitorForm.Designer.cs">
+      <DependentUpon>EditCreateSolicitorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NewEntryForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewEntryForm.Designer.cs">
+      <DependentUpon>NewEntryForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SolicitorManagementForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SolicitorManagementForm.Designer.cs">
+      <DependentUpon>SolicitorManagementForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="BillForm.resx">
+      <DependentUpon>BillForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CounselDisbursementForm.resx">
+      <DependentUpon>CounselDisbursementForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CounselManagementForm.resx">
+      <DependentUpon>CounselManagementForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CreateNewForm.resx">
       <DependentUpon>CreateNewForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DashboardForm.resx">
       <DependentUpon>DashboardForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DisbursementForm.resx">
+      <DependentUpon>DisbursementForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditCreateCounselForm.resx">
+      <DependentUpon>EditCreateCounselForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditCreateSolicitorForm.resx">
+      <DependentUpon>EditCreateSolicitorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewEntryForm.resx">
+      <DependentUpon>NewEntryForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -75,6 +159,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="SolicitorManagementForm.resx">
+      <DependentUpon>SolicitorManagementForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -87,6 +174,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.7.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

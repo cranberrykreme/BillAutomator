@@ -39,7 +39,7 @@
             // 
             this.openFileLabel.AutoSize = true;
             this.openFileLabel.Font = new System.Drawing.Font("Segoe UI Light", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.openFileLabel.Location = new System.Drawing.Point(26, 28);
+            this.openFileLabel.Location = new System.Drawing.Point(32, 28);
             this.openFileLabel.Name = "openFileLabel";
             this.openFileLabel.Size = new System.Drawing.Size(149, 45);
             this.openFileLabel.TabIndex = 0;
@@ -47,7 +47,7 @@
             // 
             // openFileTextBox
             // 
-            this.openFileTextBox.Location = new System.Drawing.Point(206, 37);
+            this.openFileTextBox.Location = new System.Drawing.Point(212, 37);
             this.openFileTextBox.Name = "openFileTextBox";
             this.openFileTextBox.Size = new System.Drawing.Size(309, 35);
             this.openFileTextBox.TabIndex = 1;
@@ -57,7 +57,7 @@
             this.openFileButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
             this.openFileButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
             this.openFileButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.openFileButton.Location = new System.Drawing.Point(34, 146);
+            this.openFileButton.Location = new System.Drawing.Point(40, 146);
             this.openFileButton.Name = "openFileButton";
             this.openFileButton.Size = new System.Drawing.Size(148, 52);
             this.openFileButton.TabIndex = 2;
@@ -70,7 +70,7 @@
             this.createFileButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
             this.createFileButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
             this.createFileButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.createFileButton.Location = new System.Drawing.Point(367, 146);
+            this.createFileButton.Location = new System.Drawing.Point(373, 146);
             this.createFileButton.Name = "createFileButton";
             this.createFileButton.Size = new System.Drawing.Size(148, 52);
             this.createFileButton.TabIndex = 3;

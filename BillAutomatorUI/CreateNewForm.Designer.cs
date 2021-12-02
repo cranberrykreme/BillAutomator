@@ -39,13 +39,14 @@
             this.typeBillLabel = new System.Windows.Forms.Label();
             this.typeBillDropDown = new System.Windows.Forms.ComboBox();
             this.createFileButton = new System.Windows.Forms.Button();
+            this.returnButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // fileLocationLabel
             // 
             this.fileLocationLabel.AutoSize = true;
             this.fileLocationLabel.Font = new System.Drawing.Font("Segoe UI Light", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.fileLocationLabel.Location = new System.Drawing.Point(34, 25);
+            this.fileLocationLabel.Location = new System.Drawing.Point(26, 24);
             this.fileLocationLabel.Name = "fileLocationLabel";
             this.fileLocationLabel.Size = new System.Drawing.Size(135, 45);
             this.fileLocationLabel.TabIndex = 0;
@@ -53,7 +54,7 @@
             // 
             // fileLocationTextBox
             // 
-            this.fileLocationTextBox.Location = new System.Drawing.Point(202, 34);
+            this.fileLocationTextBox.Location = new System.Drawing.Point(194, 33);
             this.fileLocationTextBox.Name = "fileLocationTextBox";
             this.fileLocationTextBox.Size = new System.Drawing.Size(438, 35);
             this.fileLocationTextBox.TabIndex = 1;
@@ -64,7 +65,7 @@
             this.fileLocationButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
             this.fileLocationButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.fileLocationButton.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.fileLocationButton.Location = new System.Drawing.Point(673, 25);
+            this.fileLocationButton.Location = new System.Drawing.Point(665, 24);
             this.fileLocationButton.Name = "fileLocationButton";
             this.fileLocationButton.Size = new System.Drawing.Size(148, 48);
             this.fileLocationButton.TabIndex = 3;
@@ -74,7 +75,7 @@
             // 
             // clientNameTextBox
             // 
-            this.clientNameTextBox.Location = new System.Drawing.Point(267, 118);
+            this.clientNameTextBox.Location = new System.Drawing.Point(259, 117);
             this.clientNameTextBox.Name = "clientNameTextBox";
             this.clientNameTextBox.Size = new System.Drawing.Size(373, 35);
             this.clientNameTextBox.TabIndex = 5;
@@ -83,7 +84,7 @@
             // 
             this.clientNameLabel.AutoSize = true;
             this.clientNameLabel.Font = new System.Drawing.Font("Segoe UI Light", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.clientNameLabel.Location = new System.Drawing.Point(34, 109);
+            this.clientNameLabel.Location = new System.Drawing.Point(26, 108);
             this.clientNameLabel.Name = "clientNameLabel";
             this.clientNameLabel.Size = new System.Drawing.Size(187, 45);
             this.clientNameLabel.TabIndex = 4;
@@ -91,7 +92,7 @@
             // 
             // clientNumberTextBox
             // 
-            this.clientNumberTextBox.Location = new System.Drawing.Point(267, 182);
+            this.clientNumberTextBox.Location = new System.Drawing.Point(259, 181);
             this.clientNumberTextBox.Name = "clientNumberTextBox";
             this.clientNumberTextBox.Size = new System.Drawing.Size(373, 35);
             this.clientNumberTextBox.TabIndex = 7;
@@ -100,7 +101,7 @@
             // 
             this.clientNumberLabel.AutoSize = true;
             this.clientNumberLabel.Font = new System.Drawing.Font("Segoe UI Light", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.clientNumberLabel.Location = new System.Drawing.Point(34, 173);
+            this.clientNumberLabel.Location = new System.Drawing.Point(26, 172);
             this.clientNumberLabel.Name = "clientNumberLabel";
             this.clientNumberLabel.Size = new System.Drawing.Size(217, 45);
             this.clientNumberLabel.TabIndex = 6;
@@ -110,7 +111,7 @@
             // 
             this.typeBillLabel.AutoSize = true;
             this.typeBillLabel.Font = new System.Drawing.Font("Segoe UI Light", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.typeBillLabel.Location = new System.Drawing.Point(34, 236);
+            this.typeBillLabel.Location = new System.Drawing.Point(26, 235);
             this.typeBillLabel.Name = "typeBillLabel";
             this.typeBillLabel.Size = new System.Drawing.Size(168, 45);
             this.typeBillLabel.TabIndex = 8;
@@ -122,7 +123,7 @@
             this.typeBillDropDown.Items.AddRange(new object[] {
             "Party/Party",
             "Solicitor/Client"});
-            this.typeBillDropDown.Location = new System.Drawing.Point(267, 245);
+            this.typeBillDropDown.Location = new System.Drawing.Point(259, 244);
             this.typeBillDropDown.Name = "typeBillDropDown";
             this.typeBillDropDown.Size = new System.Drawing.Size(373, 38);
             this.typeBillDropDown.TabIndex = 9;
@@ -133,12 +134,25 @@
             this.createFileButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
             this.createFileButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.createFileButton.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.createFileButton.Location = new System.Drawing.Point(673, 241);
+            this.createFileButton.Location = new System.Drawing.Point(665, 240);
             this.createFileButton.Name = "createFileButton";
             this.createFileButton.Size = new System.Drawing.Size(148, 48);
             this.createFileButton.TabIndex = 10;
             this.createFileButton.Text = "Create File";
             this.createFileButton.UseVisualStyleBackColor = true;
+            // 
+            // returnButton
+            // 
+            this.returnButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
+            this.returnButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+            this.returnButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.returnButton.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.returnButton.Location = new System.Drawing.Point(665, 177);
+            this.returnButton.Name = "returnButton";
+            this.returnButton.Size = new System.Drawing.Size(148, 48);
+            this.returnButton.TabIndex = 11;
+            this.returnButton.Text = "Go Back";
+            this.returnButton.UseVisualStyleBackColor = true;
             // 
             // CreateNewForm
             // 
@@ -146,6 +160,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(839, 312);
+            this.Controls.Add(this.returnButton);
             this.Controls.Add(this.createFileButton);
             this.Controls.Add(this.typeBillDropDown);
             this.Controls.Add(this.typeBillLabel);
@@ -178,5 +193,6 @@
         private System.Windows.Forms.Label typeBillLabel;
         private System.Windows.Forms.ComboBox typeBillDropDown;
         private System.Windows.Forms.Button createFileButton;
+        private System.Windows.Forms.Button returnButton;
     }
 }

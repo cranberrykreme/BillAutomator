@@ -10,6 +10,11 @@ using System.Windows.Forms;
 
 namespace BillAutomatorUI
 {
+    /// <summary>
+    /// This is where the application will open, it will
+    /// link to existing files or allow the user to open
+    /// a new bill. 
+    /// </summary>
     public partial class DashboardForm : Form
     {
         public DashboardForm()
