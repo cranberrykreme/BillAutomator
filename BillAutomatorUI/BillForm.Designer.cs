@@ -169,6 +169,7 @@
             this.saveCloseButton.TabIndex = 11;
             this.saveCloseButton.Text = "Save and Close";
             this.saveCloseButton.UseVisualStyleBackColor = true;
+            this.saveCloseButton.Click += new System.EventHandler(this.saveCloseButton_Click);
             // 
             // dateTimeBox
             // 
