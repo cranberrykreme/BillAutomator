@@ -41,7 +41,7 @@ namespace BillAutomatorUI
         /// Represents the date of admision
         /// of the solicitor.
         /// </summary>
-        public DateTime dateOfAdmission { get; set; }
+        public string dateOfAdmission { get; set; }
 
         /// <summary>
         /// Represents the dates of the different,

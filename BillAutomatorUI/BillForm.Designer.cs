@@ -128,6 +128,7 @@
             // entriesBox
             // 
             this.entriesBox.FormattingEnabled = true;
+            this.entriesBox.HorizontalScrollbar = true;
             this.entriesBox.ItemHeight = 30;
             this.entriesBox.Location = new System.Drawing.Point(27, 149);
             this.entriesBox.Name = "entriesBox";

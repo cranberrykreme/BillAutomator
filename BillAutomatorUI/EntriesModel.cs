@@ -23,7 +23,7 @@ namespace BillAutomatorUI
             /// Represents the solicitor that completed
             /// the work in the entry.
             /// </summary>
-            public List<SolicitorsModel> solicitor { get; set; } = new List<SolicitorsModel>();
+            public SolicitorsModel solicitor { get; set; } = new SolicitorsModel();
 
             /// <summary>
             /// Represents the description of

@@ -72,6 +72,7 @@
     <Compile Include="BillForm.Designer.cs">
       <DependentUpon>BillForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="BillModel.cs" />
     <Compile Include="CounselDisbursementForm.cs">
       <SubType>Form</SubType>
     </Compile>
