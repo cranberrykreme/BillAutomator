@@ -66,6 +66,7 @@
             this.addSolicitorButton.TabIndex = 29;
             this.addSolicitorButton.Text = "Add New";
             this.addSolicitorButton.UseVisualStyleBackColor = true;
+            this.addSolicitorButton.Click += new System.EventHandler(this.addSolicitorButton_Click);
             // 
             // editSolicitorButton
             // 
@@ -78,6 +79,7 @@
             this.editSolicitorButton.TabIndex = 30;
             this.editSolicitorButton.Text = "Edit Selected";
             this.editSolicitorButton.UseVisualStyleBackColor = true;
+            this.editSolicitorButton.Click += new System.EventHandler(this.editSolicitorButton_Click);
             // 
             // returnButton
             // 
@@ -90,6 +92,7 @@
             this.returnButton.TabIndex = 31;
             this.returnButton.Text = "Go Back";
             this.returnButton.UseVisualStyleBackColor = true;
+            this.returnButton.Click += new System.EventHandler(this.returnButton_Click);
             // 
             // SolicitorManagementForm
             // 

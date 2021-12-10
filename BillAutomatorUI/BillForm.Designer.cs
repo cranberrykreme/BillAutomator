@@ -45,6 +45,7 @@
             this.upButton = new System.Windows.Forms.Button();
             this.downButton = new System.Windows.Forms.Button();
             this.alterPositionLabel = new System.Windows.Forms.Label();
+            this.displayAllEntriesButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // clientLabel
@@ -78,6 +79,7 @@
             this.solicitorButton.TabIndex = 3;
             this.solicitorButton.Text = "Solicitors";
             this.solicitorButton.UseVisualStyleBackColor = true;
+            this.solicitorButton.Click += new System.EventHandler(this.solicitorButton_Click);
             // 
             // newEntryButton
             // 
@@ -90,6 +92,7 @@
             this.newEntryButton.TabIndex = 4;
             this.newEntryButton.Text = "New Entry";
             this.newEntryButton.UseVisualStyleBackColor = true;
+            this.newEntryButton.Click += new System.EventHandler(this.newEntryButton_Click);
             // 
             // counselButton
             // 
@@ -225,12 +228,26 @@
             this.alterPositionLabel.TabIndex = 19;
             this.alterPositionLabel.Text = "Alter Position of Selected Entry";
             // 
+            // displayAllEntriesButton
+            // 
+            this.displayAllEntriesButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
+            this.displayAllEntriesButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+            this.displayAllEntriesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.displayAllEntriesButton.Location = new System.Drawing.Point(137, 86);
+            this.displayAllEntriesButton.Name = "displayAllEntriesButton";
+            this.displayAllEntriesButton.Size = new System.Drawing.Size(129, 52);
+            this.displayAllEntriesButton.TabIndex = 20;
+            this.displayAllEntriesButton.Text = "Display All";
+            this.displayAllEntriesButton.UseVisualStyleBackColor = true;
+            this.displayAllEntriesButton.Click += new System.EventHandler(this.displayAllEntriesButton_Click);
+            // 
             // BillForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 30F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1032, 574);
+            this.Controls.Add(this.displayAllEntriesButton);
             this.Controls.Add(this.alterPositionLabel);
             this.Controls.Add(this.downButton);
             this.Controls.Add(this.upButton);
@@ -275,5 +292,6 @@
         private System.Windows.Forms.Button upButton;
         private System.Windows.Forms.Button downButton;
         private System.Windows.Forms.Label alterPositionLabel;
+        private System.Windows.Forms.Button displayAllEntriesButton;
     }
 }

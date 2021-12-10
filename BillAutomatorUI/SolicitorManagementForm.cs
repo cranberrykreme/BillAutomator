@@ -17,9 +17,84 @@ namespace BillAutomatorUI
     /// </summary>
     public partial class SolicitorManagementForm : Form
     {
+        BillModel em;
+        List<SolicitorsModel> sm;
         public SolicitorManagementForm()
         {
             InitializeComponent();
+        }
+
+        public void runSetUp()
+        {
+            if(em != null)
+            {
+                sm = em.solicitor;
+                sm.ForEach(delegate (SolicitorsModel sol)
+                {
+                    solicitorsBox.Items.Add(sol.firstName + " " + sol.lastName + " - " +
+                        sol.initials + " - $" + sol.hourlyRates[0]);
+                });
+            } else
+            {
+                solicitorsBox.Items.Add("No current solicitors");
+            }
+        }
+
+        // Set the bill model to be the most current version.
+        public void setBillModel(BillModel aEm)
+        {
+            em = aEm;
+        }
+
+        // Return to bill form.
+        private void returnButton_Click(object sender, EventArgs e)
+        {
+            BillForm bf = new BillForm();
+            bf.setBillModel(em);
+            bf.Show();
+            this.Close();
+        }
+
+        private void addSolicitorButton_Click(object sender, EventArgs e)
+        {
+            EditCreateSolicitorForm newSol = new EditCreateSolicitorForm();
+            newSol.setBillModel(em);
+            newSol.Show();
+            this.Close();
+        }
+
+        // When a certain solicitor has been selected
+        private void editSolicitorButton_Click(object sender, EventArgs e)
+        {
+            EditCreateSolicitorForm editSol = new EditCreateSolicitorForm();
+            SolicitorsModel solicitorToEdit = new SolicitorsModel();
+
+            // Get the relevant initials
+            string chosenSol = solicitorsBox.SelectedItem.ToString();
+            string[] solParameters = chosenSol.Split('-');
+            string chosenSolInitials = solParameters[1];
+            chosenSolInitials = chosenSolInitials.Replace(" ", ""); //remove whitespace
+
+            sm.ForEach(delegate (SolicitorsModel solToEdit)
+            {
+                // If the initials from the entry are available in the list of solicitors.
+                if(String.Equals(solToEdit.initials, chosenSolInitials))
+                {
+                    solicitorToEdit = solToEdit;
+                }
+            });
+            if(solicitorToEdit == null)
+            {
+                MessageBox.Show("No solicitor available in the list of entries.");
+            } else
+            {
+                editSol.editSol(solicitorToEdit);
+            }
+
+            //Normal setup.
+            editSol.setBillModel(em);
+            editSol.Show();
+            this.Close();
         }
     }
 }

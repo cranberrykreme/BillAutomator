@@ -24,8 +24,9 @@ namespace BillAutomatorUI
     public partial class BillForm : Form
     {
         public string fileLoc;
-        Document doc;
-        BillModel em = new BillModel();
+        private static Document doc; //will always have the same value
+        private static string clientName; //Will store the name of the client
+        private BillModel em;
 
         public BillForm()
         {
@@ -34,8 +35,12 @@ namespace BillAutomatorUI
 
         private void saveCloseButton_Click(object sender, EventArgs e)
         {
-            try{
-                doc.Close();
+            try{//try to close the application
+                if(doc != null)
+                {
+                    doc.Close();
+                }
+                
             } catch (Exception ex)
             {
                 Console.WriteLine(ex);
@@ -44,10 +49,15 @@ namespace BillAutomatorUI
 
         }
 
+        // This will only be called if the user chooses and already,
+        // existing bill of costs to open up and run. It will parse all
+        // of the information from the bill and present it to the
+        // user in the style set out in the forms.
         public void runStartup(Document aDoc)
         {
             DashboardForm df = new DashboardForm();
             fileLoc = df.fileName;
+            em = new BillModel();
 
             doc = aDoc;
             try
@@ -86,7 +96,7 @@ namespace BillAutomatorUI
                                         int len = names.Length;
                                         string secondName = names[len - 1];
 
-                                        sol.firstName = firstName;
+                                        sol.firstName = firstName.Substring(0, firstName.Length - 1);
                                         string lastName = secondName.Replace("", "");
                                         sol.lastName = lastName.Substring(0, lastName.Length - 1);
                                     } catch
@@ -289,15 +299,11 @@ namespace BillAutomatorUI
                 Console.WriteLine(ex);
             }
 
-            em.entries.ForEach(delegate (EntriesModel entry)
-            {
-                entriesBox.Items.Add(entry.date + " - " + entry.solicitor.initials + " - " + 
-                    entry.description);
-            });
+            displayEntries();
 
             // Set the name of the client and display on the form.
             string[] name = doc.Name.Split('-');
-            string clientName = name[2];
+            clientName = name[2];
             clientNameLabel.Text = clientName;
             clientNameLabel.Font = new System.Drawing.Font(clientNameLabel.Font, FontStyle.Bold);
         }
@@ -305,6 +311,85 @@ namespace BillAutomatorUI
         private bool ValidateForm()
         {
             return true;
+        }
+
+        //private void dateTimeBox_ValueChanged(object sender, EventArgs e)
+        //{
+            //DateTime dt = dateTimeBox.Value;
+            //displayEntries();
+        //}
+
+        private void displayEntries()
+        {
+            entriesBox.Items.Clear();
+            em.entries.ForEach(delegate (EntriesModel entry)
+            {
+                entriesBox.Items.Add(entry.date + " - " + entry.solicitor.initials + " - " +
+                    entry.description);
+            });
+        }
+
+        // Display only the entries from a certain date. Also not working. 
+        private void displayEntries(DateTime date)
+        {
+            bool firstHit = false;
+            bool lastHit = false;
+            int i = 0;
+            while(!firstHit && !lastHit && i < em.entries.Count)
+            {
+                EntriesModel ent = em.entries[i];
+                if(ent.date == date && !firstHit)
+                {
+                    firstHit = true;
+                }
+                if(ent.date == date)
+                {
+                    entriesBox.Items.Add(ent.date + " - " + ent.solicitor.initials + " - " +
+                    ent.description);
+                }
+                if(firstHit == true && ent.date != date)
+                {
+                    lastHit = true;
+                }
+            }
+            if (!firstHit)
+            {
+                entriesBox.Items.Add("There are no current entries on this date.");
+            }
+        }
+
+        private void displayAllEntriesButton_Click(object sender, EventArgs e)
+        {
+            displayEntries();
+        }
+
+        private void newEntryButton_Click(object sender, EventArgs e)
+        {
+            NewEntryForm nef = new NewEntryForm();
+            nef.setBillModel(em);
+            nef.Show();
+            this.Close();
+        }
+
+        // To run when moving backwards and forwards between forms.
+        public void setBillModel(BillModel aEm)
+        {
+            em = aEm;
+            clientNameLabel.Text = clientName;
+            clientNameLabel.Font = new System.Drawing.Font(clientNameLabel.Font, FontStyle.Bold);
+            displayEntries();
+            //MessageBox.Show("Client name is: " + clientName);
+            //MessageBox.Show("Document is: " + doc.Name);
+        }
+
+        // To access the solicitor management form.
+        private void solicitorButton_Click(object sender, EventArgs e)
+        {
+            SolicitorManagementForm smf = new SolicitorManagementForm();
+            smf.setBillModel(em);
+            smf.runSetUp();
+            smf.Show();
+            this.Close();
         }
     }
 }

@@ -195,6 +195,7 @@
             this.createEntryButton.TabIndex = 27;
             this.createEntryButton.Text = "Create";
             this.createEntryButton.UseVisualStyleBackColor = true;
+            this.createEntryButton.Click += new System.EventHandler(this.createEntryButton_Click);
             // 
             // cancelEntryButton
             // 
@@ -207,6 +208,7 @@
             this.cancelEntryButton.TabIndex = 28;
             this.cancelEntryButton.Text = "Cancel";
             this.cancelEntryButton.UseVisualStyleBackColor = true;
+            this.cancelEntryButton.Click += new System.EventHandler(this.cancelEntryButton_Click);
             // 
             // NewEntryForm
             // 
