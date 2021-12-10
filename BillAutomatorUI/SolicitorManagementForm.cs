@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+//DONE FOR NOW.
 namespace BillAutomatorUI
 {
     /// <summary>
@@ -69,6 +70,11 @@ namespace BillAutomatorUI
             EditCreateSolicitorForm editSol = new EditCreateSolicitorForm();
             SolicitorsModel solicitorToEdit = new SolicitorsModel();
 
+            if (solicitorsBox.SelectedIndex == -1)
+            {
+                MessageBox.Show("Please select a solicitor to edit");
+                return;
+            }
             // Get the relevant initials
             string chosenSol = solicitorsBox.SelectedItem.ToString();
             string[] solParameters = chosenSol.Split('-');

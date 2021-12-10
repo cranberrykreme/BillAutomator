@@ -109,6 +109,7 @@
             this.hoursInput.Name = "hoursInput";
             this.hoursInput.Size = new System.Drawing.Size(165, 35);
             this.hoursInput.TabIndex = 18;
+            this.hoursInput.ValueChanged += new System.EventHandler(this.hoursInput_valueChanged);
             // 
             // gstLabel
             // 
@@ -129,7 +130,13 @@
             0,
             65536});
             this.gstInput.Location = new System.Drawing.Point(526, 260);
+            this.gstInput.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
             this.gstInput.Name = "gstInput";
+            this.gstInput.ReadOnly = true;
             this.gstInput.Size = new System.Drawing.Size(120, 35);
             this.gstInput.TabIndex = 20;
             // 
@@ -142,6 +149,11 @@
             0,
             65536});
             this.totalInput.Location = new System.Drawing.Point(779, 260);
+            this.totalInput.Maximum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            0});
             this.totalInput.Name = "totalInput";
             this.totalInput.Size = new System.Drawing.Size(120, 35);
             this.totalInput.TabIndex = 22;
@@ -161,8 +173,9 @@
             this.solicitorDropDown.FormattingEnabled = true;
             this.solicitorDropDown.Location = new System.Drawing.Point(194, 337);
             this.solicitorDropDown.Name = "solicitorDropDown";
-            this.solicitorDropDown.Size = new System.Drawing.Size(165, 38);
+            this.solicitorDropDown.Size = new System.Drawing.Size(234, 38);
             this.solicitorDropDown.TabIndex = 24;
+            this.solicitorDropDown.TextChanged += new System.EventHandler(this.solicitorDropDown_valueChanged);
             // 
             // solicitorLabel
             // 

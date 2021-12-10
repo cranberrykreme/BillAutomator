@@ -136,14 +136,11 @@ namespace BillAutomatorUI
                                     try
                                     {
                                         string rate = txt.Substring(1);
-                                        //string rating = rate.Split(' ');
+
                                         string[] rating = rate.Split('.');
-                                        //Console.WriteLine("|" + rate + "|");
-                                        //Console.WriteLine(rate.Length);
-                                        //Console.WriteLine(rating[0]);
+
                                         double hourly = Convert.ToDouble(rating[0]);
-                                        //double hourly = 0.0;
-                                        //Double.TryParse(rating[0], out hourly);
+
                                         Console.WriteLine("|" + hourly + "|");
                                         hourly = hourly + 0.00;
                                         List<double> rates = new List<double>();
@@ -167,14 +164,11 @@ namespace BillAutomatorUI
                 }
                 Console.WriteLine(em.solicitor);
                 Console.WriteLine(em.solicitor.Count);
-               // foreach(SolicitorsModel sm in em.solicitor)
-                //{
-                //    sm.hourlyRates.ForEach(Console.WriteLine);
-                //}
+
 
                 em.solicitor.ForEach(delegate (SolicitorsModel sm)
                 {
-                    //sm.hourlyRates.ForEach(Console.WriteLine);
+
                     Console.WriteLine(sm.initials);
                     Console.WriteLine(sm.initials.Length);
                     Console.WriteLine(sm.dateOfAdmission);
@@ -184,8 +178,6 @@ namespace BillAutomatorUI
                             Console.WriteLine(hr);
                     });
                 });
-
-                //em.solicitor.ForEach(Console.WriteLine);
                 
                 Word.Table tabs = doc.Tables[3];
                 Rows row = tabs.Rows;
@@ -233,10 +225,7 @@ namespace BillAutomatorUI
                                 while(found == false && index < em.solicitor.Count)
                                 {
                                     SolicitorsModel hold = em.solicitor[index];
-                                    //Console.WriteLine("-------------------------");
-                                    //Console.WriteLine(hold.initials);
-                                    //Console.WriteLine(solicitor);
-                                    //Console.WriteLine("-------------------------");
+
                                     if (String.Equals(hold.initials, solicitor))
                                     {
                                         found = true;

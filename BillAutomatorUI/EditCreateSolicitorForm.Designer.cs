@@ -60,6 +60,7 @@
             this.firstNameTextBox.Name = "firstNameTextBox";
             this.firstNameTextBox.Size = new System.Drawing.Size(309, 35);
             this.firstNameTextBox.TabIndex = 3;
+            this.firstNameTextBox.TextChanged += new System.EventHandler(this.firstNameTextBox_TextChanged);
             // 
             // firstNameLabel
             // 
@@ -77,6 +78,7 @@
             this.lastNameTextBox.Name = "lastNameTextBox";
             this.lastNameTextBox.Size = new System.Drawing.Size(309, 35);
             this.lastNameTextBox.TabIndex = 5;
+            this.lastNameTextBox.TextChanged += new System.EventHandler(this.lastNameTextBox_TextChanged);
             // 
             // lastNameLabel
             // 
@@ -94,6 +96,7 @@
             this.initialsTextBox.Name = "initialsTextBox";
             this.initialsTextBox.Size = new System.Drawing.Size(71, 35);
             this.initialsTextBox.TabIndex = 7;
+            this.initialsTextBox.TextChanged += new System.EventHandler(this.initialsTextBox_TextChanged);
             // 
             // initialsLabel
             // 
@@ -239,6 +242,7 @@
             this.deleteButton.TabIndex = 31;
             this.deleteButton.Text = "Delete";
             this.deleteButton.UseVisualStyleBackColor = true;
+            this.deleteButton.Click += new System.EventHandler(this.deleteButton_Click);
             // 
             // cancelButton
             // 
