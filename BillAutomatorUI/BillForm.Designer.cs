@@ -46,6 +46,7 @@
             this.downButton = new System.Windows.Forms.Button();
             this.alterPositionLabel = new System.Windows.Forms.Label();
             this.displayAllEntriesButton = new System.Windows.Forms.Button();
+            this.editSelectedButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // clientLabel
@@ -143,12 +144,13 @@
             this.deleteSelectedButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
             this.deleteSelectedButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
             this.deleteSelectedButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.deleteSelectedButton.Location = new System.Drawing.Point(780, 293);
+            this.deleteSelectedButton.Location = new System.Drawing.Point(780, 315);
             this.deleteSelectedButton.Name = "deleteSelectedButton";
             this.deleteSelectedButton.Size = new System.Drawing.Size(234, 52);
             this.deleteSelectedButton.TabIndex = 9;
             this.deleteSelectedButton.Text = "Delete Selected";
             this.deleteSelectedButton.UseVisualStyleBackColor = true;
+            this.deleteSelectedButton.Click += new System.EventHandler(this.deleteSelectedButton_Click);
             // 
             // saveButton
             // 
@@ -242,12 +244,26 @@
             this.displayAllEntriesButton.UseVisualStyleBackColor = true;
             this.displayAllEntriesButton.Click += new System.EventHandler(this.displayAllEntriesButton_Click);
             // 
+            // editSelectedButton
+            // 
+            this.editSelectedButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
+            this.editSelectedButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+            this.editSelectedButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.editSelectedButton.Location = new System.Drawing.Point(780, 257);
+            this.editSelectedButton.Name = "editSelectedButton";
+            this.editSelectedButton.Size = new System.Drawing.Size(234, 52);
+            this.editSelectedButton.TabIndex = 21;
+            this.editSelectedButton.Text = "Edit Selected";
+            this.editSelectedButton.UseVisualStyleBackColor = true;
+            this.editSelectedButton.Click += new System.EventHandler(this.editSelectedButton_Click);
+            // 
             // BillForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 30F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1032, 574);
+            this.Controls.Add(this.editSelectedButton);
             this.Controls.Add(this.displayAllEntriesButton);
             this.Controls.Add(this.alterPositionLabel);
             this.Controls.Add(this.downButton);
@@ -294,5 +310,6 @@
         private System.Windows.Forms.Button downButton;
         private System.Windows.Forms.Label alterPositionLabel;
         private System.Windows.Forms.Button displayAllEntriesButton;
+        private System.Windows.Forms.Button editSelectedButton;
     }
 }

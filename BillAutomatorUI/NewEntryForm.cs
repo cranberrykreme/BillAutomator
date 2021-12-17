@@ -21,6 +21,8 @@ namespace BillAutomatorUI
         private BillModel em;
         private double hourlyRate = 0;
         SolicitorsModel workingSolicitor;
+        bool exists = false;
+        int existingIndex = -1;
         public NewEntryForm()
         {
             InitializeComponent();
@@ -34,6 +36,42 @@ namespace BillAutomatorUI
             {
                 solicitorDropDown.Items.Add(sm.firstName + " " + sm.lastName);
             });
+        }
+
+        // Set up the new entry form, if it is editing an entry that already exists.
+        public void setExistingBillModel(BillModel aEm, bool aExists, int index)
+        {
+            exists = aExists;
+            existingIndex = index;
+            em = aEm;
+
+            EntriesModel existingEntry = em.entries[existingIndex];
+
+            string names = String.Concat(existingEntry.solicitor.firstName, existingEntry.solicitor.lastName);
+            int i = -1;
+            int indexOfSol = -1;
+            em.solicitor.ForEach(delegate (SolicitorsModel sm)
+            {
+                i++;
+                solicitorDropDown.Items.Add(sm.firstName + " " + sm.lastName);
+                string currentNames = String.Concat(sm.firstName, sm.lastName);
+                Console.WriteLine(currentNames);
+                Console.WriteLine(names);
+                if(String.Equals(names, currentNames))
+                {
+                    Console.WriteLine("This is the correct sol");
+                    indexOfSol = i;
+                }
+            });
+
+            dateTimeBox.Value = existingEntry.date;
+            descriptionTextBox.Text = existingEntry.description;
+            hoursInput.Value = Convert.ToDecimal(existingEntry.hours);
+            if(indexOfSol > -1)
+            {
+                solicitorDropDown.SelectedIndex = indexOfSol;
+            }
+            
         }
 
         private void cancelEntryButton_Click(object sender, EventArgs e)
@@ -70,7 +108,7 @@ namespace BillAutomatorUI
             });
             if (!afterDate)
             {
-                MessageBox.Show("Is never before the next date");
+                //MessageBox.Show("Is never before the next date");
                 Console.WriteLine(ent.date + " " + ent.description + " " + ent.amount + " " + ent.solicitor);
                 em.entries.Add(ent);
                 return -1;
@@ -81,8 +119,7 @@ namespace BillAutomatorUI
             }
         }
 
-        // TODO - Finish feeding the information into the entry and then add the entry to
-        // the overal bill model. MAKE SURE TO ADD THE ENTRY.
+        // Retrieves all of the relvant information, and has it entered into the bill.
         private void createEntryButton_Click(object sender, EventArgs e)
         {
             EntriesModel ent = new EntriesModel();
@@ -196,8 +233,9 @@ namespace BillAutomatorUI
 
             for (int loc = 0; loc < names.Length - 1; loc++)
             {
-                firstName = firstName + names[loc];
+                firstName = firstName + " " + names[loc];
             }
+            firstName = firstName.Substring(1);
             int len = names.Length;
             string secondName = names[len - 1];
 

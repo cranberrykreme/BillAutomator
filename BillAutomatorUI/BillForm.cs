@@ -269,6 +269,14 @@ namespace BillAutomatorUI
                                 desc = desc.Substring(0, desc.Length - 1);
                                 Console.WriteLine(desc);
                                 entries.description = desc;
+
+                                string[] descriptions = desc.Split('–'); //Split the entire description
+                                
+                                string[] descHours = descriptions[descriptions.Length - 1].Split(' '); //Split what comes after the hyphen
+                                string hours = descHours[1]; //take just the double value for the hours
+                                Console.WriteLine("Input hours is: " + hours + " Length of entry is: " + descriptions.Length);
+                                entries.hours = Convert.ToDouble(hours); //Add the hours to the entry
+
                             }
                             catch (Exception ex)
                             {
@@ -281,9 +289,10 @@ namespace BillAutomatorUI
                             try
                             {
                                 string price = txt.Replace("", "");
-                                price = price.Substring(1, price.Length - 1);
+                                price = price.Substring(0, price.Length - 1);
                                 double amount = Convert.ToDouble(price);
-                                Console.WriteLine(amount);
+                                Console.WriteLine("Value of the entry: " + amount);
+                                Console.WriteLine("Actual Value: " + price);
                                 entries.amount = amount;
                             }
                             catch (Exception ex)
@@ -410,6 +419,92 @@ namespace BillAutomatorUI
             //MessageBox.Show("Time was changed");
             DateTime dt = dateTimeBox.Value.Date;
             displayEntries(dt);
+        }
+
+        /// <summary>
+        /// Connect to the selected entry and remove it from the list/Bill of costs.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void deleteSelectedButton_Click(object sender, EventArgs e)
+        {
+            if(entriesBox.SelectedIndex == -1)
+            {
+                MessageBox.Show("Please select an entry to delete");
+                return;
+            }
+
+            int selected = entriesBox.SelectedIndex;
+            string chosenEntry = entriesBox.SelectedItem.ToString();
+            string[] entryParams = chosenEntry.Split('-');
+            string description = entryParams[entryParams.Length - 1];
+            description = description.Substring(1);
+            //MessageBox.Show(description);
+            int i = -1;
+            int index = -1;
+            em.entries.ForEach(delegate (EntriesModel entry)
+            {
+                i++;
+                if(String.Equals(entry.description, description))
+                {
+                    index = i;
+                }
+            });
+            if(index > -1)
+            {
+                em.entries.RemoveAt(index);
+                displayEntries();
+                return;
+            }
+            MessageBox.Show("Cannot Find Entry");
+        }
+
+        /// <summary>
+        /// Connect to the entry that has been selected and open the NewEntryForm,
+        /// class to edit the selected entry.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void editSelectedButton_Click(object sender, EventArgs e)
+        {
+            if (entriesBox.SelectedIndex == -1)
+            {
+                MessageBox.Show("Please select an entry to edit");
+                return;
+            }
+
+            int selected = entriesBox.SelectedIndex;
+            string chosenEntry = entriesBox.SelectedItem.ToString();
+            string[] entryParams = chosenEntry.Split('-');
+            string description = entryParams[entryParams.Length - 1];
+            description = description.Substring(1);
+            //MessageBox.Show(description);
+            int i = -1;
+            int index = -1;
+            em.entries.ForEach(delegate (EntriesModel entry)
+            {
+                i++;
+                if (String.Equals(entry.description, description))
+                {
+                    index = i;
+                    editSelected(index);
+                    return;
+                }
+            });
+            if(index < 0)
+            {
+                MessageBox.Show("Cannot find selected entry");
+            }
+            
+
+        }
+
+        private void editSelected(int index)
+        {
+            NewEntryForm nef = new NewEntryForm();
+            nef.setExistingBillModel(em, true, index);
+            nef.Show();
+            this.Close();
         }
     }
 }
