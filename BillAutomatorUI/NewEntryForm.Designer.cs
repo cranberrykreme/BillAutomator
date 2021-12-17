@@ -206,7 +206,7 @@
             this.createEntryButton.Name = "createEntryButton";
             this.createEntryButton.Size = new System.Drawing.Size(148, 52);
             this.createEntryButton.TabIndex = 27;
-            this.createEntryButton.Text = "Create";
+            this.createEntryButton.Text = "Save";
             this.createEntryButton.UseVisualStyleBackColor = true;
             this.createEntryButton.Click += new System.EventHandler(this.createEntryButton_Click);
             // 

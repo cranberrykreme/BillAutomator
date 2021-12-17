@@ -82,9 +82,14 @@ namespace BillAutomatorUI
             this.Close();
         }
 
+        /// <summary>
+        /// Retrieve the location in the bill for the entry to be entered into.
+        /// </summary>
+        /// <param name="ent"></param>
+        /// <returns></returns>
         private int enterEntry(EntriesModel ent)
         {
-            bool foundDate = false;
+            //bool foundDate = false;
             bool afterDate = false;
             int i = -1;
             int index = -1;
@@ -187,11 +192,18 @@ namespace BillAutomatorUI
                 MessageBox.Show("Please Fill in all of the relevant sections before creating entry");
             }
 
-            int i = enterEntry(ent);
-            if(i > -1)
+            if (!exists) //If making a new entry, add at the correct location.
             {
-                em.entries.Insert(i, ent);
+                int i = enterEntry(ent);
+                if (i > -1)
+                {
+                    em.entries.Insert(i, ent);
+                }
+            } else //change an existing entry.
+            {
+                em.entries[existingIndex] = ent;
             }
+            
             
 
             //Send user back to the bill form.
