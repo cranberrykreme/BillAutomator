@@ -209,6 +209,7 @@
             this.upButton.TabIndex = 17;
             this.upButton.Text = "^";
             this.upButton.UseVisualStyleBackColor = true;
+            this.upButton.Click += new System.EventHandler(this.upButton_Click);
             // 
             // downButton
             // 
@@ -221,6 +222,7 @@
             this.downButton.TabIndex = 18;
             this.downButton.Text = "v";
             this.downButton.UseVisualStyleBackColor = true;
+            this.downButton.Click += new System.EventHandler(this.downButton_Click);
             // 
             // alterPositionLabel
             // 

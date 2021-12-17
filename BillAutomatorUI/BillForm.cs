@@ -248,9 +248,9 @@ namespace BillAutomatorUI
                                 // If there is still no solicitor found, put it down as empty
                                 if(found != true)
                                 {
-                                    SolicitorsModel notFound = new SolicitorsModel();
-                                    notFound.initials = "Not Found";
-                                    entries.solicitor = notFound;
+                                    //SolicitorsModel notFound = new SolicitorsModel();
+                                    //notFound.initials = "Not Found";
+                                    entries.solicitor = em.solicitor[0];
                                 }
 
                                 Console.WriteLine(entries.solicitor.initials);
@@ -505,6 +505,26 @@ namespace BillAutomatorUI
             nef.setExistingBillModel(em, true, index);
             nef.Show();
             this.Close();
+        }
+
+        //Move the selected entry upwards.
+        private void upButton_Click(object sender, EventArgs e)
+        {
+            if(entriesBox.SelectedIndex < 0)
+            {
+                MessageBox.Show("Please select an entry to move upwards");
+                return;
+            }
+        }
+
+        //Move the selected entry downwards.
+        private void downButton_Click(object sender, EventArgs e)
+        {
+            if (entriesBox.SelectedIndex < 0)
+            {
+                MessageBox.Show("Please select an entry to move downwards");
+                return;
+            }
         }
     }
 }

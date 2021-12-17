@@ -201,7 +201,20 @@ namespace BillAutomatorUI
                 }
             } else //change an existing entry.
             {
+                DateTime previousDate = em.entries[existingIndex].date;
                 em.entries[existingIndex] = ent;
+                DateTime newDate = em.entries[existingIndex].date;
+                int diff = DateTime.Compare(previousDate, newDate);
+                if (diff != 0)
+                {
+                    em.entries.RemoveAt(existingIndex);
+                    int i = enterEntry(ent);
+                    if(i > -1)
+                    {
+                        em.entries.Insert(i, ent);
+                    }
+                }
+                
             }
             
             
