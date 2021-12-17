@@ -184,6 +184,7 @@
             this.dateTimeBox.Name = "dateTimeBox";
             this.dateTimeBox.Size = new System.Drawing.Size(145, 35);
             this.dateTimeBox.TabIndex = 16;
+            this.dateTimeBox.ValueChanged += new System.EventHandler(this.dateTimeBox_ValueChanged);
             // 
             // dateLabel
             // 

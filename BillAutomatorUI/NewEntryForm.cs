@@ -44,8 +44,45 @@ namespace BillAutomatorUI
             this.Close();
         }
 
+        private int enterEntry(EntriesModel ent)
+        {
+            bool foundDate = false;
+            bool afterDate = false;
+            int i = -1;
+            int index = -1;
+            // Get the correct date and location to add the new entry to in the list.
+            em.entries.ForEach(delegate (EntriesModel entry)
+            {
+                
+                i++;
+                int diff = DateTime.Compare(entry.date, ent.date);
+
+                if (diff > 0 && !afterDate) // if new entry is earlier than this date it will be > 0
+                {
+                    afterDate = true;
+                    //MessageBox.Show("Your entery has date: " + ent.date + " and should be entered right before " + entry.date
+                    //    + " " + i);
+                    Console.WriteLine(ent.date + " " + ent.description + " " + ent.amount + " " + ent.solicitor);
+                    //em.entries.Insert(i, ent);
+                    index = i;
+                }
+
+            });
+            if (!afterDate)
+            {
+                MessageBox.Show("Is never before the next date");
+                Console.WriteLine(ent.date + " " + ent.description + " " + ent.amount + " " + ent.solicitor);
+                em.entries.Add(ent);
+                return -1;
+            }
+            else
+            {
+                return index;
+            }
+        }
+
         // TODO - Finish feeding the information into the entry and then add the entry to
-        // the overal bill model.
+        // the overal bill model. MAKE SURE TO ADD THE ENTRY.
         private void createEntryButton_Click(object sender, EventArgs e)
         {
             EntriesModel ent = new EntriesModel();
@@ -55,7 +92,7 @@ namespace BillAutomatorUI
             {
                 try //Fill in the correct date for an entry.
                 {
-                    DateTime dt = dateTimeBox.Value;
+                    DateTime dt = dateTimeBox.Value.Date;
                     ent.date = dt;
                 } catch (Exception ex)
                 {
@@ -89,6 +126,10 @@ namespace BillAutomatorUI
                 }
 
                 // Add the solicitor
+                if(workingSolicitor == null)
+                {
+                    workingSolicitor = em.solicitor.First();
+                }
                 ent.solicitor = workingSolicitor;
 
                 try
@@ -109,20 +150,12 @@ namespace BillAutomatorUI
                 MessageBox.Show("Please Fill in all of the relevant sections before creating entry");
             }
 
-            bool foundDate = false;
-            bool afterDate = true;
-            // Get the correct date and location to add the new entry to in the list.
-            em.entries.ForEach(delegate (EntriesModel entry)
+            int i = enterEntry(ent);
+            if(i > -1)
             {
-                int diff = DateTime.Compare(entry.date, ent.date);
-                if(diff == 0)
-                {
-                    foundDate = true;
-                } else if(diff > 0) // if new entry is earlier than this date it will be > 0
-                {
-
-                }
-            });
+                em.entries.Insert(i, ent);
+            }
+            
 
             //Send user back to the bill form.
             BillForm bf = new BillForm();

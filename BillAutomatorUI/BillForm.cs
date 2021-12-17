@@ -58,6 +58,18 @@ namespace BillAutomatorUI
             DashboardForm df = new DashboardForm();
             fileLoc = df.fileName;
             em = new BillModel();
+            SolicitorsModel s = new SolicitorsModel();
+
+            //Initialise a solicitor's profile for "unknown".
+            List<double> unknownRate = new List<double>();
+            unknownRate.Add(0.0);
+            s.hourlyRates = unknownRate;
+            s.firstName = "Unknown";
+            s.lastName = "Solicitor/Worker";
+            s.initials = "Unknown";
+            s.dateOfAdmission = "";
+
+            em.solicitor.Add(s);
 
             doc = aDoc;
             try
@@ -302,45 +314,56 @@ namespace BillAutomatorUI
             return true;
         }
 
-        //private void dateTimeBox_ValueChanged(object sender, EventArgs e)
-        //{
-            //DateTime dt = dateTimeBox.Value;
-            //displayEntries();
-        //}
-
         private void displayEntries()
         {
             entriesBox.Items.Clear();
             em.entries.ForEach(delegate (EntriesModel entry)
             {
-                entriesBox.Items.Add(entry.date + " - " + entry.solicitor.initials + " - " +
+                //Only get the date part of the dateTime entry
+                string date = entry.date.ToString();
+                string[] dates = date.Split(' ');
+                date = dates[0];
+
+                //Display the entry in the box
+                entriesBox.Items.Add(date + " - " + entry.solicitor.initials + " - " +
                     entry.description);
             });
         }
 
+
+
         // Display only the entries from a certain date. Also not working. 
         private void displayEntries(DateTime date)
         {
+            entriesBox.Items.Clear();
             bool firstHit = false;
-            bool lastHit = false;
-            int i = 0;
-            while(!firstHit && !lastHit && i < em.entries.Count)
+            int i = -1;
+            em.entries.ForEach(delegate (EntriesModel ent)
             {
-                EntriesModel ent = em.entries[i];
-                if(ent.date == date && !firstHit)
+                i++;
+                //EntriesModel ent = em.entries[i];
+                int diff = DateTime.Compare(date, ent.date);
+                if (diff == 0 && !firstHit)
                 {
                     firstHit = true;
                 }
-                if(ent.date == date)
+                //Display the relevant entries
+                if (diff == 0)
                 {
-                    entriesBox.Items.Add(ent.date + " - " + ent.solicitor.initials + " - " +
+                    //Only get the date part of the dateTime entry
+                    string dateOfEntry = ent.date.ToString();
+                    string[] dates = dateOfEntry.Split(' ');
+                    dateOfEntry = dates[0];
+
+                    entriesBox.Items.Add(dateOfEntry + " - " + ent.solicitor.initials + " - " +
                     ent.description);
                 }
-                if(firstHit == true && ent.date != date)
+                //If there are no more entries to display, return
+                if (firstHit == true && diff != 0)
                 {
-                    lastHit = true;
+                    return;
                 }
-            }
+            });
             if (!firstHit)
             {
                 entriesBox.Items.Add("There are no current entries on this date.");
@@ -349,6 +372,7 @@ namespace BillAutomatorUI
 
         private void displayAllEntriesButton_Click(object sender, EventArgs e)
         {
+            dateTimeBox.Value = DateTime.Now;
             displayEntries();
         }
 
@@ -379,6 +403,13 @@ namespace BillAutomatorUI
             smf.runSetUp();
             smf.Show();
             this.Close();
+        }
+
+        private void dateTimeBox_ValueChanged(object sender, EventArgs e)
+        {
+            //MessageBox.Show("Time was changed");
+            DateTime dt = dateTimeBox.Value.Date;
+            displayEntries(dt);
         }
     }
 }
