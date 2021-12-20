@@ -69,6 +69,7 @@ namespace BillAutomatorUI
         {
             EditCreateSolicitorForm editSol = new EditCreateSolicitorForm();
             SolicitorsModel solicitorToEdit = new SolicitorsModel();
+            bool foundSol = false;
 
             if (solicitorsBox.SelectedIndex == -1)
             {
@@ -87,9 +88,10 @@ namespace BillAutomatorUI
                 if(String.Equals(solToEdit.initials, chosenSolInitials))
                 {
                     solicitorToEdit = solToEdit;
+                    foundSol = true;
                 }
             });
-            if(solicitorToEdit == null)
+            if(!foundSol)
             {
                 MessageBox.Show("No solicitor available in the list of entries.");
             } else

@@ -99,12 +99,12 @@
             // 
             // hoursInput
             // 
-            this.hoursInput.DecimalPlaces = 1;
+            this.hoursInput.DecimalPlaces = 2;
             this.hoursInput.Increment = new decimal(new int[] {
             1,
             0,
             0,
-            65536});
+            131072});
             this.hoursInput.Location = new System.Drawing.Point(194, 260);
             this.hoursInput.Name = "hoursInput";
             this.hoursInput.Size = new System.Drawing.Size(165, 35);
@@ -123,12 +123,12 @@
             // 
             // gstInput
             // 
-            this.gstInput.DecimalPlaces = 1;
+            this.gstInput.DecimalPlaces = 2;
             this.gstInput.Increment = new decimal(new int[] {
             1,
             0,
             0,
-            65536});
+            131072});
             this.gstInput.Location = new System.Drawing.Point(526, 260);
             this.gstInput.Maximum = new decimal(new int[] {
             100000,
@@ -142,12 +142,12 @@
             // 
             // totalInput
             // 
-            this.totalInput.DecimalPlaces = 1;
+            this.totalInput.DecimalPlaces = 2;
             this.totalInput.Increment = new decimal(new int[] {
             1,
             0,
             0,
-            65536});
+            131072});
             this.totalInput.Location = new System.Drawing.Point(779, 260);
             this.totalInput.Maximum = new decimal(new int[] {
             1000000,

@@ -35,17 +35,148 @@ namespace BillAutomatorUI
 
         private void saveCloseButton_Click(object sender, EventArgs e)
         {
+            if(doc == null)
+            {
+                this.Close();
+                return;
+            }
             try{//try to close the application
-                if(doc != null)
+                Word.Table tbl = doc.Tables[2];
+                Rows rows = tbl.Rows;
+                int numRows = rows.Count; //to compare the index of the row to the final index.
+                Columns cols = tbl.Columns;
+                int finalIndex = -1;
+
+                //SOLICITORS SECTION.
+                // Enter all of the solicitors into the word document.
+                for(int i = 1; i < em.solicitor.Count; i++)
                 {
-                    doc.Close();
+                    int index = i + 1; //As the first entry will be on the second row of the table
+                    if (index > numRows)
+                    {
+                        object oMissing = System.Reflection.Missing.Value;
+                        rows.Add(ref oMissing);
+                        numRows++;
+                        
+                    }
+                    Console.WriteLine("Current Row is: " + index);
+                    Console.WriteLine("Current Number of rows is: " + rows.Count);
+                    Console.WriteLine("Current List Entry is: " + i + " And the total size of the list is: " + em.solicitor.Count);
+                    rows[index].Cells[1].Range.Text = em.solicitor[i].firstName + " " + em.solicitor[i].lastName;
+                    rows[index].Cells[2].Range.Text = em.solicitor[i].initials;
+                    rows[index].Cells[3].Range.Text = em.solicitor[i].dateOfAdmission;
+                    rows[index].Cells[4].Range.Text = "$" + em.solicitor[i].hourlyRates[0].ToString() + ".00";
+                    finalIndex = index;
                 }
-                
+                //Add one more index to finalIndex, so it doesn't delete the final entry.
+                finalIndex++;
+
+                //Delete all unused entries.
+                while(finalIndex <= numRows)
+                {
+                    try
+                    {
+                        rows[finalIndex].Delete();
+                        numRows--;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex);
+                        Console.WriteLine("Final Index is: " + finalIndex + " and number of rows is: " + numRows);
+                        break;
+                    }
+                }
+
+                //BILL ENTRIES SECTION.
+                //Enter all of the bill entries into the bill of costs.
+                tbl = doc.Tables[3];
+                rows = tbl.Rows;
+                numRows = rows.Count; //to compare the index of the row to the final index.
+                cols = tbl.Columns;
+                finalIndex = -1;
+
+                for (int i = 0; i < em.entries.Count; i++)
+                {
+                    int index = i + 2; //As the first entry will be on the second row of the table, two higher than the index in the list.
+                    if (index > numRows)
+                    {
+                        object oMissing = System.Reflection.Missing.Value;
+                        rows.Add(ref oMissing);
+                        numRows++;
+                    }
+
+                    Console.WriteLine(em.entries[i].date.ToString("dd.MM.yyyy"));
+                    rows[index].Cells[2].Range.Text = em.entries[i].date.ToString("dd.MM.yyyy");    //Add the entries' date.
+                    rows[index].Cells[3].Range.Text = em.entries[i].solicitor.initials;             //Add the solicitors initials
+                    rows[index].Cells[4].Range.Text = em.entries[i].description;                    //Add the entries' description.
+                    //Add the cost of the entry.
+                    double cost = em.entries[i].amount;
+                    if(cost%1 == 0)
+                    {
+                        rows[index].Cells[5].Range.Text = "$" + em.entries[i].amount.ToString() + ".00";
+                    }
+                    else
+                    {
+                        string[] numbers = em.entries[i].amount.ToString().Split('.');
+                        Console.WriteLine(numbers[numbers.Length - 1]);
+                        string num = numbers[numbers.Length - 1];
+                        if(num.Length < 2)
+                        {
+                            rows[index].Cells[5].Range.Text = "$" + em.entries[i].amount.ToString() + "0";
+                        }
+                        else
+                        {
+                            rows[index].Cells[5].Range.Text = "$" + em.entries[i].amount.ToString();
+                        }
+                    }
+                    
+
+                    finalIndex = index;
+                }
+                //Add one more index to finalIndex, so it doesn't delete the final entry.
+                finalIndex++;
+
+                //Delete all unused entries. Keep the very last row as that is the summary.
+                while (finalIndex < numRows)
+                {
+                    try
+                    {
+                        rows[finalIndex].Delete();
+                        numRows--;
+                    } catch (Exception ex)
+                    {
+                        Console.WriteLine(ex);
+                        Console.WriteLine("Final Index is: " + finalIndex + " and number of rows is: " + numRows);
+                        break;
+                    }
+                    
+                }
+
+                tbl.Columns[1].PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPercent;
+                tbl.Columns[1].PreferredWidth = 6.9f;
+
+                tbl.Columns[2].PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPercent;
+                tbl.Columns[2].PreferredWidth = 11.5f;
+
+                tbl.Columns[3].PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPercent;
+                tbl.Columns[3].PreferredWidth = 8.9f;
+
+                tbl.Columns[4].PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPercent;
+                tbl.Columns[4].PreferredWidth = 60.5f;
+
+                tbl.Columns[5].PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPercent;
+                tbl.Columns[5].PreferredWidth = 12.0f;
+
+                //Save and close document.
+                //doc.Save();
+                //doc.Close();
+
             } catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                MessageBox.Show(ex.ToString());
             }
-            this.Close();
+            //this.Close();
+            MessageBox.Show("All done!");
 
         }
 
@@ -66,7 +197,7 @@ namespace BillAutomatorUI
             s.hourlyRates = unknownRate;
             s.firstName = "Unknown";
             s.lastName = "Solicitor/Worker";
-            s.initials = "Unknown";
+            s.initials = "??";
             s.dateOfAdmission = "";
 
             em.solicitor.Add(s);
@@ -487,7 +618,24 @@ namespace BillAutomatorUI
         private int entriesFindIndex(string chosenEntry)
         {
             string[] entryParams = chosenEntry.Split('-');
-            string description = entryParams[entryParams.Length - 1];
+            string description = "";
+
+            int curr = 2;
+            while (curr < entryParams.Length)
+            {
+                //If a hyphen has been taken out becuase of the search, put it back in.
+                if(curr > 2)
+                {
+                    description = description + "-" + entryParams[curr];
+                }
+                //Else just continue and put in a normal description.
+                else
+                {
+                    description = description + entryParams[curr];
+                }
+                curr++;
+            }
+
             description = description.Substring(1);
             //MessageBox.Show(description);
             int i = -1;
@@ -496,6 +644,8 @@ namespace BillAutomatorUI
             foreach(EntriesModel entry in em.entries)
             {
                 i++;
+                Console.WriteLine("Entries in the list:      |" + entry.description + "|");
+                Console.WriteLine("Entry to be searched for: |" + description + "|");
                 if (String.Equals(entry.description, description))
                 {
                     index = i;
@@ -533,13 +683,13 @@ namespace BillAutomatorUI
             string chosenEntry = entriesBox.SelectedItem.ToString();
             int selected = entriesFindIndex(chosenEntry);
 
-            //Find if both entries are on the same date.
-            DateTime selectedDate = em.entries[selected].date;
-            DateTime previousDate = em.entries[selected - 1].date;
-            int diff = DateTime.Compare(selectedDate, previousDate);
-
             try
             {
+                //Find if both entries are on the same date.
+                DateTime selectedDate = em.entries[selected].date;
+                DateTime previousDate = em.entries[selected - 1].date;
+                int diff = DateTime.Compare(selectedDate, previousDate);
+
                 // If the date is not the same, cannot move
                 if (diff != 0)
                 {
@@ -555,15 +705,15 @@ namespace BillAutomatorUI
                     em.entries[selected] = em.entries[selected - 1];
                     em.entries[selected - 1] = hold;
                 }
+
+                //Display the new list, on the selected date.
+                displayEntries(selectedDate);
+                dateTimeBox.Value = selectedDate;
             } catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
             }
             
-
-            //Display the new list, on the selected date.
-            displayEntries(selectedDate);
-            dateTimeBox.Value = selectedDate;
             //MessageBox.Show(entriesBox.SelectedItem.ToString() + " " + em.entries[selected].description);
         }
 
@@ -586,13 +736,13 @@ namespace BillAutomatorUI
             string chosenEntry = entriesBox.SelectedItem.ToString();
             int selected = entriesFindIndex(chosenEntry);
 
-            //Find if both entries are on the same date.
-            DateTime selectedDate = em.entries[selected].date;
-            DateTime nextDate = em.entries[selected + 1].date;
-            int diff = DateTime.Compare(selectedDate, nextDate);
-
             try
             {
+                //Find if both entries are on the same date.
+                DateTime selectedDate = em.entries[selected].date;
+                DateTime nextDate = em.entries[selected + 1].date;
+                int diff = DateTime.Compare(selectedDate, nextDate);
+
                 // If the date is not the same, cannot move
                 if (diff != 0)
                 {
@@ -608,15 +758,15 @@ namespace BillAutomatorUI
                     em.entries[selected] = em.entries[selected + 1];
                     em.entries[selected + 1] = hold;
                 }
+
+                //Display the new list, on the selected date.
+                displayEntries(selectedDate);
+                dateTimeBox.Value = selectedDate;
             } catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
             }
             
-
-            //Display the new list, on the selected date.
-            displayEntries(selectedDate);
-            dateTimeBox.Value = selectedDate;
             //MessageBox.Show(entriesBox.SelectedItem.ToString() + " " + em.entries[selected].description);
 
         }
