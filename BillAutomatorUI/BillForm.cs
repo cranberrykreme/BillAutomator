@@ -436,20 +436,8 @@ namespace BillAutomatorUI
 
             int selected = entriesBox.SelectedIndex;
             string chosenEntry = entriesBox.SelectedItem.ToString();
-            string[] entryParams = chosenEntry.Split('-');
-            string description = entryParams[entryParams.Length - 1];
-            description = description.Substring(1);
-            //MessageBox.Show(description);
-            int i = -1;
-            int index = -1;
-            em.entries.ForEach(delegate (EntriesModel entry)
-            {
-                i++;
-                if(String.Equals(entry.description, description))
-                {
-                    index = i;
-                }
-            });
+            int index = entriesFindIndex(chosenEntry);
+            
             if(index > -1)
             {
                 em.entries.RemoveAt(index);
@@ -475,28 +463,46 @@ namespace BillAutomatorUI
 
             int selected = entriesBox.SelectedIndex;
             string chosenEntry = entriesBox.SelectedItem.ToString();
+            int index = entriesFindIndex(chosenEntry);
+
+            if(index < 0)
+            {
+                MessageBox.Show("Cannot find selected entry");
+            }
+            else
+            {
+                editSelected(index);
+            }
+            
+
+        }
+
+        /// <summary>
+        /// Return the correct index of the selected entry that is given to this method.
+        /// </summary>
+        /// <param name="chosenEntry">
+        /// An entry that is the string of what shows on the forms box.
+        /// </param>
+        /// <returns></returns>
+        private int entriesFindIndex(string chosenEntry)
+        {
             string[] entryParams = chosenEntry.Split('-');
             string description = entryParams[entryParams.Length - 1];
             description = description.Substring(1);
             //MessageBox.Show(description);
             int i = -1;
             int index = -1;
-            em.entries.ForEach(delegate (EntriesModel entry)
+
+            foreach(EntriesModel entry in em.entries)
             {
                 i++;
                 if (String.Equals(entry.description, description))
                 {
                     index = i;
-                    editSelected(index);
-                    return;
+                    break;
                 }
-            });
-            if(index < 0)
-            {
-                MessageBox.Show("Cannot find selected entry");
             }
-            
-
+            return index;
         }
 
         private void editSelected(int index)
@@ -507,24 +513,112 @@ namespace BillAutomatorUI
             this.Close();
         }
 
-        //Move the selected entry upwards.
+        //Move the selected entry upwards/earlier.
         private void upButton_Click(object sender, EventArgs e)
         {
+            //If nothing is selected, tell the user and return.
             if(entriesBox.SelectedIndex < 0)
             {
                 MessageBox.Show("Please select an entry to move upwards");
                 return;
             }
+            //If there is no room left to move the entry up.
+            if (entriesBox.SelectedIndex == 0)
+            {
+                MessageBox.Show("Cannot move first entry further up the list.");
+                return;
+            }
+
+            // Get the correct index of the selected item.
+            string chosenEntry = entriesBox.SelectedItem.ToString();
+            int selected = entriesFindIndex(chosenEntry);
+
+            //Find if both entries are on the same date.
+            DateTime selectedDate = em.entries[selected].date;
+            DateTime previousDate = em.entries[selected - 1].date;
+            int diff = DateTime.Compare(selectedDate, previousDate);
+
+            try
+            {
+                // If the date is not the same, cannot move
+                if (diff != 0)
+                {
+                    MessageBox.Show("Cannot move the entry to a different date. If you want to " +
+                        "change the date please edit the selected entry." + " " + 
+                        "selected date: " + selectedDate + " & previous date: " + previousDate);
+                    return;
+                }
+                else
+                {
+                    EntriesModel hold = em.entries[selected];
+
+                    em.entries[selected] = em.entries[selected - 1];
+                    em.entries[selected - 1] = hold;
+                }
+            } catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+            
+
+            //Display the new list, on the selected date.
+            displayEntries(selectedDate);
+            dateTimeBox.Value = selectedDate;
+            //MessageBox.Show(entriesBox.SelectedItem.ToString() + " " + em.entries[selected].description);
         }
 
-        //Move the selected entry downwards.
+        //Move the selected entry downwards/later.
         private void downButton_Click(object sender, EventArgs e)
         {
+            //If nothing is selected, tell the user and return.
             if (entriesBox.SelectedIndex < 0)
             {
                 MessageBox.Show("Please select an entry to move downwards");
                 return;
             }
+            //If there is no room left to move the entry down.
+            if (entriesBox.SelectedIndex == (em.entries.Count - 1)){
+                MessageBox.Show("Cannot move last entry further down the list.");
+                return;
+            }
+
+            // Get the correct index of the selected item.
+            string chosenEntry = entriesBox.SelectedItem.ToString();
+            int selected = entriesFindIndex(chosenEntry);
+
+            //Find if both entries are on the same date.
+            DateTime selectedDate = em.entries[selected].date;
+            DateTime nextDate = em.entries[selected + 1].date;
+            int diff = DateTime.Compare(selectedDate, nextDate);
+
+            try
+            {
+                // If the date is not the same, cannot move
+                if (diff != 0)
+                {
+                    MessageBox.Show("Cannot move the entry to a different date. If you want to " +
+                        "change the date please edit the selected entry." + " " +
+                        "selected date: " + selectedDate + " & next date: " + nextDate);
+                    return;
+                }
+                else
+                {
+                    EntriesModel hold = em.entries[selected];
+
+                    em.entries[selected] = em.entries[selected + 1];
+                    em.entries[selected + 1] = hold;
+                }
+            } catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+            
+
+            //Display the new list, on the selected date.
+            displayEntries(selectedDate);
+            dateTimeBox.Value = selectedDate;
+            //MessageBox.Show(entriesBox.SelectedItem.ToString() + " " + em.entries[selected].description);
+
         }
     }
 }
