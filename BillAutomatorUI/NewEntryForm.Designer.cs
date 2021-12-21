@@ -44,6 +44,7 @@
             this.noChargeCheckBox = new System.Windows.Forms.CheckBox();
             this.createEntryButton = new System.Windows.Forms.Button();
             this.cancelEntryButton = new System.Windows.Forms.Button();
+            this.turnOffHoursCheckBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.hoursInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gstInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.totalInput)).BeginInit();
@@ -223,12 +224,23 @@
             this.cancelEntryButton.UseVisualStyleBackColor = true;
             this.cancelEntryButton.Click += new System.EventHandler(this.cancelEntryButton_Click);
             // 
+            // turnOffHoursCheckBox
+            // 
+            this.turnOffHoursCheckBox.AutoSize = true;
+            this.turnOffHoursCheckBox.Location = new System.Drawing.Point(24, 144);
+            this.turnOffHoursCheckBox.Name = "turnOffHoursCheckBox";
+            this.turnOffHoursCheckBox.Size = new System.Drawing.Size(135, 64);
+            this.turnOffHoursCheckBox.TabIndex = 29;
+            this.turnOffHoursCheckBox.Text = "Turn off \r\nAuto hours";
+            this.turnOffHoursCheckBox.UseVisualStyleBackColor = true;
+            // 
             // NewEntryForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 30F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(915, 405);
+            this.Controls.Add(this.turnOffHoursCheckBox);
             this.Controls.Add(this.cancelEntryButton);
             this.Controls.Add(this.createEntryButton);
             this.Controls.Add(this.noChargeCheckBox);
@@ -274,5 +286,6 @@
         private System.Windows.Forms.CheckBox noChargeCheckBox;
         private System.Windows.Forms.Button createEntryButton;
         private System.Windows.Forms.Button cancelEntryButton;
+        private System.Windows.Forms.CheckBox turnOffHoursCheckBox;
     }
 }

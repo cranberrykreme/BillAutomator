@@ -35,8 +35,17 @@ namespace BillAutomatorUI
 
         private void saveCloseButton_Click(object sender, EventArgs e)
         {
+            try
+            {
+                Console.WriteLine(doc.Path);
+            } catch (Exception ex)
+            {
+                MessageBox.Show("The word document is no longer open, so your work cannot be saved, please close and re-open the application");
+            }
+            
             if(doc == null)
             {
+                MessageBox.Show("There is no word document open/connected");
                 this.Close();
                 return;
             }
@@ -98,10 +107,11 @@ namespace BillAutomatorUI
                 for (int i = 0; i < em.entries.Count; i++)
                 {
                     int index = i + 2; //As the first entry will be on the second row of the table, two higher than the index in the list.
-                    if (index > numRows)
+                    if (index > numRows - 2)
                     {
-                        object oMissing = System.Reflection.Missing.Value;
-                        rows.Add(ref oMissing);
+                        //For the entries we must always add only the second last row.
+                        Console.WriteLine(rows.Count);
+                        rows.Add(rows[rows.Count - 1]);
                         numRows++;
                     }
 
@@ -129,8 +139,6 @@ namespace BillAutomatorUI
                             rows[index].Cells[5].Range.Text = "$" + em.entries[i].amount.ToString();
                         }
                     }
-                    
-
                     finalIndex = index;
                 }
                 //Add one more index to finalIndex, so it doesn't delete the final entry.
@@ -171,6 +179,7 @@ namespace BillAutomatorUI
                 //doc.Save();
                 //doc.Close();
 
+                //TODO: update the summary amount in the final row upon completion.
             } catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
@@ -197,7 +206,7 @@ namespace BillAutomatorUI
             s.hourlyRates = unknownRate;
             s.firstName = "Unknown";
             s.lastName = "Solicitor/Worker";
-            s.initials = "??";
+            s.initials = "xx";
             s.dateOfAdmission = "";
 
             em.solicitor.Add(s);
@@ -528,6 +537,17 @@ namespace BillAutomatorUI
         public void setBillModel(BillModel aEm)
         {
             em = aEm;
+            try
+            {
+                Console.WriteLine(doc.Path);
+            }
+            catch
+            {
+                MessageBox.Show("There is no open document, so your work will not be saved." +
+                " Please close this window and open a new document.");
+                return;
+            }
+            
             clientNameLabel.Text = clientName;
             clientNameLabel.Font = new System.Drawing.Font(clientNameLabel.Font, FontStyle.Bold);
             displayEntries();

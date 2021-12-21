@@ -36,6 +36,7 @@ namespace BillAutomatorUI
             {
                 solicitorDropDown.Items.Add(sm.firstName + " " + sm.lastName);
             });
+            descriptionTextBox.Text = " – 0.0 hours";
         }
 
         // Set up the new entry form, if it is editing an entry that already exists.
@@ -128,7 +129,7 @@ namespace BillAutomatorUI
         private void createEntryButton_Click(object sender, EventArgs e)
         {
             EntriesModel ent = new EntriesModel();
-
+            updateDescription();
             //Find all of the relevant peices of data.
             try
             {
@@ -233,14 +234,52 @@ namespace BillAutomatorUI
         /// <param name="e"></param>
         private void hoursInput_valueChanged(object sender, EventArgs e)
         {
-            if (hourlyRate > 0 && hoursInput.Value > 0)
+            //Work on automatically changing the total amount.
+            if (hourlyRate > 0 && hoursInput.Value >= 0)
             {
                 double timeSpent = Decimal.ToDouble(hoursInput.Value);
                 totalInput.Value = Convert.ToDecimal(hourlyRate * timeSpent);
                 gstInput.Value = totalInput.Value / 10;
             }
+            if (!String.IsNullOrEmpty(descriptionTextBox.Text) && !turnOffHoursCheckBox.Checked)
+            {
+                try
+                {
+                    //Work on automatically changing the number of hours in the description
+                    updateDescription();
+                    string[] descriptions = descriptionTextBox.Text.Split('–');
+                    string hours = descriptions[descriptions.Length - 1];
+                    string[] splitHours = hours.Split(' ');
+
+                    splitHours = splitHours.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                    double amountHours = Decimal.ToDouble(hoursInput.Value);
+                    string time = amountHours.ToString();
+
+                    splitHours[0] = time;
+                    hours = String.Join(" ", splitHours);
+                    hours = " " + hours;
+                    descriptions[descriptions.Length - 1] = hours;
+
+                    string desc = String.Join("–", descriptions);
+
+                    descriptionTextBox.Text = desc;
+                } catch
+                {
+                    MessageBox.Show("Please have the description box in the format \"... - x.x hours ...\"");
+                }
+
+            }
+
+
         }
 
+        /// <summary>
+        /// Changes all short hyphens into long hypens in the description box (where gramatically correct).
+        /// </summary>
+        private void updateDescription()
+        {
+            descriptionTextBox.Text = descriptionTextBox.Text.Replace(" - ", " – ");
+        }
         /// <summary>
         /// Handles when the solictors drop down menu has been changed.
         /// Rather when the chosen solicitor has been changed.
