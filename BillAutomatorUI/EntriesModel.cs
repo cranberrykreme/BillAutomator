@@ -49,6 +49,12 @@ namespace BillAutomatorUI
             /// work done in this entry.
             /// </summary>
             public double GST { get; set; }
+
+            /// <summary>
+            /// Represents the percentage amount that is claimed,
+            /// compared to the total amount owed for the hours * hourly rate.
+            /// </summary>
+            public int percentage { get; set; }
     }
 }
 

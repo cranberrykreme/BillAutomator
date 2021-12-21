@@ -78,7 +78,7 @@ namespace BillAutomatorUI
         {
             if(editing == true)
             { //To run if a profile is being edited
-
+                double prevRate = solicitor.hourlyRates[0];
                 //Find the correct index of the solicitor we are looking for.
                 int index = em.solicitor.FindIndex(s => s == solicitor);
 
@@ -100,7 +100,6 @@ namespace BillAutomatorUI
                     solicitor.hourlyRates[0] = Decimal.ToDouble(hourlyRateInput.Value);
                 }
                 
-                
                 //If nothing has been selected, print out an error message.
                 if(index != -1)
                 {
@@ -110,7 +109,16 @@ namespace BillAutomatorUI
                 {
                     MessageBox.Show("Cannot find solicitor to replace");
                 }
-                
+                double newRate = em.solicitor[index].hourlyRates[0];
+
+                //Change the relevant entries if the hourly rate has been changed
+                if (prevRate != newRate)
+                {
+                    em.entries.ForEach(delegate (EntriesModel entry)
+                    {
+                        entry.amount = entry.hours * entry.solicitor.hourlyRates[0] * entry.percentage;
+                    });
+                }
             } else
             {//To be run if a new profile is being created.
                 solicitor = new SolicitorsModel();

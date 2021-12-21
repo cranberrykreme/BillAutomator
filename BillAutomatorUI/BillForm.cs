@@ -417,6 +417,32 @@ namespace BillAutomatorUI
                                 Console.WriteLine("Input hours is: " + hours + " Length of entry is: " + descriptions.Length);
                                 entries.hours = Convert.ToDouble(hours); //Add the hours to the entry
 
+                                //Get the percentage of the entry that is claimed.
+                                string getPercent = descriptions[descriptions.Length - 1];
+                                if (getPercent.Contains('%'))
+                                {
+                                    string[] percentages = getPercent.Split('%');
+                                    string per = percentages[0];
+                                    percentages = per.Split('(');
+                                    per = percentages[percentages.Length - 1];
+
+                                    int percentageClaimed = 100;
+                                    try
+                                    {
+                                        percentageClaimed = Int32.Parse(per);
+                                    } catch (Exception ex)
+                                    {
+                                        Console.WriteLine(ex);
+                                    }
+
+                                    entries.percentage = percentageClaimed;
+                                    Console.WriteLine("The % claimed is: " + entries.percentage);
+                                }
+                                else
+                                {
+                                    entries.percentage = 100;
+                                }
+
                             }
                             catch (Exception ex)
                             {
@@ -789,6 +815,19 @@ namespace BillAutomatorUI
             
             //MessageBox.Show(entriesBox.SelectedItem.ToString() + " " + em.entries[selected].description);
 
+        }
+
+        private void entriesBox_doubleClick(object sender, EventArgs e)
+        {
+            if(entriesBox.SelectedIndex > -1)
+            {
+                string chosenEntry = entriesBox.SelectedItem.ToString();
+                int selected = entriesFindIndex(chosenEntry);
+
+                DateTime date = em.entries[selected].date;
+
+                displayEntries(date);
+            }
         }
     }
 }

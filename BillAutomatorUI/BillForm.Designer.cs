@@ -138,6 +138,7 @@
             this.entriesBox.Name = "entriesBox";
             this.entriesBox.Size = new System.Drawing.Size(734, 334);
             this.entriesBox.TabIndex = 8;
+            this.entriesBox.DoubleClick += new System.EventHandler(this.entriesBox_doubleClick);
             // 
             // deleteSelectedButton
             // 
