@@ -41,6 +41,7 @@ namespace BillAutomatorUI
             firstNameTextBox.Text = solicitor.firstName;
             lastNameTextBox.Text = solicitor.lastName;
             initialsTextBox.Text = solicitor.initials;
+            doaTextBox.Text = solicitor.dateOfAdmission;
             try
             {
                 hourlyRateInput.Value = Convert.ToDecimal(solicitor.hourlyRates[0]);
@@ -95,7 +96,10 @@ namespace BillAutomatorUI
                 {
                     solicitor.initials = initialsTextBox.Text;
                 }
-                if(hourlyRateInput.Value != 0)
+
+                solicitor.dateOfAdmission = doaTextBox.Text; //Set the doa to be empty string if textbox is empty
+
+                if (hourlyRateInput.Value != 0)
                 {
                     solicitor.hourlyRates[0] = Decimal.ToDouble(hourlyRateInput.Value);
                 }
@@ -116,7 +120,7 @@ namespace BillAutomatorUI
                 {
                     em.entries.ForEach(delegate (EntriesModel entry)
                     {
-                        entry.amount = entry.hours * entry.solicitor.hourlyRates[0] * entry.percentage;
+                        entry.amount = entry.hours * entry.solicitor.hourlyRates[0] * (entry.percentage / 100.00);
                     });
                 }
             } else
@@ -149,6 +153,8 @@ namespace BillAutomatorUI
                 {
                     info = false;
                 }
+
+                solicitor.dateOfAdmission = doaTextBox.Text; //Set the doa to be empty string if textbox is empty
 
                 if (hourlyRateInput.Value != 0)
                 {

@@ -45,9 +45,12 @@
             this.createEntryButton = new System.Windows.Forms.Button();
             this.cancelEntryButton = new System.Windows.Forms.Button();
             this.turnOffHoursCheckBox = new System.Windows.Forms.CheckBox();
+            this.percentageLabel = new System.Windows.Forms.Label();
+            this.percentageClaimedTextBox = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.hoursInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gstInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.totalInput)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.percentageClaimedTextBox)).BeginInit();
             this.SuspendLayout();
             // 
             // dateTimeBox
@@ -229,10 +232,34 @@
             this.turnOffHoursCheckBox.AutoSize = true;
             this.turnOffHoursCheckBox.Location = new System.Drawing.Point(24, 144);
             this.turnOffHoursCheckBox.Name = "turnOffHoursCheckBox";
-            this.turnOffHoursCheckBox.Size = new System.Drawing.Size(135, 64);
+            this.turnOffHoursCheckBox.Size = new System.Drawing.Size(141, 94);
             this.turnOffHoursCheckBox.TabIndex = 29;
-            this.turnOffHoursCheckBox.Text = "Turn off \r\nAuto hours";
+            this.turnOffHoursCheckBox.Text = "Turn off \r\nAuto hours \r\nand %";
             this.turnOffHoursCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // percentageLabel
+            // 
+            this.percentageLabel.AutoSize = true;
+            this.percentageLabel.Font = new System.Drawing.Font("Segoe UI Light", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.percentageLabel.Location = new System.Drawing.Point(609, 23);
+            this.percentageLabel.Name = "percentageLabel";
+            this.percentageLabel.Size = new System.Drawing.Size(164, 45);
+            this.percentageLabel.TabIndex = 30;
+            this.percentageLabel.Text = "% Claimed";
+            // 
+            // percentageClaimedTextBox
+            // 
+            this.percentageClaimedTextBox.DecimalPlaces = 2;
+            this.percentageClaimedTextBox.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            131072});
+            this.percentageClaimedTextBox.Location = new System.Drawing.Point(779, 33);
+            this.percentageClaimedTextBox.Name = "percentageClaimedTextBox";
+            this.percentageClaimedTextBox.Size = new System.Drawing.Size(120, 35);
+            this.percentageClaimedTextBox.TabIndex = 31;
+            this.percentageClaimedTextBox.ValueChanged += new System.EventHandler(this.percentageClaimedTextBox_ValueChanged);
             // 
             // NewEntryForm
             // 
@@ -240,6 +267,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(915, 405);
+            this.Controls.Add(this.percentageClaimedTextBox);
+            this.Controls.Add(this.percentageLabel);
             this.Controls.Add(this.turnOffHoursCheckBox);
             this.Controls.Add(this.cancelEntryButton);
             this.Controls.Add(this.createEntryButton);
@@ -264,6 +293,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.hoursInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gstInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.totalInput)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.percentageClaimedTextBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -287,5 +317,7 @@
         private System.Windows.Forms.Button createEntryButton;
         private System.Windows.Forms.Button cancelEntryButton;
         private System.Windows.Forms.CheckBox turnOffHoursCheckBox;
+        private System.Windows.Forms.Label percentageLabel;
+        private System.Windows.Forms.NumericUpDown percentageClaimedTextBox;
     }
 }

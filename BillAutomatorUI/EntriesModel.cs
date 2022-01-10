@@ -54,7 +54,7 @@ namespace BillAutomatorUI
             /// Represents the percentage amount that is claimed,
             /// compared to the total amount owed for the hours * hourly rate.
             /// </summary>
-            public int percentage { get; set; }
+            public double percentage { get; set; }
     }
 }
 

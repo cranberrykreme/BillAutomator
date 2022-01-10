@@ -36,6 +36,7 @@ namespace BillAutomatorUI
             {
                 solicitorDropDown.Items.Add(sm.firstName + " " + sm.lastName);
             });
+            percentageClaimedTextBox.Value = 100;
             descriptionTextBox.Text = " – 0.0 hours";
         }
 
@@ -68,6 +69,8 @@ namespace BillAutomatorUI
             dateTimeBox.Value = existingEntry.date;
             descriptionTextBox.Text = existingEntry.description;
             hoursInput.Value = Convert.ToDecimal(existingEntry.hours);
+            percentageClaimedTextBox.Value = Convert.ToDecimal(existingEntry.percentage);
+
             if(indexOfSol > -1)
             {
                 solicitorDropDown.SelectedIndex = indexOfSol;
@@ -186,6 +189,16 @@ namespace BillAutomatorUI
                     return;
                 }
 
+                // Set the percentage claimed.
+                try
+                {
+                    decimal perc = percentageClaimedTextBox.Value;
+                    ent.percentage = Decimal.ToDouble(perc);
+                } catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+
             }
             catch (Exception ex)
             {
@@ -235,10 +248,12 @@ namespace BillAutomatorUI
         private void hoursInput_valueChanged(object sender, EventArgs e)
         {
             //Work on automatically changing the total amount.
-            if (hourlyRate > 0 && hoursInput.Value >= 0)
+            if (hourlyRate > 0 && hoursInput.Value >= 0 && percentageClaimedTextBox.Value > 0)
             {
                 double timeSpent = Decimal.ToDouble(hoursInput.Value);
-                totalInput.Value = Convert.ToDecimal(hourlyRate * timeSpent);
+                double perc = Decimal.ToDouble(percentageClaimedTextBox.Value);
+                perc = perc / 100.00;
+                totalInput.Value = Convert.ToDecimal(hourlyRate * timeSpent * perc);
                 gstInput.Value = totalInput.Value / 10;
             }
             if (!String.IsNullOrEmpty(descriptionTextBox.Text) && !turnOffHoursCheckBox.Checked)
@@ -321,10 +336,111 @@ namespace BillAutomatorUI
                 MessageBox.Show("Could not find chosen solicitor" + " " + firstName + secondName);
                 return;
             }
-            if(hourlyRate > 0 && hoursInput.Value > 0)
+            if(hourlyRate > 0 && hoursInput.Value > 0 && percentageClaimedTextBox.Value > 0)
             {
                 double timeSpent = Decimal.ToDouble(hoursInput.Value);
-                totalInput.Value = Convert.ToDecimal(hourlyRate * timeSpent);
+                double perc = Decimal.ToDouble(percentageClaimedTextBox.Value);
+                perc = perc / 100.00;
+                totalInput.Value = Convert.ToDecimal(hourlyRate * timeSpent * perc);
+                gstInput.Value = totalInput.Value / 10;
+            }
+        }
+
+        /// <summary>
+        /// Automatically update the % Claimed in the description
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void percentageClaimedTextBox_ValueChanged(object sender, EventArgs e)
+        {
+
+            if (!String.IsNullOrEmpty(descriptionTextBox.Text) && !turnOffHoursCheckBox.Checked && percentageClaimedTextBox.Value < 100)
+            {
+                try
+                {
+                    //work on automatically updating the % time claimed.
+                    updateDescription();
+
+                    string[] descriptions = descriptionTextBox.Text.Split('–'); //Split the entire description
+
+                    //Get the percentage of the entry that is claimed.
+                    string getPercent = descriptions[descriptions.Length - 1];
+                    if (getPercent.Contains('%'))
+                    {
+                        string[] getPerc = getPercent.Split('%');
+                        string per = getPerc[0];
+                        string[] percentages = per.Split('(');
+                        per = percentages[percentages.Length - 1];
+
+                        // Get the new percentage and add it to the existing description.
+                        try
+                        {
+                            double percentageClaimed = Decimal.ToDouble(percentageClaimedTextBox.Value);
+                            per = percentageClaimed.ToString();
+                            //MessageBox.Show(per);
+
+                            percentages[percentages.Length - 1] = per;
+                            per = String.Join("(", percentages);
+                            //MessageBox.Show(per);
+
+                            getPerc[0] = per;
+                            getPercent = String.Join("%", getPerc);
+                            //MessageBox.Show(getPercent);
+
+                            descriptions[descriptions.Length - 1] = getPercent;
+
+                            string toEnter = String.Join("–", descriptions);
+
+                            descriptionTextBox.Text = toEnter;
+
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex);
+                        }
+                    } else
+                    {
+                        string desc = descriptionTextBox.Text;
+                        string extra = " (" + percentageClaimedTextBox.Value + "% claimed)";
+
+                        descriptionTextBox.Text = desc + extra;
+                    }
+
+
+
+                } catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+
+            } else if(percentageClaimedTextBox.Value == 100)
+            {
+                try
+                {
+                    string description = descriptionTextBox.Text;
+
+                    string[] desc = description.Split('(');
+
+                    desc[desc.Length - 1] = "";
+
+                    description = String.Join("(", desc);
+                    description = description.Substring(0, description.Length - 2);
+
+                    descriptionTextBox.Text = description;
+
+                    Console.WriteLine("Nothing should show in the description");
+                } catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+            }
+            // Automatically change the total value and GST.
+            if (hourlyRate > 0 && hoursInput.Value > 0 && percentageClaimedTextBox.Value > 0)
+            {
+                double timeSpent = Decimal.ToDouble(hoursInput.Value);
+                double perc = Decimal.ToDouble(percentageClaimedTextBox.Value);
+                perc = perc / 100.00;
+                totalInput.Value = Convert.ToDecimal(hourlyRate * timeSpent * perc);
                 gstInput.Value = totalInput.Value / 10;
             }
         }

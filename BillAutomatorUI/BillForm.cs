@@ -119,11 +119,17 @@ namespace BillAutomatorUI
                     rows[index].Cells[2].Range.Text = em.entries[i].date.ToString("dd.MM.yyyy");    //Add the entries' date.
                     rows[index].Cells[3].Range.Text = em.entries[i].solicitor.initials;             //Add the solicitors initials
                     rows[index].Cells[4].Range.Text = em.entries[i].description;                    //Add the entries' description.
+                    
                     //Add the cost of the entry.
                     double cost = em.entries[i].amount;
+                    string[] amt = cost.ToString().Split('.');
+
+                    double decimalPt = Convert.ToDouble(amt[amt.Length - 1]);
                     if(cost%1 == 0)
                     {
+                        Console.WriteLine(cost);
                         rows[index].Cells[5].Range.Text = "$" + em.entries[i].amount.ToString() + ".00";
+                        Console.WriteLine(rows[index].Cells[5].Range.Text);
                     }
                     else
                     {
@@ -214,8 +220,10 @@ namespace BillAutomatorUI
             doc = aDoc;
             try
             {
+                // FOR THE SOLICITORS.
                 for (int tab = 2; tab < 3; tab++)
                 {
+
                     Word.Table table = doc.Tables[tab];
                     Rows rows = table.Rows;
                     Columns cols = table.Columns;
@@ -223,6 +231,7 @@ namespace BillAutomatorUI
                     {
                         string ftxt = "";
                         SolicitorsModel sol = new SolicitorsModel();
+                        bool isEmpty = true; // To catch if the cells are empty.
                         for (int j = 1; j <= cols.Count; j++)
                         {
                             Cell cell = rows[i].Cells[j];
@@ -251,6 +260,10 @@ namespace BillAutomatorUI
                                         sol.firstName = firstName.Substring(0, firstName.Length - 1);
                                         string lastName = secondName.Replace("", "");
                                         sol.lastName = lastName.Substring(0, lastName.Length - 1);
+                                        if (!String.IsNullOrEmpty(sol.firstName))
+                                        {
+                                            isEmpty = false;
+                                        }
                                     } catch
                                     {
                                         Console.WriteLine("First and second name");
@@ -263,6 +276,10 @@ namespace BillAutomatorUI
                                     {
                                         string initials = txt.Replace("", "");
                                         sol.initials = initials.Substring(0,initials.Length - 1);
+                                        if (!String.IsNullOrEmpty(sol.initials))
+                                        {
+                                            isEmpty = false;
+                                        }
                                     }
                                     catch
                                     {
@@ -276,6 +293,10 @@ namespace BillAutomatorUI
                                     {
                                         string doa = txt.Replace("", "");
                                         sol.dateOfAdmission = doa.Substring(0, doa.Length - 1);
+                                        if (!String.IsNullOrEmpty(sol.dateOfAdmission))
+                                        {
+                                            isEmpty = false;
+                                        }
                                     }
                                     catch
                                     {
@@ -309,7 +330,11 @@ namespace BillAutomatorUI
 
                             }
                         }
-                        em.solicitor.Add(sol);
+                        if (!isEmpty)
+                        {
+                            em.solicitor.Add(sol);
+                        }
+                        
                         //Console.WriteLine(ftxt + "\n");
                         
                     }
@@ -331,6 +356,7 @@ namespace BillAutomatorUI
                     });
                 });
                 
+                // FOR THE ENTRIES.
                 Word.Table tabs = doc.Tables[3];
                 Rows row = tabs.Rows;
                 Columns col = tabs.Columns;
@@ -339,6 +365,7 @@ namespace BillAutomatorUI
                 {
                     string ftxt = "";
                     EntriesModel entries = new EntriesModel();
+                    bool isEmpty = true;
                     //iterate over columns
                     for (int j = 2; j <= col.Count; j++)
                     {
@@ -354,6 +381,10 @@ namespace BillAutomatorUI
                                 string entryDate = txt.Replace("", "");
                                 entryDate = entryDate.Substring(0, entryDate.Length - 1);
                                 Console.WriteLine("The date in question: " + entryDate);
+                                if (!String.IsNullOrEmpty(entryDate))
+                                {
+                                    isEmpty = false;
+                                }
                                 var parsedDate = DateTime.Parse(entryDate);
                                 parsedDate = parsedDate.Date;
                                 Console.WriteLine(parsedDate);
@@ -382,6 +413,7 @@ namespace BillAutomatorUI
                                     {
                                         found = true;
                                         entries.solicitor = hold;
+                                        isEmpty = false; //update that the cell is not empty.
                                     }
                                     index++;
                                 }
@@ -410,6 +442,11 @@ namespace BillAutomatorUI
                                 Console.WriteLine(desc);
                                 entries.description = desc;
 
+                                if (!String.IsNullOrEmpty(entries.description))
+                                {
+                                    isEmpty = false;
+                                }
+
                                 string[] descriptions = desc.Split('–'); //Split the entire description
                                 
                                 string[] descHours = descriptions[descriptions.Length - 1].Split(' '); //Split what comes after the hyphen
@@ -426,10 +463,10 @@ namespace BillAutomatorUI
                                     percentages = per.Split('(');
                                     per = percentages[percentages.Length - 1];
 
-                                    int percentageClaimed = 100;
+                                    double percentageClaimed = 100;
                                     try
                                     {
-                                        percentageClaimed = Int32.Parse(per);
+                                        percentageClaimed = Convert.ToDouble(per);
                                     } catch (Exception ex)
                                     {
                                         Console.WriteLine(ex);
@@ -456,6 +493,12 @@ namespace BillAutomatorUI
                             {
                                 string price = txt.Replace("", "");
                                 price = price.Substring(0, price.Length - 1);
+
+                                if (!String.IsNullOrEmpty(price))
+                                {
+                                    isEmpty = false;
+                                }
+
                                 double amount = Convert.ToDouble(price);
                                 Console.WriteLine("Value of the entry: " + amount);
                                 Console.WriteLine("Actual Value: " + price);
@@ -467,7 +510,13 @@ namespace BillAutomatorUI
                             }
                         }
                     }
-                    em.entries.Add(entries); // Add the current row to the list of entries
+
+                    //If at lease one of the cells in the row is not empty.
+                    if (!isEmpty)
+                    {
+                        em.entries.Add(entries); // Add the current row to the list of entries
+                    }
+                    
                 }
             }
             catch (Exception ex)

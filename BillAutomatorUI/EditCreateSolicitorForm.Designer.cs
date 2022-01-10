@@ -37,7 +37,6 @@
             this.initialsLabel = new System.Windows.Forms.Label();
             this.hourlyRateInput = new System.Windows.Forms.NumericUpDown();
             this.hourlyRateLabel = new System.Windows.Forms.Label();
-            this.dateOfAdmissionTimeBox = new System.Windows.Forms.DateTimePicker();
             this.dateOfAdmissionLabel = new System.Windows.Forms.Label();
             this.periodStartDate = new System.Windows.Forms.DateTimePicker();
             this.fromPeriodLabel = new System.Windows.Forms.Label();
@@ -51,6 +50,7 @@
             this.cancelButton = new System.Windows.Forms.Button();
             this.saveButton = new System.Windows.Forms.Button();
             this.noChangeInRateCheckBox = new System.Windows.Forms.CheckBox();
+            this.doaTextBox = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.hourlyRateInput)).BeginInit();
             this.SuspendLayout();
             // 
@@ -129,16 +129,6 @@
             this.hourlyRateLabel.Size = new System.Drawing.Size(179, 45);
             this.hourlyRateLabel.TabIndex = 19;
             this.hourlyRateLabel.Text = "Hourly Rate";
-            // 
-            // dateOfAdmissionTimeBox
-            // 
-            this.dateOfAdmissionTimeBox.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dateOfAdmissionTimeBox.Location = new System.Drawing.Point(190, 203);
-            this.dateOfAdmissionTimeBox.MaxDate = new System.DateTime(2050, 12, 31, 0, 0, 0, 0);
-            this.dateOfAdmissionTimeBox.MinDate = new System.DateTime(1900, 1, 1, 0, 0, 0, 0);
-            this.dateOfAdmissionTimeBox.Name = "dateOfAdmissionTimeBox";
-            this.dateOfAdmissionTimeBox.Size = new System.Drawing.Size(145, 35);
-            this.dateOfAdmissionTimeBox.TabIndex = 22;
             // 
             // dateOfAdmissionLabel
             // 
@@ -280,12 +270,20 @@
             this.noChangeInRateCheckBox.Text = "No Change in Rate";
             this.noChangeInRateCheckBox.UseVisualStyleBackColor = true;
             // 
+            // doaTextBox
+            // 
+            this.doaTextBox.Location = new System.Drawing.Point(190, 204);
+            this.doaTextBox.Name = "doaTextBox";
+            this.doaTextBox.Size = new System.Drawing.Size(309, 35);
+            this.doaTextBox.TabIndex = 43;
+            // 
             // EditCreateSolicitorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 30F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(909, 378);
+            this.Controls.Add(this.doaTextBox);
             this.Controls.Add(this.noChangeInRateCheckBox);
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.cancelButton);
@@ -298,7 +296,6 @@
             this.Controls.Add(this.periodStartLabel);
             this.Controls.Add(this.periodStartDate);
             this.Controls.Add(this.fromPeriodLabel);
-            this.Controls.Add(this.dateOfAdmissionTimeBox);
             this.Controls.Add(this.dateOfAdmissionLabel);
             this.Controls.Add(this.hourlyRateInput);
             this.Controls.Add(this.hourlyRateLabel);
@@ -329,7 +326,6 @@
         private System.Windows.Forms.Label initialsLabel;
         private System.Windows.Forms.NumericUpDown hourlyRateInput;
         private System.Windows.Forms.Label hourlyRateLabel;
-        private System.Windows.Forms.DateTimePicker dateOfAdmissionTimeBox;
         private System.Windows.Forms.Label dateOfAdmissionLabel;
         private System.Windows.Forms.DateTimePicker periodStartDate;
         private System.Windows.Forms.Label fromPeriodLabel;
@@ -343,5 +339,6 @@
         private System.Windows.Forms.Button cancelButton;
         private System.Windows.Forms.Button saveButton;
         private System.Windows.Forms.CheckBox noChangeInRateCheckBox;
+        private System.Windows.Forms.TextBox doaTextBox;
     }
 }
