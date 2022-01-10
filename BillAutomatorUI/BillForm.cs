@@ -27,9 +27,8 @@ namespace BillAutomatorUI
         private static Document doc; //will always have the same value
         private static string clientName; //Will store the name of the client
         private BillModel em;
-        private static bool isSolClient; //Will store whether the file is p/p or s/l
-        private static int solTable;
-        private static int entTable;
+        private static int solTable; //Stores the table number of the solicitor table
+        private static int entTable; //Stores the table number of the entries table
 
         public BillForm()
         {
@@ -45,6 +44,7 @@ namespace BillAutomatorUI
             {
                 Console.WriteLine(ex);
                 MessageBox.Show("The word document is no longer open, so your work cannot be saved, please close and re-open the application");
+                return;
             }
             
             if(doc == null)
@@ -88,7 +88,7 @@ namespace BillAutomatorUI
                 //Add one more index to finalIndex, so it doesn't delete the final entry.
                 finalIndex++;
 
-                //Delete all unused entries.
+                //Delete all unused rows.
                 while(finalIndex <= numRows)
                 {
                     try
@@ -370,19 +370,23 @@ namespace BillAutomatorUI
                 Console.WriteLine(em.solicitor);
                 Console.WriteLine(em.solicitor.Count);
 
-
-                em.solicitor.ForEach(delegate (SolicitorsModel sm)
+                // For debugging purposes, will cause error if solicitor list is empty
+                if(em.solicitor.Count > 0)
                 {
-                    Console.WriteLine("Next solicitor in list: ");
-                    Console.WriteLine(sm.initials);
-                    Console.WriteLine(sm.initials.Length);
-                    Console.WriteLine(sm.dateOfAdmission);
-                    Console.WriteLine(sm.lastName);
-                    sm.hourlyRates.ForEach(delegate (double hr)
+                    em.solicitor.ForEach(delegate (SolicitorsModel sm)
                     {
-                        Console.WriteLine(hr);
+                        Console.WriteLine("Next solicitor in list: ");
+                        Console.WriteLine(sm.initials);
+                        Console.WriteLine(sm.initials.Length);
+                        Console.WriteLine(sm.dateOfAdmission);
+                        Console.WriteLine(sm.lastName);
+                        sm.hourlyRates.ForEach(delegate (double hr)
+                        {
+                            Console.WriteLine(hr);
+                        });
                     });
-                });
+                }
+
 
 
                 // FOR THE ENTRIES.

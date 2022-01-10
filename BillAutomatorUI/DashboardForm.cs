@@ -32,11 +32,6 @@ namespace BillAutomatorUI
             billTypeDropDown.Items.Add("Party/Party");
         }
 
-        public void viewApp()
-        {
-            this.ShowDialog();
-        }
-
         private void openFileButton_Click(object sender, EventArgs e)
         {
             if (String.IsNullOrEmpty(solTableTextBox.Text) || String.IsNullOrEmpty(entriesTableTextBox.Text))
@@ -45,27 +40,79 @@ namespace BillAutomatorUI
                 return;
             }
 
+            bool newDate = false;
+            string newFileName = "No";
+
             OpenFileDialog ofd = new OpenFileDialog();
                 ofd.Title = "Open Draft Bill";
                 ofd.Filter = "Word Document|*.docx";
                 if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    //MessageBox.Show(ofd.FileName); //Or safeFileName
-                    fileName = ofd.FileName;
+                //MessageBox.Show(ofd.FileName); //Or safeFileName
+                fileName = ofd.FileName;
 
-                    string days = DateTime.Now.ToString("dd");
-                    string months = DateTime.Now.ToString("MM");
-                    string year = DateTime.Now.ToString("yyyy");
+                string days = DateTime.Now.ToString("dd");
+                string months = DateTime.Now.ToString("MM");
+                string years = DateTime.Now.ToString("yyyy");
 
-                    //MessageBox.Show(days + months + year);
+                // Get the date listed on the file.
+                string[] names = fileName.Split('\\');
+                string name = names[names.Length - 1];
 
-                    //openFileTextBox.Text = fileName;
+                string[] dates = name.Split('-');
+                string date = dates[0];
+
+                // Get days, months and year.
+                string[] individualDates = date.Split(' ');
+                string fileDays = individualDates[2];
+                string fileMonths = individualDates[1];
+                string fileYears = individualDates[0];
+
+                if(!String.Equals(days,fileDays) || !String.Equals(months, fileMonths) || !String.Equals(years, fileYears))
+                {
+                    //Save a string with the new/updated fileName.
+                    individualDates[0] = years;
+                    individualDates[1] = months;
+                    individualDates[2] = days;
+
+                    date = String.Join(" ", individualDates);
+                    dates[0] = date;
+
+                    name = String.Join("-", dates);
+                    names[names.Length - 1] = name;
+
+                    newFileName = String.Join(@"\", names);
+
+                    newDate = true;
+                }
+
+                //MessageBox.Show(date);
+                //MessageBox.Show(name);
+
+                //MessageBox.Show(newFileName);
 
 
-                    try
+
+                try
                     {
                     Application ap = new Application();
                     Document document = ap.Documents.Open(@fileName);
+
+                    // If new save name, then save the document.
+                    if (newDate && !String.Equals(newFileName,"No"))
+                    {
+                        try
+                        {
+                            document.SaveAs2(@newFileName);
+                            MessageBox.Show("Document saved with new date.");
+                        } catch (Exception ex)
+                        {
+                            MessageBox.Show("Document Could Not be opened and saved with today's date. " + ex.ToString());
+                            return;
+                        }
+                        
+                    }
+
                     ap.Visible = true;
                     //System.Diagnostics.Process.Start(@fileName);
                     //this.Application.Documents.Open(@"C:\Test\NewDocument.docx");
@@ -73,8 +120,6 @@ namespace BillAutomatorUI
                     int solTable = Int32.Parse(solTableTextBox.Text);
                     int entTable = Int32.Parse(entriesTableTextBox.Text);
 
-                    
-                    
 
                     BillForm billForm = new BillForm();
                     billForm.runStartup(document, solTable, entTable);
@@ -83,7 +128,7 @@ namespace BillAutomatorUI
                     }
                     catch (Exception exc)
                     {
-                        Console.WriteLine(exc);
+                        Console.WriteLine("Line 122: " + exc);
                     }
                 
 
