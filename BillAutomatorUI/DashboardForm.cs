@@ -27,6 +27,9 @@ namespace BillAutomatorUI
         public DashboardForm()
         {
             InitializeComponent();
+
+            billTypeDropDown.Items.Add("Solicitor/Client");
+            billTypeDropDown.Items.Add("Party/Party");
         }
 
         public void viewApp()
@@ -35,9 +38,14 @@ namespace BillAutomatorUI
         }
 
         private void openFileButton_Click(object sender, EventArgs e)
-        { 
+        {
+            if (String.IsNullOrEmpty(solTableTextBox.Text) || String.IsNullOrEmpty(entriesTableTextBox.Text))
+            {
+                MessageBox.Show("Please enter the correct numbers into the table input boxes.");
+                return;
+            }
 
-                OpenFileDialog ofd = new OpenFileDialog();
+            OpenFileDialog ofd = new OpenFileDialog();
                 ofd.Title = "Open Draft Bill";
                 ofd.Filter = "Word Document|*.docx";
                 if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -51,7 +59,7 @@ namespace BillAutomatorUI
 
                     //MessageBox.Show(days + months + year);
 
-                    openFileTextBox.Text = fileName;
+                    //openFileTextBox.Text = fileName;
 
 
                     try
@@ -62,8 +70,14 @@ namespace BillAutomatorUI
                     //System.Diagnostics.Process.Start(@fileName);
                     //this.Application.Documents.Open(@"C:\Test\NewDocument.docx");
 
+                    int solTable = Int32.Parse(solTableTextBox.Text);
+                    int entTable = Int32.Parse(entriesTableTextBox.Text);
+
+                    
+                    
+
                     BillForm billForm = new BillForm();
-                    billForm.runStartup(document);
+                    billForm.runStartup(document, solTable, entTable);
                     billForm.Show();
                     //this.Hide();
                     }
@@ -76,5 +90,24 @@ namespace BillAutomatorUI
             }
         }
 
+        private void createFileButton_Click(object sender, EventArgs e)
+        {
+            CreateNewForm newForm = new CreateNewForm();
+            newForm.runStartup();
+            newForm.Show();
+        }
+
+        private void billTypeDropDown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(billTypeDropDown.SelectedIndex == 1) //Party/party
+            {
+                solTableTextBox.Text = "2";
+                entriesTableTextBox.Text = "3";
+            } else // Solicitor/Client
+            {
+                solTableTextBox.Text = "1";
+                entriesTableTextBox.Text = "2";
+            }
+        }
     }
 }

@@ -27,6 +27,9 @@ namespace BillAutomatorUI
         private static Document doc; //will always have the same value
         private static string clientName; //Will store the name of the client
         private BillModel em;
+        private static bool isSolClient; //Will store whether the file is p/p or s/l
+        private static int solTable;
+        private static int entTable;
 
         public BillForm()
         {
@@ -40,6 +43,7 @@ namespace BillAutomatorUI
                 Console.WriteLine(doc.Path);
             } catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 MessageBox.Show("The word document is no longer open, so your work cannot be saved, please close and re-open the application");
             }
             
@@ -50,7 +54,7 @@ namespace BillAutomatorUI
                 return;
             }
             try{//try to close the application
-                Word.Table tbl = doc.Tables[2];
+                Word.Table tbl = doc.Tables[solTable];
                 Rows rows = tbl.Rows;
                 int numRows = rows.Count; //to compare the index of the row to the final index.
                 Columns cols = tbl.Columns;
@@ -74,7 +78,11 @@ namespace BillAutomatorUI
                     rows[index].Cells[1].Range.Text = em.solicitor[i].firstName + " " + em.solicitor[i].lastName;
                     rows[index].Cells[2].Range.Text = em.solicitor[i].initials;
                     rows[index].Cells[3].Range.Text = em.solicitor[i].dateOfAdmission;
-                    rows[index].Cells[4].Range.Text = "$" + em.solicitor[i].hourlyRates[0].ToString() + ".00";
+                    if (cols.Count > 3) //If not a solicitor client bill, add the hourly rate of the solicitor
+                    {
+                        rows[index].Cells[4].Range.Text = "$" + em.solicitor[i].hourlyRates[0].ToString() + ".00";
+                    }
+                    
                     finalIndex = index;
                 }
                 //Add one more index to finalIndex, so it doesn't delete the final entry.
@@ -98,7 +106,7 @@ namespace BillAutomatorUI
 
                 //BILL ENTRIES SECTION.
                 //Enter all of the bill entries into the bill of costs.
-                tbl = doc.Tables[3];
+                tbl = doc.Tables[entTable];
                 rows = tbl.Rows;
                 numRows = rows.Count; //to compare the index of the row to the final index.
                 cols = tbl.Columns;
@@ -189,6 +197,7 @@ namespace BillAutomatorUI
             } catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
+                doc.Close();
             }
             //this.Close();
             MessageBox.Show("All done!");
@@ -199,12 +208,15 @@ namespace BillAutomatorUI
         // existing bill of costs to open up and run. It will parse all
         // of the information from the bill and present it to the
         // user in the style set out in the forms.
-        public void runStartup(Document aDoc)
+        public void runStartup(Document aDoc, int aSolTable, int aEntTable)
         {
             DashboardForm df = new DashboardForm();
             fileLoc = df.fileName;
             em = new BillModel();
             SolicitorsModel s = new SolicitorsModel();
+
+            solTable = aSolTable;
+            entTable = aEntTable;
 
             //Initialise a solicitor's profile for "unknown".
             List<double> unknownRate = new List<double>();
@@ -221,7 +233,7 @@ namespace BillAutomatorUI
             try
             {
                 // FOR THE SOLICITORS.
-                for (int tab = 2; tab < 3; tab++)
+                for (int tab = solTable; tab < solTable + 1; tab++)
                 {
 
                     Word.Table table = doc.Tables[tab];
@@ -239,7 +251,7 @@ namespace BillAutomatorUI
 
                             string txt = r.Text;
                             ftxt = ftxt + " | " + txt;
-                            if (tab == 2)
+                            if (tab == solTable)
                             {
                                 //TODO - what if some of these entries are empty? will it be picked up by the 
                                 // try-catch block?
@@ -327,6 +339,22 @@ namespace BillAutomatorUI
                                     }
                                     
                                 }
+                                //WHAT TO DO FOR HOURLY RATE FOR SOL/CLIENT BILL??
+                                else if (cols.Count < 4)
+                                {
+                                    try
+                                    {
+                                        double hourly = 0.00;
+                                        List<double> rates = new List<double>();
+                                        rates.Add(hourly);
+                                        sol.hourlyRates = rates;
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Console.WriteLine("Hourly Rate");
+                                        Console.WriteLine(ex);
+                                    }
+                                }
 
                             }
                         }
@@ -345,19 +373,20 @@ namespace BillAutomatorUI
 
                 em.solicitor.ForEach(delegate (SolicitorsModel sm)
                 {
-
+                    Console.WriteLine("Next solicitor in list: ");
                     Console.WriteLine(sm.initials);
                     Console.WriteLine(sm.initials.Length);
                     Console.WriteLine(sm.dateOfAdmission);
                     Console.WriteLine(sm.lastName);
                     sm.hourlyRates.ForEach(delegate (double hr)
                     {
-                            Console.WriteLine(hr);
+                        Console.WriteLine(hr);
                     });
                 });
-                
+
+
                 // FOR THE ENTRIES.
-                Word.Table tabs = doc.Tables[3];
+                Word.Table tabs = doc.Tables[entTable];
                 Rows row = tabs.Rows;
                 Columns col = tabs.Columns;
                 //iterate over rows
@@ -522,6 +551,7 @@ namespace BillAutomatorUI
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
+                doc.Close();
             }
 
             displayEntries();

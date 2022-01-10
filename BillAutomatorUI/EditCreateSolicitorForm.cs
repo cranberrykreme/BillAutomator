@@ -121,6 +121,7 @@ namespace BillAutomatorUI
                     em.entries.ForEach(delegate (EntriesModel entry)
                     {
                         entry.amount = entry.hours * entry.solicitor.hourlyRates[0] * (entry.percentage / 100.00);
+                        entry.GST = entry.amount / 10;
                     });
                 }
             } else

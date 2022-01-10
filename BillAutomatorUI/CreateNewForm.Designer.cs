@@ -120,9 +120,6 @@
             // typeBillDropDown
             // 
             this.typeBillDropDown.FormattingEnabled = true;
-            this.typeBillDropDown.Items.AddRange(new object[] {
-            "Party/Party",
-            "Solicitor/Client"});
             this.typeBillDropDown.Location = new System.Drawing.Point(259, 244);
             this.typeBillDropDown.Name = "typeBillDropDown";
             this.typeBillDropDown.Size = new System.Drawing.Size(373, 38);
@@ -140,6 +137,7 @@
             this.createFileButton.TabIndex = 10;
             this.createFileButton.Text = "Create File";
             this.createFileButton.UseVisualStyleBackColor = true;
+            this.createFileButton.Click += new System.EventHandler(this.createFileButton_Click);
             // 
             // returnButton
             // 
