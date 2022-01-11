@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Office.Interop.Word;
 using Word = Microsoft.Office.Interop.Word;
+using Application = Microsoft.Office.Interop.Word.Application;
 //using BillAutomator;
 
 namespace BillAutomatorUI
@@ -25,6 +26,7 @@ namespace BillAutomatorUI
     {
         public string fileLoc;
         private static Document doc; //will always have the same value
+        private static string fileName; //will always have the same value.
         private static string clientName; //Will store the name of the client
         private BillModel em;
         private static int solTable; //Stores the table number of the solicitor table
@@ -219,12 +221,13 @@ namespace BillAutomatorUI
         // existing bill of costs to open up and run. It will parse all
         // of the information from the bill and present it to the
         // user in the style set out in the forms.
-        public void runStartup(Document aDoc, int aSolTable, int aEntTable)
+        public void runStartup(Document aDoc, int aSolTable, int aEntTable, string aFileName)
         {
             DashboardForm df = new DashboardForm();
             fileLoc = df.fileName;
             em = new BillModel();
             SolicitorsModel s = new SolicitorsModel();
+            fileName = aFileName;
 
             solTable = aSolTable;
             entTable = aEntTable;
@@ -1035,6 +1038,28 @@ namespace BillAutomatorUI
                 }
             }
             
+        }
+
+        private void reOpenWordButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Console.WriteLine(doc.Path);
+            }
+            catch
+            {
+                try
+                {
+                    Application ap = new Application();
+                    doc = ap.Documents.Open(fileName);
+                    ap.Visible = true;
+                } catch (Exception exception)
+                {
+                    MessageBox.Show("Cannot re-open word document.");
+                    Console.WriteLine(exception);
+                    return;
+                }
+            }
         }
     }
 }

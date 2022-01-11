@@ -47,6 +47,7 @@
             this.alterPositionLabel = new System.Windows.Forms.Label();
             this.displayAllEntriesButton = new System.Windows.Forms.Button();
             this.editSelectedButton = new System.Windows.Forms.Button();
+            this.reOpenWordButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // clientLabel
@@ -261,12 +262,26 @@
             this.editSelectedButton.UseVisualStyleBackColor = true;
             this.editSelectedButton.Click += new System.EventHandler(this.editSelectedButton_Click);
             // 
+            // reOpenWordButton
+            // 
+            this.reOpenWordButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
+            this.reOpenWordButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+            this.reOpenWordButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.reOpenWordButton.Location = new System.Drawing.Point(27, 510);
+            this.reOpenWordButton.Name = "reOpenWordButton";
+            this.reOpenWordButton.Size = new System.Drawing.Size(234, 52);
+            this.reOpenWordButton.TabIndex = 22;
+            this.reOpenWordButton.Text = "Re-Open Word";
+            this.reOpenWordButton.UseVisualStyleBackColor = true;
+            this.reOpenWordButton.Click += new System.EventHandler(this.reOpenWordButton_Click);
+            // 
             // BillForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 30F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1032, 574);
+            this.Controls.Add(this.reOpenWordButton);
             this.Controls.Add(this.editSelectedButton);
             this.Controls.Add(this.displayAllEntriesButton);
             this.Controls.Add(this.alterPositionLabel);
@@ -316,5 +331,6 @@
         private System.Windows.Forms.Label alterPositionLabel;
         private System.Windows.Forms.Button displayAllEntriesButton;
         private System.Windows.Forms.Button editSelectedButton;
+        private System.Windows.Forms.Button reOpenWordButton;
     }
 }

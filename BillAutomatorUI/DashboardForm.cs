@@ -105,6 +105,7 @@ namespace BillAutomatorUI
                         {
                             document.SaveAs2(@newFileName);
                             MessageBox.Show("Document saved with new date.");
+                            fileName = newFileName;
                         } catch (Exception ex)
                         {
                             MessageBox.Show("Document Could Not be opened and saved with today's date. " + ex.ToString());
@@ -122,7 +123,7 @@ namespace BillAutomatorUI
 
 
                     BillForm billForm = new BillForm();
-                    billForm.runStartup(document, solTable, entTable);
+                    billForm.runStartup(document, solTable, entTable, fileName);
                     billForm.Show();
                     //this.Hide();
                     }
