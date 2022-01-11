@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -103,9 +104,25 @@ namespace BillAutomatorUI
                     {
                         try
                         {
-                            document.SaveAs2(@newFileName);
-                            MessageBox.Show("Document saved with new date.");
-                            fileName = newFileName;
+                            if (!File.Exists(@newFileName))
+                            {
+                                document.SaveAs2(@newFileName);
+                                MessageBox.Show("Document saved with new date.");
+                                fileName = newFileName;
+                            }
+                            else
+                            {
+
+                                if (MessageBox.Show("There exists a bill with today's date, the one you have opened has the date: " +
+                                    fileDays + " " + fileMonths + " " + fileYears + "\n\n" + "Would you Like to continue?", 
+                                    "Open File Confirmation",
+                                MessageBoxButtons.YesNo) == DialogResult.No)
+                                {
+                                    document.Close();
+                                    return;
+                                }
+                            }
+                            
                         } catch (Exception ex)
                         {
                             MessageBox.Show("Document Could Not be opened and saved with today's date. " + ex.ToString());

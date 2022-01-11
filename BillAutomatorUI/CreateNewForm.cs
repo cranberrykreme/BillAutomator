@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -124,6 +125,21 @@ namespace BillAutomatorUI
 
                         string loc = @location + @"\" + year + " " + months + " " + days + " - " + number + " - " + name + " - " + "party party draft bill of costs";
                         //MessageBox.Show(loc);
+
+                        if (File.Exists(loc + ".docx"))
+                        {
+                            if (MessageBox.Show("There already exists a party/party bill with the date: " +
+                                    days + " " + months + " " + year + ", with the name: " +
+                                    name + " and the number: " + number + ". Continuing will overwrite the current file." +
+                                    "\n\n" + "Would you Like to continue?",
+                                    "Open File Confirmation",
+                                MessageBoxButtons.YesNo) == DialogResult.No)
+                            {
+                                doc.Close();
+                                return;
+                            }
+                        }
+
                         doc.SaveAs2(loc);
 
                         //Open new document to edit in the bills form.
@@ -165,6 +181,19 @@ namespace BillAutomatorUI
 
                         string loc = @location + @"\" + year + " " + months + " " + days + " - " + number + " - " + name + " - " + "solicitor client draft bill of costs";
                         //MessageBox.Show(loc);
+                        if (File.Exists(loc + ".docx"))
+                        {
+                            if (MessageBox.Show("There already exists a solicitor/client bill with the date: " +
+                                    days + " " + months + " " + year + ", with the name: " +
+                                    name + " and the number: " + number + ". Continuing will overwrite the current file." +
+                                    "\n\n" + "Would you Like to continue?",
+                                    "Open File Confirmation",
+                                MessageBoxButtons.YesNo) == DialogResult.No)
+                            {
+                                doc.Close();
+                                return;
+                            }
+                        }
                         doc.SaveAs2(loc);
 
                         //Open new document to edit in the bills form.

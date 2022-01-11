@@ -191,8 +191,36 @@ namespace BillAutomatorUI
             //Find the correct index of the solicitor we are looking for.
             int index = em.solicitor.FindIndex(s => s == solicitor);
 
+            //The user will be stopped from deleting the default lawyer.
+            if (index == 0)
+            {
+                MessageBox.Show("You cannot delete the default solicitor.");
+                return;
+            }
+
+            //Confirmation box for deleting a lawyer.
+            if (MessageBox.Show("Are you sure you want to delete this Lawyer? All their entries will be updated.", "Delete Lawyer Confirmation",
+                MessageBoxButtons.YesNo) == DialogResult.No)
+            {
+                return;
+            }
+
+            
+
             //Remove from list
             em.solicitor.RemoveAt(index);
+
+            //Remove the solicitor from all of the relevant entries.
+            foreach(EntriesModel entry in em.entries)
+            {
+                string entryName = entry.solicitor.initials;
+                string solName = solicitor.initials;
+
+                if(String.Equals(solName, entryName))
+                {
+                    entry.solicitor = em.solicitor[0];
+                }
+            }
 
             //Leave form
             leaveScreen();
