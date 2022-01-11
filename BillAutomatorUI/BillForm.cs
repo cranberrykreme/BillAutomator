@@ -636,7 +636,7 @@ namespace BillAutomatorUI
 
             // Set the name of the client and display on the form.
             string[] name = doc.Name.Split('-');
-            clientName = name[2];
+            clientName = name[name.Length - 2];
             clientNameLabel.Text = clientName;
             clientNameLabel.Font = new System.Drawing.Font(clientNameLabel.Font, FontStyle.Bold);
         }
