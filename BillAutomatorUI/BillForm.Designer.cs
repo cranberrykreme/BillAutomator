@@ -290,6 +290,7 @@
             this.Margin = new System.Windows.Forms.Padding(6, 7, 6, 7);
             this.Name = "BillForm";
             this.Text = "Bill";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BillForm_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 

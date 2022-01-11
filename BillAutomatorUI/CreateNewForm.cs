@@ -22,6 +22,7 @@ namespace BillAutomatorUI
         /// </summary>
 
         public string location;
+        private bool openingNew = false; //Is a new form being opened upon the close of this form?
         public CreateNewForm()
         {
             InitializeComponent();
@@ -90,7 +91,7 @@ namespace BillAutomatorUI
                 } else
                 {
                     type = typeBillDropDown.Text;
-                    MessageBox.Show(type);
+                    //MessageBox.Show(type);
                     Console.WriteLine(type);
                 }
 
@@ -131,6 +132,7 @@ namespace BillAutomatorUI
                         BillForm billForm = new BillForm();
                         billForm.runStartup(doc, 2, 3);
                         billForm.Show();
+                        openingNew = true;
                         this.Close();
                     } catch (Exception ex)
                     {
@@ -142,10 +144,27 @@ namespace BillAutomatorUI
                     try
                     {
                         Application ap = new Application();
-                        doc = ap.Documents.Open(@"Z:\Templates\Blue Ribbon Documents\2021 MM DD - MATTER NUMBER - MATTER NAME - solicitor client draft bill of costs.docx");
+                        try
+                        {
+                            doc = ap.Documents.Open(@"M:\Templates\Blue Ribbon Documents\2021 MM DD - MATTER NUMBER - MATTER NAME - solicitor client draft bill of costs.docx");
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex);
+                            try
+                            {
+                                doc = ap.Documents.Open(@"Z:\Templates\Blue Ribbon Documents\2021 MM DD - MATTER NUMBER - MATTER NAME - solicitor client draft bill of costs.docx");
+                            }
+                            catch (Exception exception)
+                            {
+                                MessageBox.Show("Sorry there is an issue with retrieving the templates from the miscellaneous drives, you will have to manually create and save in the correct spot and then open the existing file.");
+                                Console.WriteLine(exception);
+                                return;
+                            }
+                        }
 
                         string loc = @location + @"\" + year + " " + months + " " + days + " - " + number + " - " + name + " - " + "solicitor client draft bill of costs";
-                        MessageBox.Show(loc);
+                        //MessageBox.Show(loc);
                         doc.SaveAs2(loc);
 
                         //Open new document to edit in the bills form.
@@ -154,6 +173,7 @@ namespace BillAutomatorUI
                         BillForm billForm = new BillForm();
                         billForm.runStartup(doc, 1, 2);
                         billForm.Show();
+                        openingNew = true;
                         this.Close();
                     }
                     catch (Exception ex)
@@ -174,6 +194,19 @@ namespace BillAutomatorUI
             } catch (Exception ex)
             {
                 Console.WriteLine(ex);
+            }
+            
+        }
+
+        private void CreateNewForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!openingNew)
+            {
+                if (MessageBox.Show("Are you sure you want to exit?", "Exit Window Confirmation",
+                MessageBoxButtons.YesNo) == DialogResult.No)
+                {
+                    e.Cancel = true;
+                }
             }
             
         }

@@ -290,6 +290,7 @@
             this.Margin = new System.Windows.Forms.Padding(6, 7, 6, 7);
             this.Name = "NewEntryForm";
             this.Text = "New Entry";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.NewEntryForm_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.hoursInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gstInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.totalInput)).EndInit();

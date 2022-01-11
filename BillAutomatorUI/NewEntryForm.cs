@@ -23,6 +23,8 @@ namespace BillAutomatorUI
         SolicitorsModel workingSolicitor;
         bool exists = false;
         int existingIndex = -1;
+        private bool openingNew = false; //Is a new form being opened upon the close of this form?
+
         public NewEntryForm()
         {
             InitializeComponent();
@@ -83,6 +85,7 @@ namespace BillAutomatorUI
             BillForm bf = new BillForm();
             bf.setBillModel(em);
             bf.Show();
+            openingNew = true;
             this.Close();
         }
 
@@ -237,6 +240,7 @@ namespace BillAutomatorUI
             BillForm bf = new BillForm();
             bf.setBillModel(em);
             bf.Show();
+            openingNew = true;
             this.Close();
         }
 
@@ -443,6 +447,17 @@ namespace BillAutomatorUI
                 totalInput.Value = Convert.ToDecimal(hourlyRate * timeSpent * perc);
                 gstInput.Value = totalInput.Value / 10;
             }
+        }
+
+        private void NewEntryForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!openingNew)
+            {
+                BillForm bf = new BillForm();
+                bf.setBillModel(em);
+                bf.Show();
+            }
+            
         }
     }
 }

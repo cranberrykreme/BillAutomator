@@ -110,6 +110,7 @@
             this.Margin = new System.Windows.Forms.Padding(6, 7, 6, 7);
             this.Name = "SolicitorManagementForm";
             this.Text = "Solicitor Management";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SolicitorManagementForm_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 

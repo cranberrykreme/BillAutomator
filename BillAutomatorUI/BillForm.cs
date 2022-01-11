@@ -29,6 +29,7 @@ namespace BillAutomatorUI
         private BillModel em;
         private static int solTable; //Stores the table number of the solicitor table
         private static int entTable; //Stores the table number of the entries table
+        private bool openingNew = false; //Is a new form being opened upon the close of this form?
 
         public BillForm()
         {
@@ -189,6 +190,7 @@ namespace BillAutomatorUI
             if(doc == null)
             {
                 MessageBox.Show("There is no word document open/connected");
+                openingNew = true;
                 this.Close();
                 return;
             }
@@ -207,6 +209,7 @@ namespace BillAutomatorUI
                 MessageBox.Show(ex.ToString());
                 doc.Close();
             }
+            openingNew = true;
             this.Close();
             MessageBox.Show("All done!");
 
@@ -710,6 +713,7 @@ namespace BillAutomatorUI
             NewEntryForm nef = new NewEntryForm();
             nef.setBillModel(em);
             nef.Show();
+            openingNew = true;
             this.Close();
         }
 
@@ -742,6 +746,7 @@ namespace BillAutomatorUI
             smf.setBillModel(em);
             smf.runSetUp();
             smf.Show();
+            openingNew = true;
             this.Close();
         }
 
@@ -860,6 +865,7 @@ namespace BillAutomatorUI
             NewEntryForm nef = new NewEntryForm();
             nef.setExistingBillModel(em, true, index);
             nef.Show();
+            openingNew = true;
             this.Close();
         }
 
@@ -1000,6 +1006,7 @@ namespace BillAutomatorUI
             if (doc == null)
             {
                 MessageBox.Show("There is no word document open/connected");
+                openingNew = true;
                 this.Close();
                 return;
             }
@@ -1020,6 +1027,19 @@ namespace BillAutomatorUI
                 doc.Close();
             }
             MessageBox.Show("All done!");
+        }
+
+        private void BillForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!openingNew)
+            {
+                if (MessageBox.Show("Are you sure you want to exit? All your unsaved work will be deleted.", "Exit Window Confirmation",
+                MessageBoxButtons.YesNo) == DialogResult.No)
+                {
+                    e.Cancel = true;
+                }
+            }
+            
         }
     }
 }

@@ -310,6 +310,7 @@
             this.Margin = new System.Windows.Forms.Padding(6, 7, 6, 7);
             this.Name = "EditCreateSolicitorForm";
             this.Text = "Create/Edit Solicitors";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.EditCreateSolicitorForm_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.hourlyRateInput)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

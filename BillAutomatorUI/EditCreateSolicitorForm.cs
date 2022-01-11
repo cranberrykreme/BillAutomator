@@ -21,6 +21,8 @@ namespace BillAutomatorUI
         BillModel em;
         SolicitorsModel solicitor;
         private bool editing = false;
+        private bool openingNew = false; //Is a new form being opened upon the close of this form?
+
         public EditCreateSolicitorForm()
         {
             InitializeComponent();
@@ -65,6 +67,7 @@ namespace BillAutomatorUI
             smf.setBillModel(em);
             smf.runSetUp();
             smf.Show();
+            openingNew = true;
             this.Close();
         }
 
@@ -248,6 +251,17 @@ namespace BillAutomatorUI
                 }
                 
             }
+        }
+
+        private void EditCreateSolicitorForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!openingNew)
+            {
+                BillForm bf = new BillForm();
+                bf.setBillModel(em);
+                bf.Show();
+            }
+            
         }
     }
 }
