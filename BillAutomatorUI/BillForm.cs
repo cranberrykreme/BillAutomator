@@ -35,6 +35,145 @@ namespace BillAutomatorUI
             InitializeComponent();
         }
 
+        private void writeChanges()
+        {
+            Word.Table tbl = doc.Tables[solTable];
+            Rows rows = tbl.Rows;
+            int numRows = rows.Count; //to compare the index of the row to the final index.
+            Columns cols = tbl.Columns;
+            int finalIndex = -1;
+
+            //SOLICITORS SECTION.
+            // Enter all of the solicitors into the word document.
+            for (int i = 1; i < em.solicitor.Count; i++)
+            {
+                int index = i + 1; //As the first entry will be on the second row of the table
+                if (index > numRows)
+                {
+                    object oMissing = System.Reflection.Missing.Value;
+                    rows.Add(ref oMissing);
+                    numRows++;
+
+                }
+                Console.WriteLine("Current Row is: " + index);
+                Console.WriteLine("Current Number of rows is: " + rows.Count);
+                Console.WriteLine("Current List Entry is: " + i + " And the total size of the list is: " + em.solicitor.Count);
+                rows[index].Cells[1].Range.Text = em.solicitor[i].firstName + " " + em.solicitor[i].lastName;
+                rows[index].Cells[2].Range.Text = em.solicitor[i].initials;
+                rows[index].Cells[3].Range.Text = em.solicitor[i].dateOfAdmission;
+                if (cols.Count > 3) //If not a solicitor client bill, add the hourly rate of the solicitor
+                {
+                    rows[index].Cells[4].Range.Text = "$" + em.solicitor[i].hourlyRates[0].ToString() + ".00";
+                }
+
+                finalIndex = index;
+            }
+            //Add one more index to finalIndex, so it doesn't delete the final entry.
+            finalIndex++;
+
+            //Delete all unused rows.
+            while (finalIndex <= numRows)
+            {
+                try
+                {
+                    rows[finalIndex].Delete();
+                    numRows--;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    Console.WriteLine("Final Index is: " + finalIndex + " and number of rows is: " + numRows);
+                    break;
+                }
+            }
+
+            //BILL ENTRIES SECTION.
+            //Enter all of the bill entries into the bill of costs.
+            tbl = doc.Tables[entTable];
+            rows = tbl.Rows;
+            numRows = rows.Count; //to compare the index of the row to the final index.
+            cols = tbl.Columns;
+            finalIndex = -1;
+
+            for (int i = 0; i < em.entries.Count; i++)
+            {
+                int index = i + 2; //As the first entry will be on the second row of the table, two higher than the index in the list.
+                if (index > numRows - 2)
+                {
+                    //For the entries we must always add only the second last row.
+                    Console.WriteLine(rows.Count);
+                    rows.Add(rows[rows.Count - 1]);
+                    numRows++;
+                }
+
+                Console.WriteLine(em.entries[i].date.ToString("dd.MM.yyyy"));
+                rows[index].Cells[2].Range.Text = em.entries[i].date.ToString("dd.MM.yyyy");    //Add the entries' date.
+                rows[index].Cells[3].Range.Text = em.entries[i].solicitor.initials;             //Add the solicitors initials
+                rows[index].Cells[4].Range.Text = em.entries[i].description;                    //Add the entries' description.
+
+                //Add the cost of the entry.
+                double cost = em.entries[i].amount;
+                string[] amt = cost.ToString().Split('.');
+
+                double decimalPt = Convert.ToDouble(amt[amt.Length - 1]);
+                if (cost % 1 == 0)
+                {
+                    Console.WriteLine(cost);
+                    rows[index].Cells[5].Range.Text = "$" + em.entries[i].amount.ToString() + ".00";
+                    Console.WriteLine(rows[index].Cells[5].Range.Text);
+                }
+                else
+                {
+                    string[] numbers = em.entries[i].amount.ToString().Split('.');
+                    Console.WriteLine(numbers[numbers.Length - 1]);
+                    string num = numbers[numbers.Length - 1];
+                    if (num.Length < 2)
+                    {
+                        rows[index].Cells[5].Range.Text = "$" + em.entries[i].amount.ToString() + "0";
+                    }
+                    else
+                    {
+                        rows[index].Cells[5].Range.Text = "$" + em.entries[i].amount.ToString();
+                    }
+                }
+                finalIndex = index;
+            }
+            //Add one more index to finalIndex, so it doesn't delete the final entry.
+            finalIndex++;
+
+            //Delete all unused entries. Keep the very last row as that is the summary.
+            while (finalIndex < numRows)
+            {
+                try
+                {
+                    rows[finalIndex].Delete();
+                    numRows--;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    Console.WriteLine("Final Index is: " + finalIndex + " and number of rows is: " + numRows);
+                    break;
+                }
+
+            }
+
+            tbl.Columns[1].PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPercent;
+            tbl.Columns[1].PreferredWidth = 6.9f;
+
+            tbl.Columns[2].PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPercent;
+            tbl.Columns[2].PreferredWidth = 11.5f;
+
+            tbl.Columns[3].PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPercent;
+            tbl.Columns[3].PreferredWidth = 8.9f;
+
+            tbl.Columns[4].PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPercent;
+            tbl.Columns[4].PreferredWidth = 60.5f;
+
+            tbl.Columns[5].PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPercent;
+            tbl.Columns[5].PreferredWidth = 12.0f;
+        }
+
         private void saveCloseButton_Click(object sender, EventArgs e)
         {
             try
@@ -54,144 +193,13 @@ namespace BillAutomatorUI
                 return;
             }
             try{//try to close the application
-                Word.Table tbl = doc.Tables[solTable];
-                Rows rows = tbl.Rows;
-                int numRows = rows.Count; //to compare the index of the row to the final index.
-                Columns cols = tbl.Columns;
-                int finalIndex = -1;
 
-                //SOLICITORS SECTION.
-                // Enter all of the solicitors into the word document.
-                for(int i = 1; i < em.solicitor.Count; i++)
-                {
-                    int index = i + 1; //As the first entry will be on the second row of the table
-                    if (index > numRows)
-                    {
-                        object oMissing = System.Reflection.Missing.Value;
-                        rows.Add(ref oMissing);
-                        numRows++;
-                        
-                    }
-                    Console.WriteLine("Current Row is: " + index);
-                    Console.WriteLine("Current Number of rows is: " + rows.Count);
-                    Console.WriteLine("Current List Entry is: " + i + " And the total size of the list is: " + em.solicitor.Count);
-                    rows[index].Cells[1].Range.Text = em.solicitor[i].firstName + " " + em.solicitor[i].lastName;
-                    rows[index].Cells[2].Range.Text = em.solicitor[i].initials;
-                    rows[index].Cells[3].Range.Text = em.solicitor[i].dateOfAdmission;
-                    if (cols.Count > 3) //If not a solicitor client bill, add the hourly rate of the solicitor
-                    {
-                        rows[index].Cells[4].Range.Text = "$" + em.solicitor[i].hourlyRates[0].ToString() + ".00";
-                    }
-                    
-                    finalIndex = index;
-                }
-                //Add one more index to finalIndex, so it doesn't delete the final entry.
-                finalIndex++;
-
-                //Delete all unused rows.
-                while(finalIndex <= numRows)
-                {
-                    try
-                    {
-                        rows[finalIndex].Delete();
-                        numRows--;
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex);
-                        Console.WriteLine("Final Index is: " + finalIndex + " and number of rows is: " + numRows);
-                        break;
-                    }
-                }
-
-                //BILL ENTRIES SECTION.
-                //Enter all of the bill entries into the bill of costs.
-                tbl = doc.Tables[entTable];
-                rows = tbl.Rows;
-                numRows = rows.Count; //to compare the index of the row to the final index.
-                cols = tbl.Columns;
-                finalIndex = -1;
-
-                for (int i = 0; i < em.entries.Count; i++)
-                {
-                    int index = i + 2; //As the first entry will be on the second row of the table, two higher than the index in the list.
-                    if (index > numRows - 2)
-                    {
-                        //For the entries we must always add only the second last row.
-                        Console.WriteLine(rows.Count);
-                        rows.Add(rows[rows.Count - 1]);
-                        numRows++;
-                    }
-
-                    Console.WriteLine(em.entries[i].date.ToString("dd.MM.yyyy"));
-                    rows[index].Cells[2].Range.Text = em.entries[i].date.ToString("dd.MM.yyyy");    //Add the entries' date.
-                    rows[index].Cells[3].Range.Text = em.entries[i].solicitor.initials;             //Add the solicitors initials
-                    rows[index].Cells[4].Range.Text = em.entries[i].description;                    //Add the entries' description.
-                    
-                    //Add the cost of the entry.
-                    double cost = em.entries[i].amount;
-                    string[] amt = cost.ToString().Split('.');
-
-                    double decimalPt = Convert.ToDouble(amt[amt.Length - 1]);
-                    if(cost%1 == 0)
-                    {
-                        Console.WriteLine(cost);
-                        rows[index].Cells[5].Range.Text = "$" + em.entries[i].amount.ToString() + ".00";
-                        Console.WriteLine(rows[index].Cells[5].Range.Text);
-                    }
-                    else
-                    {
-                        string[] numbers = em.entries[i].amount.ToString().Split('.');
-                        Console.WriteLine(numbers[numbers.Length - 1]);
-                        string num = numbers[numbers.Length - 1];
-                        if(num.Length < 2)
-                        {
-                            rows[index].Cells[5].Range.Text = "$" + em.entries[i].amount.ToString() + "0";
-                        }
-                        else
-                        {
-                            rows[index].Cells[5].Range.Text = "$" + em.entries[i].amount.ToString();
-                        }
-                    }
-                    finalIndex = index;
-                }
-                //Add one more index to finalIndex, so it doesn't delete the final entry.
-                finalIndex++;
-
-                //Delete all unused entries. Keep the very last row as that is the summary.
-                while (finalIndex < numRows)
-                {
-                    try
-                    {
-                        rows[finalIndex].Delete();
-                        numRows--;
-                    } catch (Exception ex)
-                    {
-                        Console.WriteLine(ex);
-                        Console.WriteLine("Final Index is: " + finalIndex + " and number of rows is: " + numRows);
-                        break;
-                    }
-                    
-                }
-
-                tbl.Columns[1].PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPercent;
-                tbl.Columns[1].PreferredWidth = 6.9f;
-
-                tbl.Columns[2].PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPercent;
-                tbl.Columns[2].PreferredWidth = 11.5f;
-
-                tbl.Columns[3].PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPercent;
-                tbl.Columns[3].PreferredWidth = 8.9f;
-
-                tbl.Columns[4].PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPercent;
-                tbl.Columns[4].PreferredWidth = 60.5f;
-
-                tbl.Columns[5].PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPercent;
-                tbl.Columns[5].PreferredWidth = 12.0f;
+                //Write changes.
+                writeChanges();
 
                 //Save and close document.
-                //doc.Save();
-                //doc.Close();
+                doc.Save();
+                doc.Close();
 
                 //TODO: update the summary amount in the final row upon completion.
             } catch (Exception ex)
@@ -199,7 +207,7 @@ namespace BillAutomatorUI
                 MessageBox.Show(ex.ToString());
                 doc.Close();
             }
-            //this.Close();
+            this.Close();
             MessageBox.Show("All done!");
 
         }
@@ -241,9 +249,75 @@ namespace BillAutomatorUI
                     Columns cols = table.Columns;
                     for (int i = 2; i <= rows.Count; i++)
                     {
+
                         string ftxt = "";
                         SolicitorsModel sol = new SolicitorsModel();
                         bool isEmpty = true; // To catch if the cells are empty.
+
+                        // If there is less than the proper number of columns.
+                        if (cols.Count < 4)
+                        {
+                            switch (cols.Count)
+                            {
+                                //WHAT TO DO FOR HOURLY RATE FOR SOL/CLIENT BILL??
+                                case 3:
+                                    try
+                                    {
+
+                                        // Hourly Rate.
+                                        double hourly = 0.00;
+                                        List<double> rates = new List<double>();
+                                        rates.Add(hourly);
+                                        sol.hourlyRates = rates;
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Console.WriteLine("Hourly Rate");
+                                        Console.WriteLine(ex);
+                                    }
+                                    break;
+                                case 2:
+                                    try
+                                    {
+                                        // DOA.
+                                        sol.dateOfAdmission = "";
+
+                                        // Hourly Rate.
+                                        double hourly = 0.00;
+                                        List<double> rates = new List<double>();
+                                        rates.Add(hourly);
+                                        sol.hourlyRates = rates;
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Console.WriteLine("Hourly Rate");
+                                        Console.WriteLine(ex);
+                                    }
+                                    break;
+                                case 1:
+                                    try
+                                    {
+                                        // Initials.
+                                        sol.initials = "XX";
+
+                                        // DOA.
+                                        sol.dateOfAdmission = "";
+
+                                        // Hourly Rate.
+                                        double hourly = 0.00;
+                                        List<double> rates = new List<double>();
+                                        rates.Add(hourly);
+                                        sol.hourlyRates = rates;
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Console.WriteLine("Hourly Rate");
+                                        Console.WriteLine(ex);
+                                    }
+                                    break;
+                            }
+                        }
+
                         for (int j = 1; j <= cols.Count; j++)
                         {
                             Cell cell = rows[i].Cells[j];
@@ -339,22 +413,8 @@ namespace BillAutomatorUI
                                     }
                                     
                                 }
-                                //WHAT TO DO FOR HOURLY RATE FOR SOL/CLIENT BILL??
-                                else if (cols.Count < 4)
-                                {
-                                    try
-                                    {
-                                        double hourly = 0.00;
-                                        List<double> rates = new List<double>();
-                                        rates.Add(hourly);
-                                        sol.hourlyRates = rates;
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        Console.WriteLine("Hourly Rate");
-                                        Console.WriteLine(ex);
-                                    }
-                                }
+                                
+                                
 
                             }
                         }
@@ -371,21 +431,32 @@ namespace BillAutomatorUI
                 Console.WriteLine(em.solicitor.Count);
 
                 // For debugging purposes, will cause error if solicitor list is empty
-                if(em.solicitor.Count > 0)
+                try
                 {
-                    em.solicitor.ForEach(delegate (SolicitorsModel sm)
+                    if (em.solicitor.Count > 1)
                     {
-                        Console.WriteLine("Next solicitor in list: ");
-                        Console.WriteLine(sm.initials);
-                        Console.WriteLine(sm.initials.Length);
-                        Console.WriteLine(sm.dateOfAdmission);
-                        Console.WriteLine(sm.lastName);
-                        sm.hourlyRates.ForEach(delegate (double hr)
+                        em.solicitor.ForEach(delegate (SolicitorsModel sm)
                         {
-                            Console.WriteLine(hr);
+                            Console.WriteLine("Next solicitor in list: ");
+                            Console.WriteLine(sm.initials);
+                            Console.WriteLine(sm.initials.Length);
+                            Console.WriteLine(sm.dateOfAdmission);
+                            Console.WriteLine(sm.lastName);
+
+                            sm.hourlyRates.ForEach(delegate (double hr)
+                            {
+                                Console.WriteLine(hr);
+                            });
+
+
                         });
-                    });
+                    }
+                } catch (Exception ex)
+                {
+                    MessageBox.Show("Error with reading solicitor's tables");
+                    Console.WriteLine(ex);
                 }
+                
 
 
 
@@ -911,6 +982,44 @@ namespace BillAutomatorUI
 
                 displayEntries(date);
             }
+        }
+
+        private void saveButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Console.WriteLine(doc.Path);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                MessageBox.Show("The word document is no longer open, so your work cannot be saved, please close and re-open the application");
+                return;
+            }
+
+            if (doc == null)
+            {
+                MessageBox.Show("There is no word document open/connected");
+                this.Close();
+                return;
+            }
+            try
+            {//try to close the application
+
+                //Write changes.
+                writeChanges();
+
+                //Save and close document.
+                doc.Save();
+
+                //TODO: update the summary amount in the final row upon completion.
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+                doc.Close();
+            }
+            MessageBox.Show("All done!");
         }
     }
 }

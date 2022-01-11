@@ -101,12 +101,28 @@ namespace BillAutomatorUI
                     try
                     {
                         Application ap = new Application();
-                        doc = ap.Documents.Open(@"Z:\Templates\Blue Ribbon Documents\2021 MM DD - MATTER NUMBER - MATTER NAME - party party draft bill of costs.docx");
+                        try
+                        {
+                            doc = ap.Documents.Open(@"M:\Templates\Blue Ribbon Documents\2021 MM DD - MATTER NUMBER - MATTER NAME - party party draft bill of costs.docx");
+                        } catch (Exception ex)
+                        {
+                            Console.WriteLine(ex);
+                            try
+                            {
+                                doc = ap.Documents.Open(@"Z:\Templates\Blue Ribbon Documents\2021 MM DD - MATTER NUMBER - MATTER NAME - party party draft bill of costs.docx");
+                            }
+                            catch (Exception exception)
+                            {
+                                MessageBox.Show("Sorry there is an issue with retrieving the templates from the miscellaneous drives, you will have to manually create and save in the correct spot and then open the existing file.");
+                                Console.WriteLine(exception);
+                                return;
+                            }
+                        }
 
                         //ap.Visible = true;
 
                         string loc = @location + @"\" + year + " " + months + " " + days + " - " + number + " - " + name + " - " + "party party draft bill of costs";
-                        MessageBox.Show(loc);
+                        //MessageBox.Show(loc);
                         doc.SaveAs2(loc);
 
                         //Open new document to edit in the bills form.
