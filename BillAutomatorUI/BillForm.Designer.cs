@@ -48,6 +48,7 @@
             this.displayAllEntriesButton = new System.Windows.Forms.Button();
             this.editSelectedButton = new System.Windows.Forms.Button();
             this.reOpenWordButton = new System.Windows.Forms.Button();
+            this.displayAllDisbursementsButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // clientLabel
@@ -126,9 +127,9 @@
             this.entriesLabel.Font = new System.Drawing.Font("Segoe UI Light", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.entriesLabel.Location = new System.Drawing.Point(19, 93);
             this.entriesLabel.Name = "entriesLabel";
-            this.entriesLabel.Size = new System.Drawing.Size(109, 45);
+            this.entriesLabel.Size = new System.Drawing.Size(117, 45);
             this.entriesLabel.TabIndex = 7;
-            this.entriesLabel.Text = "Entries";
+            this.entriesLabel.Text = "Display";
             // 
             // entriesBox
             // 
@@ -241,11 +242,11 @@
             this.displayAllEntriesButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
             this.displayAllEntriesButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
             this.displayAllEntriesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.displayAllEntriesButton.Location = new System.Drawing.Point(137, 86);
+            this.displayAllEntriesButton.Location = new System.Drawing.Point(136, 86);
             this.displayAllEntriesButton.Name = "displayAllEntriesButton";
-            this.displayAllEntriesButton.Size = new System.Drawing.Size(129, 52);
+            this.displayAllEntriesButton.Size = new System.Drawing.Size(175, 52);
             this.displayAllEntriesButton.TabIndex = 20;
-            this.displayAllEntriesButton.Text = "Display All";
+            this.displayAllEntriesButton.Text = "Entries";
             this.displayAllEntriesButton.UseVisualStyleBackColor = true;
             this.displayAllEntriesButton.Click += new System.EventHandler(this.displayAllEntriesButton_Click);
             // 
@@ -275,12 +276,25 @@
             this.reOpenWordButton.UseVisualStyleBackColor = true;
             this.reOpenWordButton.Click += new System.EventHandler(this.reOpenWordButton_Click);
             // 
+            // displayAllDisbursementsButton
+            // 
+            this.displayAllDisbursementsButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
+            this.displayAllDisbursementsButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+            this.displayAllDisbursementsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.displayAllDisbursementsButton.Location = new System.Drawing.Point(317, 86);
+            this.displayAllDisbursementsButton.Name = "displayAllDisbursementsButton";
+            this.displayAllDisbursementsButton.Size = new System.Drawing.Size(175, 52);
+            this.displayAllDisbursementsButton.TabIndex = 23;
+            this.displayAllDisbursementsButton.Text = "Disbursements";
+            this.displayAllDisbursementsButton.UseVisualStyleBackColor = true;
+            // 
             // BillForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 30F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1032, 574);
+            this.Controls.Add(this.displayAllDisbursementsButton);
             this.Controls.Add(this.reOpenWordButton);
             this.Controls.Add(this.editSelectedButton);
             this.Controls.Add(this.displayAllEntriesButton);
@@ -332,5 +346,6 @@
         private System.Windows.Forms.Button displayAllEntriesButton;
         private System.Windows.Forms.Button editSelectedButton;
         private System.Windows.Forms.Button reOpenWordButton;
+        private System.Windows.Forms.Button displayAllDisbursementsButton;
     }
 }
