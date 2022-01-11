@@ -414,8 +414,13 @@ namespace BillAutomatorUI
                                     }
                                     catch (Exception ex)
                                     {
-                                        Console.WriteLine("Hourly Rate");
+                                        Console.WriteLine("Hourly Rate has a big problem");
                                         Console.WriteLine(ex);
+
+                                        double hourly = 0.00;
+                                        List<double> rates = new List<double>();
+                                        rates.Add(hourly);
+                                        sol.hourlyRates = rates;
                                     }
                                     
                                 }
@@ -483,8 +488,9 @@ namespace BillAutomatorUI
                         Range r = cell.Range;
 
                         string txt = r.Text;
+                        txt = txt.Replace("", "").Replace("\n", "");
                         ftxt = ftxt + " | " + txt;
-                        if (j == 2) // Date of the entry
+                        if (j == 2 && !String.IsNullOrEmpty(txt)) // Date of the entry
                         {
                             try
                             {
@@ -504,7 +510,7 @@ namespace BillAutomatorUI
                             {
                                 Console.WriteLine(ex);
                             }
-                        } else if(j == 3) // Entries solicitor
+                        } else if(j == 3 && !String.IsNullOrEmpty(txt)) // Entries solicitor
                         { 
                             try
                             {
@@ -543,7 +549,7 @@ namespace BillAutomatorUI
                                 Console.WriteLine(ex);
                             }
 
-                        } else if(j == 4) // Entries description
+                        } else if(j == 4 && !String.IsNullOrEmpty(txt)) // Entries description
                         {
                             try
                             {
@@ -594,10 +600,11 @@ namespace BillAutomatorUI
                             catch (Exception ex)
                             {
                                 Console.WriteLine(ex);
+                                Console.WriteLine("String that caused issue from description is: " + txt + " and is it null or empty? " + String.IsNullOrEmpty(txt));
                             }
 
 
-                        } else if (j == 5) // Price of the entry
+                        } else if (j == 5 && !String.IsNullOrEmpty(txt)) // Price of the entry
                         {
                             try
                             {
