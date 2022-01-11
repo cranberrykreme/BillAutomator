@@ -641,11 +641,6 @@ namespace BillAutomatorUI
             clientNameLabel.Font = new System.Drawing.Font(clientNameLabel.Font, FontStyle.Bold);
         }
 
-        private bool ValidateForm()
-        {
-            return true;
-        }
-
         private void displayEntries()
         {
             entriesBox.Items.Clear();
