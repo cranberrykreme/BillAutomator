@@ -121,6 +121,12 @@ namespace BillAutomatorUI
                                     document.Close();
                                     return;
                                 }
+                                else
+                                {
+                                    document.SaveAs2(@newFileName);
+                                    MessageBox.Show("Document saved with new date.");
+                                    fileName = newFileName;
+                                }
                             }
                             
                         } catch (Exception ex)

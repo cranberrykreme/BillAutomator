@@ -34,8 +34,17 @@ namespace BillAutomatorUI
                 sm = em.solicitor;
                 sm.ForEach(delegate (SolicitorsModel sol)
                 {
-                    solicitorsBox.Items.Add(sol.firstName + " " + sol.lastName + " - " +
+                    if (!String.IsNullOrEmpty(sol.firstName))
+                    {
+                        solicitorsBox.Items.Add(sol.firstName + " " + sol.lastName + " - " +
                         sol.initials + " - $" + sol.hourlyRates[0]);
+                    }
+                    else
+                    {
+                        solicitorsBox.Items.Add(sol.lastName + " - " +
+                        sol.initials + " - $" + sol.hourlyRates[0]);
+                    }
+                    
                 });
             } else
             {

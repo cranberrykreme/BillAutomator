@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Office.Interop.Word;
@@ -61,7 +62,15 @@ namespace BillAutomatorUI
                 Console.WriteLine("Current Row is: " + index);
                 Console.WriteLine("Current Number of rows is: " + rows.Count);
                 Console.WriteLine("Current List Entry is: " + i + " And the total size of the list is: " + em.solicitor.Count);
-                rows[index].Cells[1].Range.Text = em.solicitor[i].firstName + " " + em.solicitor[i].lastName;
+
+                if (!String.IsNullOrEmpty(em.solicitor[i].firstName))
+                {
+                    rows[index].Cells[1].Range.Text = em.solicitor[i].firstName + " " + em.solicitor[i].lastName;
+                } else
+                {
+                    rows[index].Cells[1].Range.Text = em.solicitor[i].lastName;
+                }
+                
                 rows[index].Cells[2].Range.Text = em.solicitor[i].initials;
                 rows[index].Cells[3].Range.Text = em.solicitor[i].dateOfAdmission;
                 if (cols.Count > 3) //If not a solicitor client bill, add the hourly rate of the solicitor
@@ -330,6 +339,7 @@ namespace BillAutomatorUI
                             Range r = cell.Range;
 
                             string txt = r.Text;
+
                             ftxt = ftxt + " | " + txt;
                             if (tab == solTable)
                             {
@@ -349,7 +359,11 @@ namespace BillAutomatorUI
                                         int len = names.Length;
                                         string secondName = names[len - 1];
 
-                                        sol.firstName = firstName.Substring(0, firstName.Length - 1);
+                                        if (!String.IsNullOrEmpty(firstName))
+                                        {
+                                            sol.firstName = firstName.Substring(0, firstName.Length - 1);
+                                        }
+                                        
                                         string lastName = secondName.Replace("", "");
                                         sol.lastName = lastName.Substring(0, lastName.Length - 1);
                                         if (!String.IsNullOrEmpty(sol.firstName))
@@ -400,6 +414,15 @@ namespace BillAutomatorUI
                                 {
                                     try
                                     {
+                                        // An attempt to split the cell string into sections, one section having no \ characters in it.
+                                        string[] cellText = Regex.Split(txt, "\\s");
+                                        int cellIndex = 0;
+                                        while (String.IsNullOrEmpty(cellText[cellIndex]) && cellIndex < cellText.Length - 1)
+                                        {
+                                            cellIndex++;
+                                        }
+                                        txt = cellText[cellIndex];
+
                                         string rate = txt.Substring(1);
 
                                         string[] rating = rate.Split('.');
@@ -411,6 +434,8 @@ namespace BillAutomatorUI
                                         List<double> rates = new List<double>();
                                         rates.Add(hourly);
                                         sol.hourlyRates = rates;
+
+                                        
                                     }
                                     catch (Exception ex)
                                     {
@@ -480,7 +505,7 @@ namespace BillAutomatorUI
                 {
                     string ftxt = "";
                     EntriesModel entries = new EntriesModel();
-                    bool isEmpty = true;
+                    bool isEmpty = true; //Stores if the row is empty
                     //iterate over columns
                     for (int j = 2; j <= col.Count; j++)
                     {
@@ -489,6 +514,7 @@ namespace BillAutomatorUI
 
                         string txt = r.Text;
                         txt = txt.Replace("", "").Replace("\n", "");
+
                         ftxt = ftxt + " | " + txt;
                         if (j == 2 && !String.IsNullOrEmpty(txt)) // Date of the entry
                         {
@@ -600,7 +626,7 @@ namespace BillAutomatorUI
                             catch (Exception ex)
                             {
                                 Console.WriteLine(ex);
-                                Console.WriteLine("String that caused issue from description is: " + txt + " and is it null or empty? " + String.IsNullOrEmpty(txt));
+                                Console.WriteLine("String that caused issue from description is: " + @txt + " and is it null or empty? " + String.IsNullOrEmpty(txt));
                             }
 
 
@@ -608,6 +634,15 @@ namespace BillAutomatorUI
                         {
                             try
                             {
+                                // An attempt to split the cell string into sections, one section having no \ characters in it.
+                                string[] cellText = Regex.Split(txt, "\\s");
+                                int cellIndex = 0;
+                                while (String.IsNullOrEmpty(cellText[cellIndex]) && cellIndex < cellText.Length - 1)
+                                {
+                                    cellIndex++;
+                                }
+                                txt = cellText[cellIndex];
+
                                 string price = txt.Replace("", "");
                                 price = price.Substring(0, price.Length - 1);
 
