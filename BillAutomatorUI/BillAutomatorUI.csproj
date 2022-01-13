@@ -134,6 +134,12 @@
       <DependentUpon>EditCreateSolicitorForm.cs</DependentUpon>
     </Compile>
     <Compile Include="EntriesModel.cs" />
+    <Compile Include="LoadingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LoadingForm.Designer.cs">
+      <DependentUpon>LoadingForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="NewEntryForm.cs">
       <SubType>Form</SubType>
     </Compile>
