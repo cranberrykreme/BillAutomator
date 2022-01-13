@@ -340,6 +340,22 @@ namespace BillAutomatorUI
 
                             string txt = r.Text;
 
+                            //find if there are only empty characters in the string, will make the program run many times faster in the event of empty cells.
+                            string[] test = Regex.Split(txt, "\\s");
+                            bool testFull = false;
+                            for (int a = 0; a < test.Length; a++)
+                            {
+                                if (!String.IsNullOrEmpty(test[a]))
+                                {
+                                    testFull = true;
+                                    break;
+                                }
+                            }
+                            if (!testFull)
+                            {
+                                txt = "";
+                            }
+
                             ftxt = ftxt + " | " + txt;
                             if (tab == solTable)
                             {
@@ -423,7 +439,7 @@ namespace BillAutomatorUI
                                         }
                                         txt = cellText[cellIndex];
 
-                                        string rate = txt.Substring(1);
+                                        string rate = txt.Replace("$", "");
 
                                         string[] rating = rate.Split('.');
 
@@ -515,6 +531,22 @@ namespace BillAutomatorUI
                         string txt = r.Text;
                         txt = txt.Replace("", "").Replace("\n", "");
 
+                        //find if there are only empty characters in the string.
+                        string[] test = Regex.Split(txt, "\\s");
+                        bool testFull = false;
+                        for (int a = 0; a < test.Length; a++)
+                        {
+                            if (!String.IsNullOrEmpty(test[a]))
+                            {
+                                testFull = true;
+                                break;
+                            }
+                        }
+                        if (!testFull)
+                        {
+                            txt = "";
+                        }
+
                         ftxt = ftxt + " | " + txt;
                         if (j == 2 && !String.IsNullOrEmpty(txt)) // Date of the entry
                         {
@@ -590,11 +622,20 @@ namespace BillAutomatorUI
                                 }
 
                                 string[] descriptions = desc.Split('–'); //Split the entire description
+
+                                //If some hours have been entered into the description.
+                                if (txt.Contains('-'))
+                                {
+                                    string[] descHours = descriptions[descriptions.Length - 1].Split(' '); //Split what comes after the hyphen
+                                    string hours = descHours[1]; //take just the double value for the hours
+                                    Console.WriteLine("Input hours is: " + hours + " Length of entry is: " + descriptions.Length);
+                                    entries.hours = Convert.ToDouble(hours); //Add the hours to the entry
+                                }
+                                else
+                                {
+                                    entries.hours = 0;
+                                }
                                 
-                                string[] descHours = descriptions[descriptions.Length - 1].Split(' '); //Split what comes after the hyphen
-                                string hours = descHours[1]; //take just the double value for the hours
-                                Console.WriteLine("Input hours is: " + hours + " Length of entry is: " + descriptions.Length);
-                                entries.hours = Convert.ToDouble(hours); //Add the hours to the entry
 
                                 //Get the percentage of the entry that is claimed.
                                 string getPercent = descriptions[descriptions.Length - 1];
@@ -643,8 +684,11 @@ namespace BillAutomatorUI
                                 }
                                 txt = cellText[cellIndex];
 
-                                string price = txt.Replace("", "");
-                                price = price.Substring(0, price.Length - 1);
+
+
+                                string price = txt.Replace("", "").Replace("$","");
+
+                                //price = price.Substring(0, price.Length - 1);
 
                                 if (!String.IsNullOrEmpty(price))
                                 {
