@@ -68,7 +68,14 @@ namespace BillAutomatorUI
                 }
             });
 
-            dateTimeBox.Value = existingEntry.date;
+            try
+            {
+                dateTimeBox.Value = existingEntry.date;
+            } catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+            
             descriptionTextBox.Text = existingEntry.description;
             hoursInput.Value = Convert.ToDecimal(existingEntry.hours);
             percentageClaimedTextBox.Value = Convert.ToDecimal(existingEntry.percentage);
@@ -425,10 +432,19 @@ namespace BillAutomatorUI
 
                     string[] desc = description.Split('(');
 
-                    desc[desc.Length - 1] = "";
-
+                    if(desc.Length > 1)
+                    {
+                        desc[desc.Length - 1] = "";
+                    }
+                    
                     description = String.Join("(", desc);
-                    description = description.Substring(0, description.Length - 2);
+
+                    string hold = description.Substring(description.Length - 2);
+                    if (hold.Contains('('))
+                    {
+                        description = description.Substring(0, description.Length - 2);
+                    }
+                    
 
                     descriptionTextBox.Text = description;
 

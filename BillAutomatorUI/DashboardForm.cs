@@ -97,7 +97,17 @@ namespace BillAutomatorUI
                 try
                     {
                     Application ap = new Application();
-                    Document document = ap.Documents.Open(@fileName);
+                    Document document;
+                    try
+                    {
+                        document = ap.Documents.Open(@fileName);
+                    } catch (Exception ex)
+                    {
+                        Console.WriteLine(ex);
+                        MessageBox.Show("Cannot open the file, please close the file if you currently have it open");
+                        return;
+                    }
+                    
 
                     // If new save name, then save the document.
                     if (newDate && !String.Equals(newFileName,"No"))
@@ -123,15 +133,26 @@ namespace BillAutomatorUI
                                 }
                                 else
                                 {
-                                    document.SaveAs2(@newFileName);
-                                    MessageBox.Show("Document saved with new date.");
-                                    fileName = newFileName;
+                                    try
+                                    {
+                                        document.SaveAs2(@newFileName);
+                                        MessageBox.Show("Document saved with new date.");
+                                        fileName = newFileName;
+                                    } catch (Exception ex)
+                                    {
+                                        Console.WriteLine(ex);
+                                        MessageBox.Show("Cannot save file with todays date, perhaps you already have one open?");
+                                        document.Close();
+                                        return;
+                                    }
+                                    
                                 }
                             }
                             
                         } catch (Exception ex)
                         {
                             MessageBox.Show("Document Could Not be opened and saved with today's date. " + ex.ToString());
+                            document.Close();
                             return;
                         }
                         

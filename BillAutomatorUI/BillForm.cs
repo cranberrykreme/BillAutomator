@@ -548,6 +548,7 @@ namespace BillAutomatorUI
                         }
 
                         ftxt = ftxt + " | " + txt;
+                        // Iterate through the entries by cell.
                         if (j == 2 && !String.IsNullOrEmpty(txt)) // Date of the entry
                         {
                             try
@@ -724,10 +725,18 @@ namespace BillAutomatorUI
             displayEntries();
 
             // Set the name of the client and display on the form.
-            string[] name = doc.Name.Split('-');
-            clientName = name[name.Length - 2];
-            clientNameLabel.Text = clientName;
-            clientNameLabel.Font = new System.Drawing.Font(clientNameLabel.Font, FontStyle.Bold);
+            try
+            {
+                string[] name = doc.Name.Split('-');
+                clientName = name[name.Length - 2];
+                clientNameLabel.Text = clientName;
+                clientNameLabel.Font = new System.Drawing.Font(clientNameLabel.Font, FontStyle.Bold);
+            } catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                doc.Close();
+            }
+
         }
 
         private void displayEntries()
