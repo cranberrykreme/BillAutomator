@@ -625,7 +625,7 @@ namespace BillAutomatorUI
                                 string[] descriptions = desc.Split('–'); //Split the entire description
 
                                 //If some hours have been entered into the description.
-                                if (txt.Contains('-'))
+                                if (txt.Contains('–'))
                                 {
                                     string[] descHours = descriptions[descriptions.Length - 1].Split(' '); //Split what comes after the hyphen
                                     string hours = descHours[1]; //take just the double value for the hours

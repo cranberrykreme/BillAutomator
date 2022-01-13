@@ -325,7 +325,18 @@ namespace BillAutomatorUI
             {
                 firstName = firstName + " " + names[loc];
             }
-            firstName = firstName.Substring(1);
+
+            String testName = firstName.Substring(1);
+            if (String.IsNullOrEmpty(testName))
+            {
+                firstName = null;
+            }
+            else
+            {
+                firstName = firstName.Substring(1);
+            }
+
+            
             int len = names.Length;
             string secondName = names[len - 1];
 
@@ -428,7 +439,8 @@ namespace BillAutomatorUI
             {
                 try
                 {
-                    string description = descriptionTextBox.Text;
+                    string[] hoursPerc = descriptionTextBox.Text.Split('–');
+                    string description = hoursPerc[hoursPerc.Length - 1]; // Get only the entries at the end of the description.
 
                     string[] desc = description.Split('(');
 
@@ -439,12 +451,16 @@ namespace BillAutomatorUI
                     
                     description = String.Join("(", desc);
 
+                    // If there is a '(' in the final two characters, then remove it.
                     string hold = description.Substring(description.Length - 2);
                     if (hold.Contains('('))
                     {
                         description = description.Substring(0, description.Length - 2);
                     }
-                    
+
+                    hoursPerc[hoursPerc.Length - 1] = description;
+
+                    description = String.Join("–",hoursPerc);
 
                     descriptionTextBox.Text = description;
 
