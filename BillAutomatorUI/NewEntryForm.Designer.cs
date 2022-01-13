@@ -175,7 +175,7 @@
             // solicitorDropDown
             // 
             this.solicitorDropDown.FormattingEnabled = true;
-            this.solicitorDropDown.Location = new System.Drawing.Point(194, 337);
+            this.solicitorDropDown.Location = new System.Drawing.Point(665, 32);
             this.solicitorDropDown.Name = "solicitorDropDown";
             this.solicitorDropDown.Size = new System.Drawing.Size(234, 38);
             this.solicitorDropDown.TabIndex = 24;
@@ -185,7 +185,7 @@
             // 
             this.solicitorLabel.AutoSize = true;
             this.solicitorLabel.Font = new System.Drawing.Font("Segoe UI Light", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.solicitorLabel.Location = new System.Drawing.Point(16, 328);
+            this.solicitorLabel.Location = new System.Drawing.Point(487, 23);
             this.solicitorLabel.Name = "solicitorLabel";
             this.solicitorLabel.Size = new System.Drawing.Size(128, 45);
             this.solicitorLabel.TabIndex = 23;
@@ -241,7 +241,7 @@
             // 
             this.percentageLabel.AutoSize = true;
             this.percentageLabel.Font = new System.Drawing.Font("Segoe UI Light", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.percentageLabel.Location = new System.Drawing.Point(609, 23);
+            this.percentageLabel.Location = new System.Drawing.Point(16, 328);
             this.percentageLabel.Name = "percentageLabel";
             this.percentageLabel.Size = new System.Drawing.Size(164, 45);
             this.percentageLabel.TabIndex = 30;
@@ -255,7 +255,7 @@
             0,
             0,
             131072});
-            this.percentageClaimedTextBox.Location = new System.Drawing.Point(779, 33);
+            this.percentageClaimedTextBox.Location = new System.Drawing.Point(194, 338);
             this.percentageClaimedTextBox.Name = "percentageClaimedTextBox";
             this.percentageClaimedTextBox.Size = new System.Drawing.Size(120, 35);
             this.percentageClaimedTextBox.TabIndex = 31;

@@ -101,6 +101,7 @@
     <Compile Include="CounselManagementForm.Designer.cs">
       <DependentUpon>CounselManagementForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="CounselModel.cs" />
     <Compile Include="CreateNewForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -119,6 +120,7 @@
     <Compile Include="DisbursementForm.Designer.cs">
       <DependentUpon>DisbursementForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="DisbursementsModel.cs" />
     <Compile Include="EditCreateCounselForm.cs">
       <SubType>Form</SubType>
     </Compile>
