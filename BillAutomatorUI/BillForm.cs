@@ -803,8 +803,24 @@ namespace BillAutomatorUI
 
         private void newEntryButton_Click(object sender, EventArgs e)
         {
+            
             NewEntryForm nef = new NewEntryForm();
             nef.setBillModel(em);
+            if (entriesBox.SelectedIndex > -1)
+            {
+
+                int selected = entriesBox.SelectedIndex;
+                string chosenEntry = entriesBox.SelectedItem.ToString();
+                int index = entriesFindIndex(chosenEntry);
+                try
+                {
+                    nef.setDateBox(em.entries[index].date);
+                } catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+                
+            }
             nef.Show();
             openingNew = true;
             this.Close();

@@ -65,6 +65,7 @@ namespace BillAutomatorUI
                 {
                     Console.WriteLine("This is the correct sol");
                     indexOfSol = i;
+                    
                 }
             });
 
@@ -349,6 +350,7 @@ namespace BillAutomatorUI
                     workingSolicitor = sm;
                     hourlyRate = workingSolicitor.hourlyRates[0];
                     found = true;
+                    Console.WriteLine("Found dropdown Sol");
                 }
                 Console.WriteLine(firstName + secondName);
                 Console.WriteLine(sm.firstName + sm.lastName);
@@ -490,6 +492,11 @@ namespace BillAutomatorUI
                 bf.Show();
             }
             
+        }
+
+        public void setDateBox(DateTime date)
+        {
+            dateTimeBox.Value = date;
         }
     }
 }
