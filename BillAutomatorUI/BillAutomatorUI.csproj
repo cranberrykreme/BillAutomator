@@ -179,6 +179,9 @@
     <EmbeddedResource Include="EditCreateSolicitorForm.resx">
       <DependentUpon>EditCreateSolicitorForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="LoadingForm.resx">
+      <DependentUpon>LoadingForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="NewEntryForm.resx">
       <DependentUpon>NewEntryForm.cs</DependentUpon>
     </EmbeddedResource>
