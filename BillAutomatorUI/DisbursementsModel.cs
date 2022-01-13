@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace BillAutomatorUI
 {
-    internal class DisbursementsModel
+    public class DisbursementsModel
     {
+        //Adding comment to show use.
     }
 }

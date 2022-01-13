@@ -27,11 +27,11 @@ namespace BillAutomatorUI
         /// <summary>
         /// Represents the list of disbursements that are in the bill.
         /// </summary>
-        //public List<DisbursementsModel> disbursements { get; set; } = new List<DisbursementsModel>();
+        public List<DisbursementsModel> disbursements  { get; set; } = new List<DisbursementsModel>();
 
         /// <summary>
         /// Represents the list of counsels that worked on the matter.
         /// </summary>
-        //public List<CounselModel> counsel { get; set; } = new List<CounselModel>();
+        public List<CounselModel> counsel { get; set; } = new List<CounselModel>();
     }
 }

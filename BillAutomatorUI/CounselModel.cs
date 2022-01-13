@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BillAutomatorUI
 {
-    internal class CounselModel
+    public class CounselModel
     {
     }
 }

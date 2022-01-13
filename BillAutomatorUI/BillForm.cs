@@ -804,6 +804,8 @@ namespace BillAutomatorUI
         private void newEntryButton_Click(object sender, EventArgs e)
         {
             
+
+
             NewEntryForm nef = new NewEntryForm();
             nef.setBillModel(em);
             if (entriesBox.SelectedIndex > -1)
