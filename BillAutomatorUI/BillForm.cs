@@ -47,10 +47,25 @@ namespace BillAutomatorUI
             Columns cols = tbl.Columns;
             int finalIndex = -1;
 
+            //Initialise Loading Form. 
+            LoadingForm lf = new LoadingForm();
+            lf.Show();
+            lf.TopMost = true;
+
+            int solList = em.solicitor.Count;
+            int entryList = em.entries.Count;
+
+            int totalList = solList + entryList;
+            lf.totalLoading(totalList);
+
+
             //SOLICITORS SECTION.
             // Enter all of the solicitors into the word document.
             for (int i = 1; i < em.solicitor.Count; i++)
             {
+                //Update loading bar for each new row.
+                lf.progressDisplay();
+
                 int index = i + 1; //As the first entry will be on the second row of the table
                 if (index > numRows)
                 {
@@ -109,6 +124,9 @@ namespace BillAutomatorUI
 
             for (int i = 0; i < em.entries.Count; i++)
             {
+                //Update loading bar for each new row.
+                lf.progressDisplay();
+
                 int index = i + 2; //As the first entry will be on the second row of the table, two higher than the index in the list.
                 if (index > numRows - 2)
                 {
@@ -184,6 +202,8 @@ namespace BillAutomatorUI
 
             tbl.Columns[5].PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPercent;
             tbl.Columns[5].PreferredWidth = 12.0f;
+
+            lf.Close();
         }
 
         private void saveCloseButton_Click(object sender, EventArgs e)
@@ -237,6 +257,7 @@ namespace BillAutomatorUI
             em = new BillModel();
             SolicitorsModel s = new SolicitorsModel();
             fileName = aFileName;
+            doc = aDoc;
 
             solTable = aSolTable;
             entTable = aEntTable;
@@ -252,7 +273,20 @@ namespace BillAutomatorUI
 
             em.solicitor.Add(s);
 
-            doc = aDoc;
+            //Initialise Loading Form. 
+            LoadingForm lf = new LoadingForm();
+            lf.Show();
+            lf.TopMost = true;
+
+            Word.Table testTable = doc.Tables[solTable];
+            int solTableLength = testTable.Rows.Count;
+            testTable = doc.Tables[entTable];
+            int entTableLength = testTable.Rows.Count;
+
+            int totalLength = solTableLength + entTableLength;
+            lf.totalLoading(totalLength);
+
+            
             try
             {
                 // FOR THE SOLICITORS.
@@ -264,7 +298,8 @@ namespace BillAutomatorUI
                     Columns cols = table.Columns;
                     for (int i = 2; i <= rows.Count; i++)
                     {
-
+                        //Update loading bar for each new row.
+                        lf.progressDisplay();
                         string ftxt = "";
                         SolicitorsModel sol = new SolicitorsModel();
                         bool isEmpty = true; // To catch if the cells are empty.
@@ -519,6 +554,9 @@ namespace BillAutomatorUI
                 //iterate over rows
                 for (int i = 2; i < row.Count; i++)
                 {
+                    //Update loading bar for each new row.
+                    lf.progressDisplay();
+
                     string ftxt = "";
                     EntriesModel entries = new EntriesModel();
                     bool isEmpty = true; //Stores if the row is empty
@@ -736,6 +774,8 @@ namespace BillAutomatorUI
                 Console.WriteLine(ex);
                 doc.Close();
             }
+
+            lf.Close();
 
         }
 

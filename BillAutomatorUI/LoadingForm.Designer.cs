@@ -30,17 +30,36 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoadingForm));
             this.LoadingLabel = new System.Windows.Forms.Label();
+            this.loadingBar = new System.Windows.Forms.ProgressBar();
+            this.progressLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // LoadingLabel
             // 
             this.LoadingLabel.AutoSize = true;
             this.LoadingLabel.Font = new System.Drawing.Font("Segoe UI Light", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LoadingLabel.Location = new System.Drawing.Point(83, 84);
+            this.LoadingLabel.Location = new System.Drawing.Point(83, 35);
             this.LoadingLabel.Name = "LoadingLabel";
             this.LoadingLabel.Size = new System.Drawing.Size(315, 45);
             this.LoadingLabel.TabIndex = 2;
             this.LoadingLabel.Text = "Loading, please wait...";
+            // 
+            // loadingBar
+            // 
+            this.loadingBar.Location = new System.Drawing.Point(91, 154);
+            this.loadingBar.Name = "loadingBar";
+            this.loadingBar.Size = new System.Drawing.Size(307, 23);
+            this.loadingBar.TabIndex = 3;
+            // 
+            // progressLabel
+            // 
+            this.progressLabel.AutoSize = true;
+            this.progressLabel.Font = new System.Drawing.Font("Segoe UI Light", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.progressLabel.Location = new System.Drawing.Point(193, 106);
+            this.progressLabel.Name = "progressLabel";
+            this.progressLabel.Size = new System.Drawing.Size(177, 45);
+            this.progressLabel.TabIndex = 4;
+            this.progressLabel.Text = "<Progress>";
             // 
             // LoadingForm
             // 
@@ -48,11 +67,14 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(480, 213);
+            this.Controls.Add(this.progressLabel);
+            this.Controls.Add(this.loadingBar);
             this.Controls.Add(this.LoadingLabel);
             this.Font = new System.Drawing.Font("Segoe UI", 15.75F);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(6, 7, 6, 7);
             this.Name = "LoadingForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "LoadingForm";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -62,5 +84,7 @@
         #endregion
 
         private System.Windows.Forms.Label LoadingLabel;
+        private System.Windows.Forms.ProgressBar loadingBar;
+        private System.Windows.Forms.Label progressLabel;
     }
 }

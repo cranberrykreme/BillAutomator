@@ -165,12 +165,22 @@ namespace BillAutomatorUI
                     int solTable = Int32.Parse(solTableTextBox.Text);
                     int entTable = Int32.Parse(entriesTableTextBox.Text);
 
-
                     BillForm billForm = new BillForm();
                     billForm.runStartup(document, solTable, entTable, fileName);
+
+                    //billForm.WindowState = FormWindowState.Minimized;
                     billForm.Show();
+                    //billForm.WindowState = FormWindowState.Normal;
+
+                    //Display bill form as the top most form only when it first appears.
+                    //billForm.TopMost = true;
+                    //billForm.TopMost = false;
+                    //billForm.Select();
+
+
+
                     //this.Hide();
-                    }
+                }
                     catch (Exception exc)
                     {
                         Console.WriteLine("Line 122: " + exc);
