@@ -105,13 +105,13 @@ namespace BillAutomatorUI
                         Application ap = new Application();
                         try
                         {
-                            doc = ap.Documents.Open(@"M:\Templates\Blue Ribbon Documents\2021 MM DD - MATTER NUMBER - MATTER NAME - party party draft bill of costs.docx");
+                            doc = ap.Documents.Open(@"M:\Templates\Blue Ribbon Documents\" + year + " MM DD - MATTER NUMBER - MATTER NAME - party party draft bill of costs.docx");
                         } catch (Exception ex)
                         {
                             Console.WriteLine(ex);
                             try
                             {
-                                doc = ap.Documents.Open(@"Z:\Templates\Blue Ribbon Documents\2021 MM DD - MATTER NUMBER - MATTER NAME - party party draft bill of costs.docx");
+                                doc = ap.Documents.Open(@"Z:\Templates\Blue Ribbon Documents\" + year + " MM DD - MATTER NUMBER - MATTER NAME - party party draft bill of costs.docx");
                             }
                             catch (Exception exception)
                             {
@@ -146,7 +146,7 @@ namespace BillAutomatorUI
                         ap.Visible = true;
 
                         BillForm billForm = new BillForm();
-                        billForm.runStartup(doc, loc);
+                        billForm.runStartup(doc, loc, 2, 3);
                         billForm.Show();
                         openingNew = true;
                         this.Close();
@@ -162,14 +162,14 @@ namespace BillAutomatorUI
                         Application ap = new Application();
                         try
                         {
-                            doc = ap.Documents.Open(@"M:\Templates\Blue Ribbon Documents\2021 MM DD - MATTER NUMBER - MATTER NAME - solicitor client draft bill of costs.docx");
+                            doc = ap.Documents.Open(@"M:\Templates\Blue Ribbon Documents\" + year + " MM DD - MATTER NUMBER - MATTER NAME - solicitor client draft bill of costs.docx");
                         }
                         catch (Exception ex)
                         {
                             Console.WriteLine(ex);
                             try
                             {
-                                doc = ap.Documents.Open(@"Z:\Templates\Blue Ribbon Documents\2021 MM DD - MATTER NUMBER - MATTER NAME - solicitor client draft bill of costs.docx");
+                                doc = ap.Documents.Open(@"Z:\Templates\Blue Ribbon Documents\" + year + " MM DD - MATTER NUMBER - MATTER NAME - solicitor client draft bill of costs.docx");
                             }
                             catch (Exception exception)
                             {
@@ -200,7 +200,7 @@ namespace BillAutomatorUI
                         ap.Visible = true;
 
                         BillForm billForm = new BillForm();
-                        billForm.runStartup(doc, loc);
+                        billForm.runStartup(doc, loc, 1, 2);
                         billForm.Show();
                         openingNew = true;
                         this.Close();

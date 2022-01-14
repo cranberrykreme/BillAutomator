@@ -204,6 +204,9 @@
     <EmbeddedResource Include="SolicitorManagementForm.resx">
       <DependentUpon>SolicitorManagementForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="TableInputForm.resx">
+      <DependentUpon>TableInputForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="BillAutomatorUI_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

@@ -75,7 +75,7 @@
             this.Margin = new System.Windows.Forms.Padding(6, 7, 6, 7);
             this.Name = "LoadingForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "LoadingForm";
+            this.Text = "Loading";
             this.ResumeLayout(false);
             this.PerformLayout();
 

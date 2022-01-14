@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using Microsoft.Office.Interop.Word;
 using Word = Microsoft.Office.Interop.Word;
 using Application = Microsoft.Office.Interop.Word.Application;
+//using Microsoft.VisualBasic;
 //using BillAutomator;
 
 namespace BillAutomatorUI
@@ -250,7 +251,7 @@ namespace BillAutomatorUI
         // existing bill of costs to open up and run. It will parse all
         // of the information from the bill and present it to the
         // user in the style set out in the forms.
-        public void runStartup(Document aDoc, string aFileName)
+        public void runStartup(Document aDoc, string aFileName, int aSolTable, int aEntTable)
         {
             DashboardForm df = new DashboardForm();
             fileLoc = df.fileName;
@@ -259,16 +260,28 @@ namespace BillAutomatorUI
             fileName = aFileName;
             doc = aDoc;
 
-            //Determine which tables are which.
-            solTable = findSolTable();
-            entTable = findEntTable();
+            solTable = aSolTable;
+            entTable = aEntTable;
+
+            if(solTable == 0 && entTable == 0)
+            {
+                //Determine which tables are which.
+                solTable = findSolTable();
+                entTable = findEntTable();
+            }
+            
 
             // If there has been some type of error.
             if(solTable == 0 || entTable == 0)
             {
-                MessageBox.Show("something is wrong" + " Sol Table is: " + solTable + " & Ent table is: " + entTable);
-                closeAll();
+                TableInputForm tif = new TableInputForm();
+                tif.initialise(solTable, entTable, doc, fileName);
+                tif.Show();
+
+                //MessageBox.Show("something is wrong" + " Sol Table is: " + solTable + " & Ent table is: " + entTable);
+                this.Close();
                 return;
+
             }
 
             //Initialise a solicitor's profile for "unknown".
@@ -318,7 +331,6 @@ namespace BillAutomatorUI
                         {
                             switch (cols.Count)
                             {
-                                //WHAT TO DO FOR HOURLY RATE FOR SOL/CLIENT BILL??
                                 case 3:
                                     try
                                     {
@@ -471,7 +483,7 @@ namespace BillAutomatorUI
                                     }
                                     
                                 }
-                                else if(j == 4) // Hourly rate
+                                else if(j == 4 && !String.IsNullOrEmpty(txt)) // Hourly rate
                                 {
                                     try
                                     {

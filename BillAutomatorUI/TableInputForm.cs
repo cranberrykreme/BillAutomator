@@ -7,14 +7,100 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Office.Interop.Word;
+using Application = Microsoft.Office.Interop.Word.Application;
 
 namespace BillAutomatorUI
 {
     public partial class TableInputForm : Form
     {
+        private static Document doc; //will always have the same value
+        private static string fileName; //will always have the same value.
+
         public TableInputForm()
         {
             InitializeComponent();
+
+            billTypeDropDown.Items.Add("Solicitor/Client");
+            billTypeDropDown.Items.Add("Party/Party");
+        }
+
+        /// <summary>
+        /// Set up the table input form, inputting the relevant document and fileName as well as currently known tables.
+        /// </summary>
+        /// <param name="solTable"></param>
+        /// <param name="entTable"></param>
+        /// <param name="aDoc"></param>
+        /// <param name="aFileName"></param>
+        public void initialise(int solTable, int entTable, Document aDoc, string aFileName)
+        {
+            solTableTextBox.Text = solTable.ToString();
+            entriesTableTextBox.Text = entTable.ToString();
+            doc = aDoc;
+            fileName = aFileName;
+        }
+
+        private void billTypeDropDown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (billTypeDropDown.SelectedIndex == 1) //Party/party
+            {
+                solTableTextBox.Text = "2";
+                entriesTableTextBox.Text = "3";
+            }
+            else // Solicitor/Client
+            {
+                solTableTextBox.Text = "1";
+                entriesTableTextBox.Text = "2";
+            }
+        }
+
+        private void cancelTablesButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                doc.Close();
+            } catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+
+
+            this.Close();
+        }
+
+        private void confirmTablesButton_Click(object sender, EventArgs e)
+        {
+            if (String.IsNullOrEmpty(solTableTextBox.Text) || String.IsNullOrEmpty(entriesTableTextBox.Text))
+            {
+                MessageBox.Show("Please enter the correct numbers into the table input boxes.");
+                return;
+            }
+
+            // Get the inputted table numbers.
+            int solTable = Int32.Parse(solTableTextBox.Text);
+            int entTable = Int32.Parse(entriesTableTextBox.Text);
+
+            try
+            {
+                BillForm billForm = new BillForm();
+                billForm.runStartup(doc, fileName, solTable, entTable);
+
+                billForm.Show();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                try
+                {
+                    doc.Close();
+                    
+                } catch (Exception exc)
+                {
+                    Console.WriteLine(exc);
+                }
+            }
+
+            this.Close();
         }
     }
 }
