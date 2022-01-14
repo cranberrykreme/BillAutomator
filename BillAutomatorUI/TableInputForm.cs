@@ -40,6 +40,12 @@ namespace BillAutomatorUI
             fileName = aFileName;
         }
 
+        /// <summary>
+        /// Automatically changes the default values in the solTextBox and entryTextBox to what is 'should' be for the
+        /// particular bill that is selected.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void billTypeDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (billTypeDropDown.SelectedIndex == 1) //Party/party
@@ -54,6 +60,11 @@ namespace BillAutomatorUI
             }
         }
 
+        /// <summary>
+        /// Closes the current form and the word document (if able).
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void cancelTablesButton_Click(object sender, EventArgs e)
         {
             try
@@ -68,6 +79,11 @@ namespace BillAutomatorUI
             this.Close();
         }
 
+        /// <summary>
+        /// Push's the users choice of tables back to the bill form to run through the word document again.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void confirmTablesButton_Click(object sender, EventArgs e)
         {
             if (String.IsNullOrEmpty(solTableTextBox.Text) || String.IsNullOrEmpty(entriesTableTextBox.Text))

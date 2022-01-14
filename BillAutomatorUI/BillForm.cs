@@ -26,7 +26,6 @@ namespace BillAutomatorUI
     /// </summary>
     public partial class BillForm : Form
     {
-        public string fileLoc;
         private static Document doc; //will always have the same value
         private static string fileName; //will always have the same value.
         private static string clientName; //Will store the name of the client
@@ -253,8 +252,6 @@ namespace BillAutomatorUI
         // user in the style set out in the forms.
         public void runStartup(Document aDoc, string aFileName, int aSolTable, int aEntTable)
         {
-            DashboardForm df = new DashboardForm();
-            fileLoc = df.fileName;
             em = new BillModel();
             SolicitorsModel s = new SolicitorsModel();
             fileName = aFileName;

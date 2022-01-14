@@ -44,7 +44,7 @@
             this.cancelTablesButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
             this.cancelTablesButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
             this.cancelTablesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cancelTablesButton.Location = new System.Drawing.Point(497, 268);
+            this.cancelTablesButton.Location = new System.Drawing.Point(499, 271);
             this.cancelTablesButton.Name = "cancelTablesButton";
             this.cancelTablesButton.Size = new System.Drawing.Size(148, 52);
             this.cancelTablesButton.TabIndex = 14;
@@ -57,7 +57,7 @@
             this.confirmTablesButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
             this.confirmTablesButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
             this.confirmTablesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.confirmTablesButton.Location = new System.Drawing.Point(673, 268);
+            this.confirmTablesButton.Location = new System.Drawing.Point(675, 271);
             this.confirmTablesButton.Name = "confirmTablesButton";
             this.confirmTablesButton.Size = new System.Drawing.Size(148, 52);
             this.confirmTablesButton.TabIndex = 13;
@@ -67,7 +67,7 @@
             // 
             // entriesTableTextBox
             // 
-            this.entriesTableTextBox.Location = new System.Drawing.Point(448, 176);
+            this.entriesTableTextBox.Location = new System.Drawing.Point(450, 179);
             this.entriesTableTextBox.Name = "entriesTableTextBox";
             this.entriesTableTextBox.Size = new System.Drawing.Size(373, 35);
             this.entriesTableTextBox.TabIndex = 20;
@@ -76,7 +76,7 @@
             // 
             this.entriesTableLabel.AutoSize = true;
             this.entriesTableLabel.Font = new System.Drawing.Font("Segoe UI Light", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.entriesTableLabel.Location = new System.Drawing.Point(12, 167);
+            this.entriesTableLabel.Location = new System.Drawing.Point(14, 170);
             this.entriesTableLabel.Name = "entriesTableLabel";
             this.entriesTableLabel.Size = new System.Drawing.Size(311, 45);
             this.entriesTableLabel.TabIndex = 19;
@@ -85,7 +85,7 @@
             // billTypeDropDown
             // 
             this.billTypeDropDown.FormattingEnabled = true;
-            this.billTypeDropDown.Location = new System.Drawing.Point(448, 18);
+            this.billTypeDropDown.Location = new System.Drawing.Point(450, 21);
             this.billTypeDropDown.Name = "billTypeDropDown";
             this.billTypeDropDown.Size = new System.Drawing.Size(373, 38);
             this.billTypeDropDown.TabIndex = 18;
@@ -95,7 +95,7 @@
             // 
             this.typeBillLabel.AutoSize = true;
             this.typeBillLabel.Font = new System.Drawing.Font("Segoe UI Light", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.typeBillLabel.Location = new System.Drawing.Point(12, 9);
+            this.typeBillLabel.Location = new System.Drawing.Point(14, 12);
             this.typeBillLabel.Name = "typeBillLabel";
             this.typeBillLabel.Size = new System.Drawing.Size(168, 45);
             this.typeBillLabel.TabIndex = 17;
@@ -103,7 +103,7 @@
             // 
             // solTableTextBox
             // 
-            this.solTableTextBox.Location = new System.Drawing.Point(448, 112);
+            this.solTableTextBox.Location = new System.Drawing.Point(450, 115);
             this.solTableTextBox.Name = "solTableTextBox";
             this.solTableTextBox.Size = new System.Drawing.Size(373, 35);
             this.solTableTextBox.TabIndex = 16;
@@ -112,7 +112,7 @@
             // 
             this.solTableLabel.AutoSize = true;
             this.solTableLabel.Font = new System.Drawing.Font("Segoe UI Light", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.solTableLabel.Location = new System.Drawing.Point(12, 103);
+            this.solTableLabel.Location = new System.Drawing.Point(14, 106);
             this.solTableLabel.Name = "solTableLabel";
             this.solTableLabel.Size = new System.Drawing.Size(330, 45);
             this.solTableLabel.TabIndex = 15;

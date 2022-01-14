@@ -40,7 +40,7 @@
             this.openFileButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
             this.openFileButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
             this.openFileButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.openFileButton.Location = new System.Drawing.Point(35, 100);
+            this.openFileButton.Location = new System.Drawing.Point(31, 101);
             this.openFileButton.Name = "openFileButton";
             this.openFileButton.Size = new System.Drawing.Size(148, 52);
             this.openFileButton.TabIndex = 2;
@@ -53,7 +53,7 @@
             this.createFileButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
             this.createFileButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
             this.createFileButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.createFileButton.Location = new System.Drawing.Point(447, 100);
+            this.createFileButton.Location = new System.Drawing.Point(443, 101);
             this.createFileButton.Name = "createFileButton";
             this.createFileButton.Size = new System.Drawing.Size(148, 52);
             this.createFileButton.TabIndex = 3;
@@ -63,7 +63,7 @@
             // 
             // fileLocTextBox
             // 
-            this.fileLocTextBox.Location = new System.Drawing.Point(222, 19);
+            this.fileLocTextBox.Location = new System.Drawing.Point(218, 20);
             this.fileLocTextBox.Name = "fileLocTextBox";
             this.fileLocTextBox.Size = new System.Drawing.Size(373, 35);
             this.fileLocTextBox.TabIndex = 12;
@@ -72,7 +72,7 @@
             // 
             this.fileLocLabel.AutoSize = true;
             this.fileLocLabel.Font = new System.Drawing.Font("Segoe UI Light", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.fileLocLabel.Location = new System.Drawing.Point(27, 9);
+            this.fileLocLabel.Location = new System.Drawing.Point(23, 10);
             this.fileLocLabel.Name = "fileLocLabel";
             this.fileLocLabel.Size = new System.Drawing.Size(189, 45);
             this.fileLocLabel.TabIndex = 11;
