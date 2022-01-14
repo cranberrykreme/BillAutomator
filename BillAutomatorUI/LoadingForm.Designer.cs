@@ -55,11 +55,11 @@
             // 
             this.progressLabel.AutoSize = true;
             this.progressLabel.Font = new System.Drawing.Font("Segoe UI Light", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.progressLabel.Location = new System.Drawing.Point(193, 106);
+            this.progressLabel.Location = new System.Drawing.Point(213, 106);
             this.progressLabel.Name = "progressLabel";
-            this.progressLabel.Size = new System.Drawing.Size(177, 45);
+            this.progressLabel.Size = new System.Drawing.Size(71, 45);
             this.progressLabel.TabIndex = 4;
-            this.progressLabel.Text = "<Progress>";
+            this.progressLabel.Text = "xx%";
             // 
             // LoadingForm
             // 

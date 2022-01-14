@@ -259,8 +259,17 @@ namespace BillAutomatorUI
             fileName = aFileName;
             doc = aDoc;
 
-            solTable = aSolTable;
-            entTable = aEntTable;
+            //Determine which tables are which.
+            solTable = findSolTable();
+            entTable = findEntTable();
+
+            // If there has been some type of error.
+            if(solTable == 0 || entTable == 0)
+            {
+                MessageBox.Show("something is wrong" + " Sol Table is: " + solTable + " & Ent table is: " + entTable);
+                closeAll();
+                return;
+            }
 
             //Initialise a solicitor's profile for "unknown".
             List<double> unknownRate = new List<double>();
@@ -370,6 +379,7 @@ namespace BillAutomatorUI
 
                         for (int j = 1; j <= cols.Count; j++)
                         {
+                            // Read the cell into the string
                             Cell cell = rows[i].Cells[j];
                             Range r = cell.Range;
 
@@ -1213,6 +1223,129 @@ namespace BillAutomatorUI
                     return;
                 }
             }
+        }
+
+        /// <summary>
+        /// To exit the billForm if there is an error.
+        /// </summary>
+        private void closeAll()
+        {
+            doc.Close();
+            this.Close();
+        }
+
+        /// <summary>
+        /// Finds the correct solicitors table
+        /// </summary>
+        private int findSolTable()
+        {
+            int tableNum = 0;
+            int returnTable = 0;
+
+            // Runs through all of the tables
+            foreach(Word.Table table in doc.Tables)
+            {
+                tableNum++;
+                // For solicitors table, if it is missing the Rate column.
+                if(table.Columns.Count > 2 && table.Columns.Count < 4)
+                {
+                    Rows rows = table.Rows;
+                    Cell firstCell = rows[1].Cells[1];
+                    Cell secondCell = rows[1].Cells[2];
+                    Cell thirdCell = rows[1].Cells[3];
+
+                    Range first = firstCell.Range;
+                    Range second = secondCell.Range;
+                    Range third = thirdCell.Range;
+
+                    string firstTxt = first.Text;
+                    string secondTxt = second.Text;
+                    string thirdTxt = third.Text;
+
+                    if(firstTxt.Contains("Author") && secondTxt.Contains("Code") && thirdTxt.Contains("Date of Admission"))
+                    {
+                        returnTable = tableNum;
+                        break;
+                    }
+                    
+                } // For the solicitors table, if it has more than the basic three columns
+                else if(table.Columns.Count > 3)
+                {
+                    Rows rows = table.Rows;
+                    Cell firstCell = rows[1].Cells[1];
+                    Cell secondCell = rows[1].Cells[2];
+                    Cell thirdCell = rows[1].Cells[3];
+                    Cell fourthCell = rows[1].Cells[4];
+
+                    Range first = firstCell.Range;
+                    Range second = secondCell.Range;
+                    Range third = thirdCell.Range;
+                    Range fourth = fourthCell.Range;
+
+                    string firstTxt = first.Text;
+                    string secondTxt = second.Text;
+                    string thirdTxt = third.Text;
+                    string fourthTxt = fourth.Text;
+
+                    if (firstTxt.Contains("Author") && secondTxt.Contains("Code") && thirdTxt.Contains("Date of Admission") && fourthTxt.Contains("Rate"))
+                    {
+                        returnTable = tableNum;
+                        break;
+                    }
+                }
+            }
+            return returnTable;
+        }
+
+        /// <summary>
+        /// Returns the correct table that has all of the entries in it.
+        /// </summary>
+        /// <returns></returns>
+        private int findEntTable()
+        {
+            int foundTable = 0;
+            for(int i = solTable + 1; i <= doc.Tables.Count; i++)
+            {
+                Table table;
+                try
+                {
+                    table = doc.Tables[i];
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    Console.WriteLine("Table " + i + " out of " + doc.Tables.Count);
+                    break;
+                }
+                
+                if(table.Columns.Count > 4)
+                {
+                    Rows rows = table.Rows;
+                    Cell firstCell = rows[1].Cells[2];
+                    Cell secondCell = rows[1].Cells[3];
+                    Cell thirdCell = rows[1].Cells[4];
+                    Cell fourthCell = rows[1].Cells[5];
+
+                    Range first = firstCell.Range;
+                    Range second = secondCell.Range;
+                    Range third = thirdCell.Range;
+                    Range fourth = fourthCell.Range;
+
+                    string firstTxt = first.Text;
+                    string secondTxt = second.Text;
+                    string thirdTxt = third.Text;
+                    string fourthTxt = fourth.Text;
+
+                    if(firstTxt.Contains("Date") && secondTxt.Contains("Author") && thirdTxt.Contains("Description of Work Performed") && fourthTxt.Contains("Amount"))
+                    {
+                        foundTable = i;
+                        break;
+                    }
+                }
+                
+            }
+
+            return foundTable;
         }
     }
 }
