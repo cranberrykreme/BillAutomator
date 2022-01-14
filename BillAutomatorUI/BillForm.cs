@@ -1229,9 +1229,11 @@ namespace BillAutomatorUI
                 {
                     MessageBox.Show("Cannot re-open word document.");
                     Console.WriteLine(exception);
+                    Console.WriteLine(fileName);
                     return;
                 }
             }
+            Console.WriteLine(doc.Path);
         }
 
         /// <summary>
