@@ -250,7 +250,7 @@ namespace BillAutomatorUI
         // existing bill of costs to open up and run. It will parse all
         // of the information from the bill and present it to the
         // user in the style set out in the forms.
-        public void runStartup(Document aDoc, int aSolTable, int aEntTable, string aFileName)
+        public void runStartup(Document aDoc, string aFileName)
         {
             DashboardForm df = new DashboardForm();
             fileLoc = df.fileName;
