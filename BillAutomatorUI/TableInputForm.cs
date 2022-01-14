@@ -80,6 +80,20 @@ namespace BillAutomatorUI
             int solTable = Int32.Parse(solTableTextBox.Text);
             int entTable = Int32.Parse(entriesTableTextBox.Text);
 
+            //Handle errors with the input tables.
+            int tableCount = doc.Tables.Count;
+            if(solTable > tableCount || entTable > tableCount)
+            {
+                MessageBox.Show("You cannot access a table number higher than the total number of tables in the document, " +
+                    "which is " + tableCount + " tables.");
+                return;
+            }
+            if(solTable < 1 || entTable < 1)
+            {
+                MessageBox.Show("You cannot access any table before the first one. Please enter a value of 1 or greater in both boxes.");
+                return;
+            }
+
             try
             {
                 BillForm billForm = new BillForm();
