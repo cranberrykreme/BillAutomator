@@ -39,8 +39,10 @@ namespace BillAutomatorUI
             InitializeComponent();
         }
 
-        private void writeChanges()
+        private bool writeChanges()
         {
+            bool success = true;
+
             Word.Table tbl = doc.Tables[solTable];
             Rows rows = tbl.Rows;
             int numRows = rows.Count; //to compare the index of the row to the final index.
@@ -58,135 +60,154 @@ namespace BillAutomatorUI
             int totalList = solList + entryList;
             lf.totalLoading(totalList);
 
-
             //SOLICITORS SECTION.
-            // Enter all of the solicitors into the word document.
-            for (int i = 1; i < em.solicitor.Count; i++)
+            try
             {
-                //Update loading bar for each new row.
-                lf.progressDisplay();
-
-                int index = i + 1; //As the first entry will be on the second row of the table
-                if (index > numRows)
+                // Enter all of the solicitors into the word document.
+                for (int i = 1; i < em.solicitor.Count; i++)
                 {
-                    object oMissing = System.Reflection.Missing.Value;
-                    rows.Add(ref oMissing);
-                    numRows++;
+                    //Update loading bar for each new row.
+                    lf.progressDisplay();
 
-                }
-                Console.WriteLine("Current Row is: " + index);
-                Console.WriteLine("Current Number of rows is: " + rows.Count);
-                Console.WriteLine("Current List Entry is: " + i + " And the total size of the list is: " + em.solicitor.Count);
-
-                if (!String.IsNullOrEmpty(em.solicitor[i].firstName))
-                {
-                    rows[index].Cells[1].Range.Text = em.solicitor[i].firstName + " " + em.solicitor[i].lastName;
-                } else
-                {
-                    rows[index].Cells[1].Range.Text = em.solicitor[i].lastName;
-                }
-                
-                rows[index].Cells[2].Range.Text = em.solicitor[i].initials;
-                rows[index].Cells[3].Range.Text = em.solicitor[i].dateOfAdmission;
-                if (cols.Count > 3) //If not a solicitor client bill, add the hourly rate of the solicitor
-                {
-                    rows[index].Cells[4].Range.Text = "$" + em.solicitor[i].hourlyRates[0].ToString() + ".00";
-                }
-
-                finalIndex = index;
-            }
-            //Add one more index to finalIndex, so it doesn't delete the final entry.
-            finalIndex++;
-
-            //Delete all unused rows.
-            while (finalIndex <= numRows)
-            {
-                try
-                {
-                    rows[finalIndex].Delete();
-                    numRows--;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex);
-                    Console.WriteLine("Final Index is: " + finalIndex + " and number of rows is: " + numRows);
-                    break;
-                }
-            }
-
-            //BILL ENTRIES SECTION.
-            //Enter all of the bill entries into the bill of costs.
-            tbl = doc.Tables[entTable];
-            rows = tbl.Rows;
-            numRows = rows.Count; //to compare the index of the row to the final index.
-            cols = tbl.Columns;
-            finalIndex = -1;
-
-            for (int i = 0; i < em.entries.Count; i++)
-            {
-                //Update loading bar for each new row.
-                lf.progressDisplay();
-
-                int index = i + 2; //As the first entry will be on the second row of the table, two higher than the index in the list.
-                if (index > numRows - 2)
-                {
-                    //For the entries we must always add only the second last row.
-                    Console.WriteLine(rows.Count);
-                    rows.Add(rows[rows.Count - 1]);
-                    numRows++;
-                }
-
-                Console.WriteLine(em.entries[i].date.ToString("dd.MM.yyyy"));
-                rows[index].Cells[2].Range.Text = em.entries[i].date.ToString("dd.MM.yyyy");    //Add the entries' date.
-                rows[index].Cells[3].Range.Text = em.entries[i].solicitor.initials;             //Add the solicitors initials
-                rows[index].Cells[4].Range.Text = em.entries[i].description;                    //Add the entries' description.
-
-                //Add the cost of the entry.
-                double cost = em.entries[i].amount;
-                string[] amt = cost.ToString().Split('.');
-
-                double decimalPt = Convert.ToDouble(amt[amt.Length - 1]);
-                if (cost % 1 == 0)
-                {
-                    Console.WriteLine(cost);
-                    rows[index].Cells[5].Range.Text = "$" + em.entries[i].amount.ToString() + ".00";
-                    Console.WriteLine(rows[index].Cells[5].Range.Text);
-                }
-                else
-                {
-                    string[] numbers = em.entries[i].amount.ToString().Split('.');
-                    Console.WriteLine(numbers[numbers.Length - 1]);
-                    string num = numbers[numbers.Length - 1];
-                    if (num.Length < 2)
+                    int index = i + 1; //As the first entry will be on the second row of the table
+                    if (index > numRows)
                     {
-                        rows[index].Cells[5].Range.Text = "$" + em.entries[i].amount.ToString() + "0";
+                        object oMissing = System.Reflection.Missing.Value;
+                        rows.Add(ref oMissing);
+                        numRows++;
+
+                    }
+                    Console.WriteLine("Current Row is: " + index);
+                    Console.WriteLine("Current Number of rows is: " + rows.Count);
+                    Console.WriteLine("Current List Entry is: " + i + " And the total size of the list is: " + em.solicitor.Count);
+
+                    if (!String.IsNullOrEmpty(em.solicitor[i].firstName))
+                    {
+                        rows[index].Cells[1].Range.Text = em.solicitor[i].firstName + " " + em.solicitor[i].lastName;
                     }
                     else
                     {
-                        rows[index].Cells[5].Range.Text = "$" + em.entries[i].amount.ToString();
+                        rows[index].Cells[1].Range.Text = em.solicitor[i].lastName;
+                    }
+
+                    rows[index].Cells[2].Range.Text = em.solicitor[i].initials;
+                    rows[index].Cells[3].Range.Text = em.solicitor[i].dateOfAdmission;
+                    if (cols.Count > 3) //If not a solicitor client bill, add the hourly rate of the solicitor
+                    {
+                        rows[index].Cells[4].Range.Text = "$" + em.solicitor[i].hourlyRates[0].ToString() + ".00";
+                    }
+
+                    finalIndex = index;
+                }
+                //Add one more index to finalIndex, so it doesn't delete the final entry.
+                finalIndex++;
+
+                //Delete all unused rows.
+                while (finalIndex <= numRows)
+                {
+                    try
+                    {
+                        rows[finalIndex].Delete();
+                        numRows--;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex);
+                        Console.WriteLine("Final Index is: " + finalIndex + " and number of rows is: " + numRows);
+                        break;
                     }
                 }
-                finalIndex = index;
-            }
-            //Add one more index to finalIndex, so it doesn't delete the final entry.
-            finalIndex++;
-
-            //Delete all unused entries. Keep the very last row as that is the summary.
-            while (finalIndex < numRows)
+            } catch (Exception ex)
             {
-                try
-                {
-                    rows[finalIndex].Delete();
-                    numRows--;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex);
-                    Console.WriteLine("Final Index is: " + finalIndex + " and number of rows is: " + numRows);
-                    break;
-                }
-
+                Console.WriteLine(ex);
+                MessageBox.Show("An error has occured in the writing to the solicitor's table.");
+                return false;
             }
+
+            //BILL ENTRIES SECTION.
+            try
+            {
+                //Enter all of the bill entries into the bill of costs.
+                tbl = doc.Tables[entTable];
+                rows = tbl.Rows;
+                numRows = rows.Count; //to compare the index of the row to the final index.
+                cols = tbl.Columns;
+                finalIndex = -1;
+
+                for (int i = 0; i < em.entries.Count; i++)
+                {
+                    //Update loading bar for each new row.
+                    lf.progressDisplay();
+
+                    int index = i + 2; //As the first entry will be on the second row of the table, two higher than the index in the list.
+                    if (index > numRows - 2)
+                    {
+                        //For the entries we must always add only the second last row.
+                        Console.WriteLine(rows.Count);
+                        rows.Add(rows[rows.Count - 1]);
+                        numRows++;
+                    }
+
+                    Console.WriteLine(em.entries[i].date.ToString("dd.MM.yyyy"));
+                    rows[index].Cells[2].Range.Text = em.entries[i].date.ToString("dd.MM.yyyy");    //Add the entries' date.
+                    rows[index].Cells[3].Range.Text = em.entries[i].solicitor.initials;             //Add the solicitors initials
+                    rows[index].Cells[4].Range.Text = em.entries[i].description;                    //Add the entries' description.
+
+                    //Add the cost of the entry.
+                    double cost = em.entries[i].amount;
+                    string[] amt = cost.ToString().Split('.');
+
+                    double decimalPt = Convert.ToDouble(amt[amt.Length - 1]);
+                    if (cost % 1 == 0)
+                    {
+                        Console.WriteLine(cost);
+                        rows[index].Cells[5].Range.Text = "$" + em.entries[i].amount.ToString() + ".00";
+                        Console.WriteLine(rows[index].Cells[5].Range.Text);
+                    }
+                    else
+                    {
+                        string[] numbers = em.entries[i].amount.ToString().Split('.');
+                        Console.WriteLine(numbers[numbers.Length - 1]);
+                        string num = numbers[numbers.Length - 1];
+                        if (num.Length < 2)
+                        {
+                            rows[index].Cells[5].Range.Text = "$" + em.entries[i].amount.ToString() + "0";
+                        }
+                        else
+                        {
+                            rows[index].Cells[5].Range.Text = "$" + em.entries[i].amount.ToString();
+                        }
+                    }
+                    finalIndex = index;
+                }
+                //Add one more index to finalIndex, so it doesn't delete the final entry.
+                finalIndex++;
+
+                //Delete all unused entries. Keep the very last row as that is the summary.
+                while (finalIndex < numRows)
+                {
+                    try
+                    {
+                        rows[finalIndex].Delete();
+                        numRows--;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex);
+                        Console.WriteLine("Final Index is: " + finalIndex + " and number of rows is: " + numRows);
+                        break;
+                    }
+
+                }
+            } catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                MessageBox.Show("An error has occured in the writing to the professional fee's table.");
+                return false;
+            }
+
+            
+            
 
             tbl.Columns[1].PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPercent;
             tbl.Columns[1].PreferredWidth = 6.9f;
@@ -204,10 +225,13 @@ namespace BillAutomatorUI
             tbl.Columns[5].PreferredWidth = 12.0f;
 
             lf.Close();
+
+            return success;
         }
 
         private void saveCloseButton_Click(object sender, EventArgs e)
         {
+            bool success = false;
             try
             {
                 Console.WriteLine(doc.Path);
@@ -228,20 +252,48 @@ namespace BillAutomatorUI
             try{//try to close the application
 
                 //Write changes.
-                writeChanges();
+                success = writeChanges();
 
-                //Save and close document.
-                doc.Save();
-                doc.Close();
+                if (success)
+                {
+                    //Save and close document.
+                    doc.Save();
+                    doc.Close();
+                } else
+                {
+                    MessageBox.Show("As an error has occured, the document will not close automatically.");
+                }
+                
 
                 //TODO: update the summary amount in the final row upon completion.
+            } catch (System.Runtime.InteropServices.COMException boxEx)
+            {
+                MessageBox.Show("An error has occured to do with open dialog boxes from other word files, " + 
+                    "please check to make sure there are no open dialog boxes before you try again.\n" + 
+                    "You can close the document and application yourself, but take note of you changes that " +
+                   "have failed to save to the word document.");
+
+                Console.WriteLine(boxEx);
+
+                // Do not close document, instead give the user the chance to close it themselves.
+                //doc.Close();
+                return;
             } catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
-                doc.Close();
+                MessageBox.Show("An error has occured, you can close the document and application yourself, but take note of you changes that " +
+                   "have failed to save to the word document.\n\n\n" + ex.ToString());
+
+                // Do not close document, instead give the user the chance to close it themselves.
+                //doc.Close();
+                return;
             }
-            openingNew = true;
-            this.Close();
+
+            if (success)
+            {
+                openingNew = true;
+                this.Close();
+            }
+            
             MessageBox.Show("All done!");
 
         }
