@@ -200,6 +200,7 @@
             this.noChargeCheckBox.TabIndex = 26;
             this.noChargeCheckBox.Text = "No Charge";
             this.noChargeCheckBox.UseVisualStyleBackColor = true;
+            this.noChargeCheckBox.CheckedChanged += new System.EventHandler(this.noChargeCheckBox_CheckedChanged);
             // 
             // createEntryButton
             // 

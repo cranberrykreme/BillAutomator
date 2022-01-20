@@ -724,6 +724,7 @@ namespace BillAutomatorUI
                         {
                             try
                             {
+                                entries.noCharge = false;
                                 string desc = txt.Replace("", "");
                                 desc = desc.Substring(0, desc.Length - 1);
                                 Console.WriteLine(desc);
@@ -770,6 +771,10 @@ namespace BillAutomatorUI
 
                                     entries.percentage = percentageClaimed;
                                     Console.WriteLine("The % claimed is: " + entries.percentage);
+                                } else if(getPercent.Contains("No Charge"))
+                                {
+                                    entries.noCharge = true;
+                                    entries.percentage = 100;
                                 }
                                 else
                                 {

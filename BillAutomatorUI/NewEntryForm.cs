@@ -80,8 +80,9 @@ namespace BillAutomatorUI
             descriptionTextBox.Text = existingEntry.description;
             hoursInput.Value = Convert.ToDecimal(existingEntry.hours);
             percentageClaimedTextBox.Value = Convert.ToDecimal(existingEntry.percentage);
+            noChargeCheckBox.Checked = existingEntry.noCharge;
 
-            if(indexOfSol > -1)
+            if (indexOfSol > -1)
             {
                 solicitorDropDown.SelectedIndex = indexOfSol;
             }
@@ -210,6 +211,16 @@ namespace BillAutomatorUI
                     Console.WriteLine(ex);
                 }
 
+                // Set whether the entry has no charge or not.
+                try
+                {
+                    bool noCharge = noChargeCheckBox.Checked;
+                    ent.noCharge = noCharge;
+                } catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+
             }
             catch (Exception ex)
             {
@@ -260,7 +271,7 @@ namespace BillAutomatorUI
         private void hoursInput_valueChanged(object sender, EventArgs e)
         {
             //Work on automatically changing the total amount.
-            if (hourlyRate > 0 && hoursInput.Value >= 0 && percentageClaimedTextBox.Value > 0)
+            if (hourlyRate > 0 && hoursInput.Value >= 0 && percentageClaimedTextBox.Value > 0 && !totalInput.ReadOnly)
             {
                 double timeSpent = Decimal.ToDouble(hoursInput.Value);
                 double perc = Decimal.ToDouble(percentageClaimedTextBox.Value);
@@ -360,7 +371,7 @@ namespace BillAutomatorUI
                 MessageBox.Show("Could not find chosen solicitor" + " " + firstName + secondName);
                 return;
             }
-            if(hourlyRate > 0 && hoursInput.Value > 0 && percentageClaimedTextBox.Value > 0)
+            if(hourlyRate > 0 && hoursInput.Value > 0 && percentageClaimedTextBox.Value > 0 && !totalInput.ReadOnly)
             {
                 double timeSpent = Decimal.ToDouble(hoursInput.Value);
                 double perc = Decimal.ToDouble(percentageClaimedTextBox.Value);
@@ -377,8 +388,8 @@ namespace BillAutomatorUI
         /// <param name="e"></param>
         private void percentageClaimedTextBox_ValueChanged(object sender, EventArgs e)
         {
-
-            if (!String.IsNullOrEmpty(descriptionTextBox.Text) && !turnOffHoursCheckBox.Checked && percentageClaimedTextBox.Value < 100)
+            // if the value is changing to less than 100% claimed.
+            if (!String.IsNullOrEmpty(descriptionTextBox.Text) && !turnOffHoursCheckBox.Checked && percentageClaimedTextBox.Value < 100 && !noChargeCheckBox.Checked)
             {
                 try
                 {
@@ -428,6 +439,7 @@ namespace BillAutomatorUI
                         string extra = " (" + percentageClaimedTextBox.Value + "% claimed)";
 
                         descriptionTextBox.Text = desc + extra;
+
                     }
 
 
@@ -437,8 +449,8 @@ namespace BillAutomatorUI
                     Console.WriteLine(ex);
                 }
 
-            } else if(percentageClaimedTextBox.Value == 100)
-            {
+            } else if(!String.IsNullOrEmpty(descriptionTextBox.Text) && !turnOffHoursCheckBox.Checked && percentageClaimedTextBox.Value == 100 && !noChargeCheckBox.Checked)
+            { // If the amount is changing to 100% claimed.
                 try
                 {
                     string[] hoursPerc = descriptionTextBox.Text.Split('–');
@@ -472,8 +484,9 @@ namespace BillAutomatorUI
                     Console.WriteLine(ex);
                 }
             }
+
             // Automatically change the total value and GST.
-            if (hourlyRate > 0 && hoursInput.Value > 0 && percentageClaimedTextBox.Value > 0)
+            if (hourlyRate > 0 && hoursInput.Value > 0 && percentageClaimedTextBox.Value > 0 && !noChargeCheckBox.Checked)
             {
                 double timeSpent = Decimal.ToDouble(hoursInput.Value);
                 double perc = Decimal.ToDouble(percentageClaimedTextBox.Value);
@@ -497,6 +510,56 @@ namespace BillAutomatorUI
         public void setDateBox(DateTime date)
         {
             dateTimeBox.Value = date;
+        }
+
+        private void noChargeCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (noChargeCheckBox.Checked)
+            {
+                totalInput.Value = 0;
+                totalInput.ReadOnly = true;
+                gstInput.Value = 0;
+
+                // Update the description.
+                updateDescriptionNoCharge();
+            } else
+            {
+                double perc = Decimal.ToDouble(percentageClaimedTextBox.Value);
+                double timeSpent = Decimal.ToDouble(hoursInput.Value);
+
+                perc = perc / 100.00;
+                totalInput.Value = Convert.ToDecimal(hourlyRate * timeSpent * perc);
+                gstInput.Value = totalInput.Value / 10;
+
+                totalInput.ReadOnly = false;
+
+                // Update the description.
+                updateDescriptionNoCharge();
+            }
+            
+        }
+
+        private void updateDescriptionNoCharge()
+        {
+            string[] hoursPerc = descriptionTextBox.Text.Split('–');
+            string description = hoursPerc[hoursPerc.Length - 1]; // Get only the entries at the end of the description.
+
+            if (!description.Contains('('))
+            {
+                if (noChargeCheckBox.Checked)
+                {
+                    descriptionTextBox.Text = descriptionTextBox.Text + " (No Charge)"; // Add if there is nothing there currently
+                }
+                return;
+            }
+
+            if (noChargeCheckBox.Checked) // No charge entry
+            {
+                
+            } else // Charge entry
+            {
+                
+            }
         }
     }
 }

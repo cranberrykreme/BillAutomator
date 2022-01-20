@@ -55,6 +55,11 @@ namespace BillAutomatorUI
             /// compared to the total amount owed for the hours * hourly rate.
             /// </summary>
             public double percentage { get; set; }
+
+            /// <summary>
+            /// Represents whether the specific entry has no charge or not.
+            /// </summary>
+            public bool noCharge { get; set; }
     }
 }
 
