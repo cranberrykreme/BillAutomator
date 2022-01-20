@@ -453,32 +453,8 @@ namespace BillAutomatorUI
             { // If the amount is changing to 100% claimed.
                 try
                 {
-                    string[] hoursPerc = descriptionTextBox.Text.Split('–');
-                    string description = hoursPerc[hoursPerc.Length - 1]; // Get only the entries at the end of the description.
-
-                    string[] desc = description.Split('(');
-
-                    if(desc.Length > 1)
-                    {
-                        desc[desc.Length - 1] = "";
-                    }
-                    
-                    description = String.Join("(", desc);
-
-                    // If there is a '(' in the final two characters, then remove it.
-                    string hold = description.Substring(description.Length - 2);
-                    if (hold.Contains('('))
-                    {
-                        description = description.Substring(0, description.Length - 2);
-                    }
-
-                    hoursPerc[hoursPerc.Length - 1] = description;
-
-                    description = String.Join("–",hoursPerc);
-
-                    descriptionTextBox.Text = description;
-
-                    Console.WriteLine("Nothing should show in the description");
+                    string ans = removeElipse();
+                    descriptionTextBox.Text = ans;
                 } catch (Exception ex)
                 {
                     Console.WriteLine(ex);
@@ -496,6 +472,12 @@ namespace BillAutomatorUI
             }
         }
 
+        /// <summary>
+        /// If the user accidentally closes the form, it automatically re-opens the 
+        /// basic bill form to allow the user to maintain the work that they have done.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void NewEntryForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (!openingNew)
@@ -507,11 +489,23 @@ namespace BillAutomatorUI
             
         }
 
+        /// <summary>
+        /// Can be called from outside the class, automatically sets
+        /// the dateTime box to have a certain value. This allows a
+        /// user to chose a date to start from for their new entry,
+        /// rather than the always setting it to the current date.
+        /// </summary>
+        /// <param name="date"></param>
         public void setDateBox(DateTime date)
         {
             dateTimeBox.Value = date;
         }
 
+        /// <summary>
+        /// Handles when the no charge checkbox is toggled on or off.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void noChargeCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             if (noChargeCheckBox.Checked)
@@ -539,11 +533,50 @@ namespace BillAutomatorUI
             
         }
 
+        /// <summary>
+        /// When the % claimed is at 100% and the entry is being charged, the (...) has to be removed
+        /// from the end of the entry. This has to be done by splitting the description into several
+        /// different sections, removing the necessary parts and then stiching it all back together.
+        /// </summary>
+        private string removeElipse()
+        {
+            string[] hoursPerc = descriptionTextBox.Text.Split('–');
+            string description = hoursPerc[hoursPerc.Length - 1]; // Get only the entries at the end of the description.
+
+            string[] desc = description.Split('(');
+
+            if (desc.Length > 1)
+            {
+                desc[desc.Length - 1] = "";
+            }
+
+            description = String.Join("(", desc);
+
+            // If there is a '(' in the final two characters, then remove it.
+            string hold = description.Substring(description.Length - 2);
+            if (hold.Contains('('))
+            {
+                description = description.Substring(0, description.Length - 2);
+            }
+
+            hoursPerc[hoursPerc.Length - 1] = description;
+
+            description = String.Join("–", hoursPerc);
+            Console.WriteLine("Nothing should show in the description");
+
+            return description;
+        }
+
+        /// <summary>
+        /// Updates the description box to reflect when the user chooses an entry to have no 
+        /// charge, or when a no charge entry is removed and certain percentages are claimed instead.
+        /// </summary>
         private void updateDescriptionNoCharge()
         {
             string[] hoursPerc = descriptionTextBox.Text.Split('–');
             string description = hoursPerc[hoursPerc.Length - 1]; // Get only the entries at the end of the description.
 
+            // If there is currently no % claimed box in the description.
             if (!description.Contains('('))
             {
                 if (noChargeCheckBox.Checked)
@@ -553,12 +586,31 @@ namespace BillAutomatorUI
                 return;
             }
 
+            // If there is a % claimed box in the description.
+            string[] descriptions = description.Split('(');
+            string perc = descriptions[descriptions.Length - 1];
             if (noChargeCheckBox.Checked) // No charge entry
             {
-                
+                perc = "No Charge)";
+                descriptions[descriptions.Length - 1] = perc;
+                description = String.Join("(", descriptions);
+                hoursPerc[hoursPerc.Length - 1] = description;
+                string finalDesc = String.Join("–", hoursPerc);
+                descriptionTextBox.Text = finalDesc;
+
             } else // Charge entry
             {
-                
+                if(percentageClaimedTextBox.Value == 100) // Remove elipses' all together.
+                {
+                    string ans = removeElipse();
+                    descriptionTextBox.Text = ans;
+                } else // Re-introduce the % claimed amount to the description.
+                {
+                    string ans = removeElipse();
+                    string extra = " (" + percentageClaimedTextBox.Value + "% claimed)";
+
+                    descriptionTextBox.Text = ans + extra;
+                }
             }
         }
     }
