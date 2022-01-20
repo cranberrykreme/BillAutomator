@@ -249,7 +249,10 @@ namespace BillAutomatorUI
                 this.Close();
                 return;
             }
-            try{//try to close the application
+
+            //try to close the application
+            try
+            {
 
                 //Write changes.
                 success = writeChanges();
@@ -268,9 +271,9 @@ namespace BillAutomatorUI
                 //TODO: update the summary amount in the final row upon completion.
             } catch (System.Runtime.InteropServices.COMException boxEx)
             {
-                MessageBox.Show("An error has occured to do with open dialog boxes from other word files, " + 
-                    "please check to make sure there are no open dialog boxes before you try again.\n" + 
-                    "You can close the document and application yourself, but take note of you changes that " +
+                MessageBox.Show("An error has occured to do with open dialog boxes from some word file, " + 
+                    "please check to make sure there are no open dialog boxes before you try again.\n\n" + 
+                    "You can close the document and application yourself, but take note of your changes that " +
                    "have failed to save to the word document.");
 
                 Console.WriteLine(boxEx);
@@ -280,7 +283,7 @@ namespace BillAutomatorUI
                 return;
             } catch (Exception ex)
             {
-                MessageBox.Show("An error has occured, you can close the document and application yourself, but take note of you changes that " +
+                MessageBox.Show("An error has occured, you can close the document and application yourself, but take note of your changes that " +
                    "have failed to save to the word document.\n\n\n" + ex.ToString());
 
                 // Do not close document, instead give the user the chance to close it themselves.
@@ -1214,6 +1217,7 @@ namespace BillAutomatorUI
 
         private void saveButton_Click(object sender, EventArgs e)
         {
+            bool success = false;
             try
             {
                 Console.WriteLine(doc.Path);
@@ -1232,24 +1236,50 @@ namespace BillAutomatorUI
                 this.Close();
                 return;
             }
+
+            //try to close the application
             try
-            {//try to close the application
+            {
 
                 //Write changes.
-                writeChanges();
+                success = writeChanges();
+                if(!success)
+                {
+                    MessageBox.Show("As an error has occured, the document will not close automatically.");
+                }
 
-                //Save and close document.
+                //Save document
                 doc.Save();
+
 
                 //TODO: update the summary amount in the final row upon completion.
             }
+            catch (System.Runtime.InteropServices.COMException boxEx)
+            {
+                MessageBox.Show("An error has occured to do with open dialog boxes from some word file, " +
+                    "please check to make sure there are no open dialog boxes before you try again.\n\n" +
+                    "You can close the document and application yourself, but take note of your changes that " +
+                   "have failed to save to the word document.");
+
+                Console.WriteLine(boxEx);
+
+                // Do not close document, instead give the user the chance to close it themselves.
+                //doc.Close();
+                return;
+            }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
-                doc.Close();
+                MessageBox.Show("An error has occured, you can close the document and application yourself, but take note of your changes that " +
+                   "have failed to save to the word document.\n\n\n" + ex.ToString());
+
+                // Do not close document, instead give the user the chance to close it themselves.
+                //doc.Close();
+                return;
             }
             MessageBox.Show("All done!");
         }
+
+
 
         private void BillForm_FormClosing(object sender, FormClosingEventArgs e)
         {
