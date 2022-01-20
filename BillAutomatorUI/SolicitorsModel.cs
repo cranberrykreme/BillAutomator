@@ -49,5 +49,10 @@ namespace BillAutomatorUI
         /// charged over the course of the bill.
         /// </summary>
         public List<DateTime> datesOfHourlyRates { get; set; }
+
+        /// <summary>
+        /// Represents whether the solicitor has been changed since it was read from the word document.
+        /// </summary>
+        public bool changed { get; set; }
     }
 }

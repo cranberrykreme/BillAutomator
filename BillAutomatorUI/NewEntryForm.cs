@@ -221,6 +221,9 @@ namespace BillAutomatorUI
                     Console.WriteLine(ex);
                 }
 
+                // The entry has now been changed, and should be read into the updated word document.
+                ent.changed = true;
+
             }
             catch (Exception ex)
             {

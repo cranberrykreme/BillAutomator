@@ -579,6 +579,10 @@ namespace BillAutomatorUI
 
                             }
                         }
+
+                        //initially set solicitor to not have been changed yet.
+                        sol.changed = false;
+
                         if (!isEmpty)
                         {
                             em.solicitor.Add(sol);
@@ -825,6 +829,9 @@ namespace BillAutomatorUI
                         }
                     }
 
+                    //entry has not been changed yet.
+                    entries.changed = false;
+
                     //If at lease one of the cells in the row is not empty.
                     if (!isEmpty)
                     {
@@ -1007,6 +1014,12 @@ namespace BillAutomatorUI
             if(index > -1)
             {
                 em.entries.RemoveAt(index);
+
+                for(int i = index; i < em.entries.Count; i++)
+                {
+                    em.entries[i].changed = true;
+                }
+
                 displayEntries();
                 return;
             }

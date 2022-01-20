@@ -80,7 +80,9 @@ namespace BillAutomatorUI
         /// <param name="e"></param>
         private void saveButton_Click(object sender, EventArgs e)
         {
-            if(editing == true)
+            solicitor.changed = true; //The solicitor has now been edited.
+
+            if (editing == true)
             { //To run if a profile is being edited
                 double prevRate = solicitor.hourlyRates[0];
                 //Find the correct index of the solicitor we are looking for.
@@ -101,6 +103,7 @@ namespace BillAutomatorUI
                 }
 
                 solicitor.dateOfAdmission = doaTextBox.Text; //Set the doa to be empty string if textbox is empty
+                
 
                 if (hourlyRateInput.Value != 0)
                 {
@@ -209,6 +212,11 @@ namespace BillAutomatorUI
 
             //Remove from list
             em.solicitor.RemoveAt(index);
+
+            for(int i = index; i < em.solicitor.Count; i++)
+            {
+                em.solicitor[i].changed = true;
+            }
 
             //Remove the solicitor from all of the relevant entries.
             foreach(EntriesModel entry in em.entries)

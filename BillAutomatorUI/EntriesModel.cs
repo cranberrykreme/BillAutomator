@@ -60,6 +60,11 @@ namespace BillAutomatorUI
             /// Represents whether the specific entry has no charge or not.
             /// </summary>
             public bool noCharge { get; set; }
+
+            /// <summary>
+            /// Represents whether the entry has been changed since it was read from the word document.
+            /// </summary>
+            public bool changed { get; set; }
     }
 }
 
