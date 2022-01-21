@@ -80,7 +80,7 @@ namespace BillAutomatorUI
         /// <param name="e"></param>
         private void saveButton_Click(object sender, EventArgs e)
         {
-            solicitor.changed = true; //The solicitor has now been edited.
+            //solicitor.changed = true; //The solicitor has now been edited.
 
             if (editing == true)
             { //To run if a profile is being edited
