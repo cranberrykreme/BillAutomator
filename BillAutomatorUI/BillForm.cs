@@ -1070,13 +1070,9 @@ namespace BillAutomatorUI
             if(index < 0)
             {
                 MessageBox.Show("Cannot find selected entry");
-            }
-            else if(!em.entries[index].isPhotocopy)
-            {
-                editSelected(index);
             } else
             {
-                MessageBox.Show("This is a photocopy entry");
+                editSelected(index);
             }
             
 

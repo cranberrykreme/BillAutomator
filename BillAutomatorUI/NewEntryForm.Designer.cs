@@ -129,10 +129,10 @@
             // 
             this.gstInput.DecimalPlaces = 2;
             this.gstInput.Increment = new decimal(new int[] {
-            1,
             0,
             0,
-            131072});
+            0,
+            0});
             this.gstInput.Location = new System.Drawing.Point(526, 260);
             this.gstInput.Maximum = new decimal(new int[] {
             100000,
@@ -161,6 +161,7 @@
             this.totalInput.Name = "totalInput";
             this.totalInput.Size = new System.Drawing.Size(120, 35);
             this.totalInput.TabIndex = 22;
+            this.totalInput.ValueChanged += new System.EventHandler(this.totalInput_ValueChanged);
             // 
             // totalLabel
             // 

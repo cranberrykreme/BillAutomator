@@ -44,7 +44,7 @@ namespace BillAutomatorUI
             solicitorDropDown.Items.Add("Photocopy");
         }
 
-        // Set up the new entry form, if it is editing an entry that already exists.
+        // Set up the new entry form, if it is editing an entry that already exists. Make some changes for when the entry is a photocopy
         public void setExistingBillModel(BillModel aEm, bool aExists, int index)
         {
             exists = aExists;
@@ -70,6 +70,12 @@ namespace BillAutomatorUI
                     
                 }
             });
+            solicitorDropDown.Items.Add("Photocopy");
+
+            if (existingEntry.isPhotocopy)
+            {
+                indexOfSol = ++i;
+            }
 
             try
             {
@@ -185,12 +191,21 @@ namespace BillAutomatorUI
                     return;
                 }
 
-                // Add the solicitor
-                if(workingSolicitor == null)
+                // Add the solicitor, or the photocopy.
+                if(workingSolicitor == null && !String.Equals(solicitorDropDown.Text, "Photocopy"))
                 {
                     workingSolicitor = em.solicitor.First();
+                    ent.isPhotocopy = false;
+                } else if (String.Equals(solicitorDropDown.Text, "Photocopy"))
+                {
+                    ent.isPhotocopy = true;
                 }
-                ent.solicitor = workingSolicitor;
+                else
+                {
+                    ent.solicitor = workingSolicitor;
+                    ent.isPhotocopy = false;
+                }
+                
 
                 try
                 {
@@ -276,7 +291,7 @@ namespace BillAutomatorUI
         private void hoursInput_valueChanged(object sender, EventArgs e)
         {
             //Work on automatically changing the total amount.
-            if (hourlyRate > 0 && hoursInput.Value >= 0 && percentageClaimedTextBox.Value > 0 && !totalInput.ReadOnly)
+            if (hourlyRate > 0 && hoursInput.Value >= 0 && percentageClaimedTextBox.Value > 0 && !totalInput.ReadOnly && !hoursInput.ReadOnly)
             {
                 double timeSpent = Decimal.ToDouble(hoursInput.Value);
                 double perc = Decimal.ToDouble(percentageClaimedTextBox.Value);
@@ -284,7 +299,7 @@ namespace BillAutomatorUI
                 totalInput.Value = Convert.ToDecimal(hourlyRate * timeSpent * perc);
                 gstInput.Value = totalInput.Value / 10;
             }
-            if (!String.IsNullOrEmpty(descriptionTextBox.Text) && !turnOffHoursCheckBox.Checked)
+            if (!String.IsNullOrEmpty(descriptionTextBox.Text) && !turnOffHoursCheckBox.Checked && !hoursInput.ReadOnly)
             {
                 try
                 {
@@ -335,10 +350,56 @@ namespace BillAutomatorUI
             // Get solicitors first and last names.
             string chosenSol = solicitorDropDown.Text;
 
+            // TODO - when photocopy is chosen.
             if(String.Equals(chosenSol, "Photocopy"))
             {
-                set
+                photocopy = true;
+                hoursInput.ReadOnly = true;
+                percentageClaimedTextBox.ReadOnly = true;
+                hoursInput.Increment = 0;
+                percentageClaimedTextBox.Increment = 0;
+
+                if (descriptionTextBox.Text.Contains("–"))
+                {
+                    string[] desc = descriptionTextBox.Text.Split('–');
+                    desc[desc.Length - 1] = "";
+                    string description = String.Join("–", desc);
+                    descriptionTextBox.Text = description.Substring(0, description.Length - 2);
+
+                    if (noChargeCheckBox.Checked)
+                    {
+                        descriptionTextBox.Text = descriptionTextBox.Text + " (No Charge)";
+                    }
+                }
+
                 return;
+            } else if(photocopy == true)
+            {
+                photocopy = false;
+                hoursInput.ReadOnly = false;
+                percentageClaimedTextBox.ReadOnly = false;
+                hoursInput.Increment = Convert.ToDecimal(0.01);
+                percentageClaimedTextBox.Increment = Convert.ToDecimal(0.01);
+
+                string description = descriptionTextBox.Text;
+
+                if (noChargeCheckBox.Checked)
+                {
+                    description = description.Substring(0, description.Length - 12);
+                }
+
+                decimal hours = hoursInput.Value;
+                descriptionTextBox.Text = description + " – " + hours + " hours";
+
+                if (noChargeCheckBox.Checked)
+                {
+                    description = descriptionTextBox.Text;
+                    descriptionTextBox.Text = description + " (No Charge)";
+                } else if (percentageClaimedTextBox.Value < 100)
+                {
+                    description = descriptionTextBox.Text;
+                    descriptionTextBox.Text = description + " (" + percentageClaimedTextBox.Value + "% claimed)";
+                }
             }
 
             string[] names = chosenSol.Split(' ');
@@ -400,7 +461,7 @@ namespace BillAutomatorUI
         private void percentageClaimedTextBox_ValueChanged(object sender, EventArgs e)
         {
             // if the value is changing to less than 100% claimed.
-            if (!String.IsNullOrEmpty(descriptionTextBox.Text) && !turnOffHoursCheckBox.Checked && percentageClaimedTextBox.Value < 100 && !noChargeCheckBox.Checked)
+            if (!String.IsNullOrEmpty(descriptionTextBox.Text) && !turnOffHoursCheckBox.Checked && percentageClaimedTextBox.Value < 100 && !noChargeCheckBox.Checked && percentageClaimedTextBox.ReadOnly == false)
             {
                 try
                 {
@@ -460,7 +521,7 @@ namespace BillAutomatorUI
                     Console.WriteLine(ex);
                 }
 
-            } else if(!String.IsNullOrEmpty(descriptionTextBox.Text) && !turnOffHoursCheckBox.Checked && percentageClaimedTextBox.Value == 100 && !noChargeCheckBox.Checked)
+            } else if(!String.IsNullOrEmpty(descriptionTextBox.Text) && !turnOffHoursCheckBox.Checked && percentageClaimedTextBox.Value == 100 && !noChargeCheckBox.Checked && percentageClaimedTextBox.ReadOnly == false)
             { // If the amount is changing to 100% claimed.
                 try
                 {
@@ -473,7 +534,7 @@ namespace BillAutomatorUI
             }
 
             // Automatically change the total value and GST.
-            if (hourlyRate > 0 && hoursInput.Value > 0 && percentageClaimedTextBox.Value > 0 && !noChargeCheckBox.Checked)
+            if (hourlyRate > 0 && hoursInput.Value > 0 && percentageClaimedTextBox.Value > 0 && !noChargeCheckBox.Checked && percentageClaimedTextBox.ReadOnly == false)
             {
                 double timeSpent = Decimal.ToDouble(hoursInput.Value);
                 double perc = Decimal.ToDouble(percentageClaimedTextBox.Value);
@@ -524,6 +585,7 @@ namespace BillAutomatorUI
                 totalInput.Value = 0;
                 totalInput.ReadOnly = true;
                 gstInput.Value = 0;
+                totalInput.Increment = 0;
 
                 // Update the description.
                 updateDescriptionNoCharge();
@@ -537,6 +599,7 @@ namespace BillAutomatorUI
                 gstInput.Value = totalInput.Value / 10;
 
                 totalInput.ReadOnly = false;
+                totalInput.Increment = Convert.ToDecimal(0.01);
 
                 // Update the description.
                 updateDescriptionNoCharge();
@@ -623,6 +686,11 @@ namespace BillAutomatorUI
                     descriptionTextBox.Text = ans + extra;
                 }
             }
+        }
+
+        private void totalInput_ValueChanged(object sender, EventArgs e)
+        {
+            gstInput.Value = totalInput.Value / 10;
         }
     }
 }
