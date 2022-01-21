@@ -26,6 +26,12 @@ namespace BillAutomatorUI
             public SolicitorsModel solicitor { get; set; } = new SolicitorsModel();
 
             /// <summary>
+            /// Represents that this was a completed photocopying
+            /// work in the entry.
+            /// </summary>
+            public PhotocopyModel photocopy { get; set; } = new PhotocopyModel();
+
+            /// <summary>
             /// Represents the description of
             /// the work that has been completed.
             /// </summary>
@@ -65,6 +71,11 @@ namespace BillAutomatorUI
             /// Represents whether the entry has been changed since it was read from the word document.
             /// </summary>
             public bool changed { get; set; }
+
+            /// <summary>
+            /// Represents whether the entry is photocopying or not
+            /// </summary>
+            public bool isPhotocopy { get; set; }
     }
 }
 

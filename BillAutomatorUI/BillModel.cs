@@ -30,8 +30,8 @@ namespace BillAutomatorUI
         public List<DisbursementsModel> disbursements  { get; set; } = new List<DisbursementsModel>();
 
         /// <summary>
-        /// Represents the list of counsels that worked on the matter.
+        /// Represents the list of photocopying rates for the matter.
         /// </summary>
-        public List<CounselModel> counsel { get; set; } = new List<CounselModel>();
+        public List<PhotocopyModel> photocopies { get; set; } = new List<PhotocopyModel>();
     }
 }

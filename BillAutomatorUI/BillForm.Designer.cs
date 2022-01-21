@@ -33,7 +33,7 @@
             this.clientNameLabel = new System.Windows.Forms.Label();
             this.solicitorButton = new System.Windows.Forms.Button();
             this.newEntryButton = new System.Windows.Forms.Button();
-            this.counselButton = new System.Windows.Forms.Button();
+            this.photocopyButton = new System.Windows.Forms.Button();
             this.newDisbursementButton = new System.Windows.Forms.Button();
             this.entriesLabel = new System.Windows.Forms.Label();
             this.entriesBox = new System.Windows.Forms.ListBox();
@@ -97,17 +97,17 @@
             this.newEntryButton.UseVisualStyleBackColor = true;
             this.newEntryButton.Click += new System.EventHandler(this.newEntryButton_Click);
             // 
-            // counselButton
+            // photocopyButton
             // 
-            this.counselButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
-            this.counselButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-            this.counselButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.counselButton.Location = new System.Drawing.Point(527, 86);
-            this.counselButton.Name = "counselButton";
-            this.counselButton.Size = new System.Drawing.Size(234, 52);
-            this.counselButton.TabIndex = 5;
-            this.counselButton.Text = "Counsel";
-            this.counselButton.UseVisualStyleBackColor = true;
+            this.photocopyButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
+            this.photocopyButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+            this.photocopyButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.photocopyButton.Location = new System.Drawing.Point(527, 86);
+            this.photocopyButton.Name = "photocopyButton";
+            this.photocopyButton.Size = new System.Drawing.Size(234, 52);
+            this.photocopyButton.TabIndex = 5;
+            this.photocopyButton.Text = "Photocopies";
+            this.photocopyButton.UseVisualStyleBackColor = true;
             // 
             // newDisbursementButton
             // 
@@ -310,7 +310,7 @@
             this.Controls.Add(this.entriesBox);
             this.Controls.Add(this.entriesLabel);
             this.Controls.Add(this.newDisbursementButton);
-            this.Controls.Add(this.counselButton);
+            this.Controls.Add(this.photocopyButton);
             this.Controls.Add(this.newEntryButton);
             this.Controls.Add(this.solicitorButton);
             this.Controls.Add(this.clientNameLabel);
@@ -332,7 +332,7 @@
         private System.Windows.Forms.Label clientNameLabel;
         private System.Windows.Forms.Button solicitorButton;
         private System.Windows.Forms.Button newEntryButton;
-        private System.Windows.Forms.Button counselButton;
+        private System.Windows.Forms.Button photocopyButton;
         private System.Windows.Forms.Button newDisbursementButton;
         private System.Windows.Forms.Label entriesLabel;
         private System.Windows.Forms.ListBox entriesBox;

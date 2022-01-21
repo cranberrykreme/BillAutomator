@@ -14,7 +14,7 @@
     <Deterministic>true</Deterministic>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <TargetFrameworkProfile />
-    <PublishUrl>C:\Users\chris.purkiss\Desktop\Chris\word tests\publishV3.0\</PublishUrl>
+    <PublishUrl>C:\Users\chris.purkiss\Desktop\Chris\word tests\publishV3.1\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -24,8 +24,10 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>8</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <ProductName>Bill of Costs Automator</ProductName>
+    <PublisherName>Blue Ribbon Legal</PublisherName>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.1.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -95,13 +97,13 @@
     <Compile Include="CounselDisbursementForm.Designer.cs">
       <DependentUpon>CounselDisbursementForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="CounselManagementForm.cs">
+    <Compile Include="PhotocopyEntryForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CounselManagementForm.Designer.cs">
-      <DependentUpon>CounselManagementForm.cs</DependentUpon>
+    <Compile Include="PhotocopyEntryForm.Designer.cs">
+      <DependentUpon>PhotocopyEntryForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="CounselModel.cs" />
+    <Compile Include="PhotocopyModel.cs" />
     <Compile Include="CreateNewForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -167,8 +169,8 @@
     <EmbeddedResource Include="CounselDisbursementForm.resx">
       <DependentUpon>CounselDisbursementForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CounselManagementForm.resx">
-      <DependentUpon>CounselManagementForm.cs</DependentUpon>
+    <EmbeddedResource Include="PhotocopyEntryForm.resx">
+      <DependentUpon>PhotocopyEntryForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CreateNewForm.resx">
       <DependentUpon>CreateNewForm.cs</DependentUpon>

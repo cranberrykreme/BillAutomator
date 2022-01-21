@@ -146,7 +146,7 @@ namespace BillAutomatorUI
                         ap.Visible = true;
 
                         BillForm billForm = new BillForm();
-                        billForm.runStartup(doc, loc + ".docx", 2, 3);
+                        billForm.runStartup(doc, loc + ".docx", 2, 3, 4);
                         billForm.Show();
                         openingNew = true;
                         this.Close();
@@ -200,7 +200,7 @@ namespace BillAutomatorUI
                         ap.Visible = true;
 
                         BillForm billForm = new BillForm();
-                        billForm.runStartup(doc, loc + ".docx", 1, 2);
+                        billForm.runStartup(doc, loc + ".docx", 1, 2, 3);
                         billForm.Show();
                         openingNew = true;
                         this.Close();

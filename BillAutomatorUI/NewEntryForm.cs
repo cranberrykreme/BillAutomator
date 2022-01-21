@@ -24,6 +24,7 @@ namespace BillAutomatorUI
         bool exists = false;
         int existingIndex = -1;
         private bool openingNew = false; //Is a new form being opened upon the close of this form?
+        private bool photocopy = false; //Has the entry been set to photocopy?
 
         public NewEntryForm()
         {
@@ -40,6 +41,7 @@ namespace BillAutomatorUI
             });
             percentageClaimedTextBox.Value = 100;
             descriptionTextBox.Text = " – 0.0 hours";
+            solicitorDropDown.Items.Add("Photocopy");
         }
 
         // Set up the new entry form, if it is editing an entry that already exists.
@@ -332,6 +334,12 @@ namespace BillAutomatorUI
 
             // Get solicitors first and last names.
             string chosenSol = solicitorDropDown.Text;
+
+            if(String.Equals(chosenSol, "Photocopy"))
+            {
+                set
+                return;
+            }
 
             string[] names = chosenSol.Split(' ');
             string firstName = "";

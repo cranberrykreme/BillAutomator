@@ -156,7 +156,7 @@ namespace BillAutomatorUI
                     //this.Application.Documents.Open(@"C:\Test\NewDocument.docx");
 
                     BillForm billForm = new BillForm();
-                    billForm.runStartup(document, fileName, 0, 0);
+                    billForm.runStartup(document, fileName, 0, 0, 0);
 
                     billForm.Show();
                     //this.Hide();

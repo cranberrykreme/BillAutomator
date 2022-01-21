@@ -113,7 +113,7 @@ namespace BillAutomatorUI
             try
             {
                 BillForm billForm = new BillForm();
-                billForm.runStartup(doc, fileName, solTable, entTable);
+                billForm.runStartup(doc, fileName, solTable, entTable, entTable+1); // have to fix for disbursements reading.
 
                 billForm.Show();
             }

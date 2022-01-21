@@ -16,9 +16,9 @@ namespace BillAutomatorUI
     /// see all of the current counsel members and link to the 
     /// edit/create (and delete) form. 
     /// </summary>
-    public partial class CounselManagementForm : Form
+    public partial class PhotocopyEntryForm : Form
     {
-        public CounselManagementForm()
+        public PhotocopyEntryForm()
         {
             InitializeComponent();
         }

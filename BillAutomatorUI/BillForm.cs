@@ -33,6 +33,7 @@ namespace BillAutomatorUI
         private static int solTable; //Stores the table number of the solicitor table
         private static int entTable; //Stores the table number of the entries table
         private bool openingNew = false; //Is a new form being opened upon the close of this form?
+        private static int disTable; //Stores the table number of the disbursements table
 
         public BillForm()
         {
@@ -150,7 +151,12 @@ namespace BillAutomatorUI
 
                     Console.WriteLine(em.entries[i].date.ToString("dd.MM.yyyy"));
                     rows[index].Cells[2].Range.Text = em.entries[i].date.ToString("dd.MM.yyyy");    //Add the entries' date.
-                    rows[index].Cells[3].Range.Text = em.entries[i].solicitor.initials;             //Add the solicitors initials
+
+                    if (!em.entries[i].isPhotocopy)
+                    {
+                        rows[index].Cells[3].Range.Text = em.entries[i].solicitor.initials;             //Add the solicitors initials
+                    }
+                    
                     rows[index].Cells[4].Range.Text = em.entries[i].description;                    //Add the entries' description.
 
                     //Add the cost of the entry.
@@ -305,7 +311,7 @@ namespace BillAutomatorUI
         // existing bill of costs to open up and run. It will parse all
         // of the information from the bill and present it to the
         // user in the style set out in the forms.
-        public void runStartup(Document aDoc, string aFileName, int aSolTable, int aEntTable)
+        public void runStartup(Document aDoc, string aFileName, int aSolTable, int aEntTable, int aDisTable)
         {
             em = new BillModel();
             SolicitorsModel s = new SolicitorsModel();
@@ -314,6 +320,7 @@ namespace BillAutomatorUI
 
             solTable = aSolTable;
             entTable = aEntTable;
+            disTable = aDisTable;
 
             if(solTable == 0 && entTable == 0)
             {
@@ -360,7 +367,14 @@ namespace BillAutomatorUI
             int totalLength = solTableLength + entTableLength;
             lf.totalLoading(totalLength);
 
-            
+            // Set the photocopying information section.
+            PhotocopyModel pm = new PhotocopyModel();
+            pm.initialRate = -1;
+            pm.pageRateChange = -1;
+            pm.secondRate = -1;
+            em.photocopies.Add(pm);
+
+
             try
             {
                 // FOR THE SOLICITORS.
@@ -638,6 +652,9 @@ namespace BillAutomatorUI
                     string ftxt = "";
                     EntriesModel entries = new EntriesModel();
                     bool isEmpty = true; //Stores if the row is empty
+
+                    entries.isPhotocopy = isPhotocopy(row[i]);
+
                     //iterate over columns
                     for (int j = 2; j <= col.Count; j++)
                     {
@@ -664,7 +681,7 @@ namespace BillAutomatorUI
                         }
 
                         ftxt = ftxt + " | " + txt;
-                        // Iterate through the entries by cell.
+                        // Iterate through the entries by cell. TODO - add differently to photocopy entries.
                         if (j == 2 && !String.IsNullOrEmpty(txt)) // Date of the entry
                         {
                             try
@@ -685,39 +702,44 @@ namespace BillAutomatorUI
                             {
                                 Console.WriteLine(ex);
                             }
-                        } else if(j == 3 && !String.IsNullOrEmpty(txt)) // Entries solicitor
+                        } else if((j == 3 && !String.IsNullOrEmpty(txt)) || j == 3 && entries.isPhotocopy) // Entries solicitor or photocopy
                         { 
                             try
                             {
-                                string solicitor = txt.Replace("", "");
-                                solicitor = solicitor.Substring(0, solicitor.Length - 1);
-                                Console.WriteLine(solicitor);
-                                bool found = false;
-                                int index = 0;
-
-                                // Loop over the existing solicitor profiles
-                                while(found == false && index < em.solicitor.Count)
+                                if (!entries.isPhotocopy)
                                 {
-                                    SolicitorsModel hold = em.solicitor[index];
+                                    string solicitor = txt.Replace("", "");
+                                    solicitor = solicitor.Substring(0, solicitor.Length - 1);
+                                    Console.WriteLine(solicitor);
+                                    bool found = false;
+                                    int index = 0;
 
-                                    if (String.Equals(hold.initials, solicitor))
+                                    // Loop over the existing solicitor profiles
+                                    while (found == false && index < em.solicitor.Count)
                                     {
-                                        found = true;
-                                        entries.solicitor = hold;
-                                        isEmpty = false; //update that the cell is not empty.
+                                        SolicitorsModel hold = em.solicitor[index];
+
+                                        if (String.Equals(hold.initials, solicitor))
+                                        {
+                                            found = true;
+                                            entries.solicitor = hold;
+                                            isEmpty = false; //update that the cell is not empty.
+                                        }
+                                        index++;
                                     }
-                                    index++;
-                                }
-                                // If there is still no solicitor found, put it down as empty
-                                if(found != true)
+                                    // If there is still no solicitor found, put it down as empty
+                                    if (found != true)
+                                    {
+                                        //SolicitorsModel notFound = new SolicitorsModel();
+                                        //notFound.initials = "Not Found";
+                                        entries.solicitor = em.solicitor[0];
+                                    }
+
+                                    Console.WriteLine(entries.solicitor.initials);
+                                } else
                                 {
-                                    //SolicitorsModel notFound = new SolicitorsModel();
-                                    //notFound.initials = "Not Found";
-                                    entries.solicitor = em.solicitor[0];
+                                    entries.photocopy = em.photocopies[0];
                                 }
-
-                                Console.WriteLine(entries.solicitor.initials);
-
 
                             } catch (Exception ex)
                             {
@@ -817,6 +839,7 @@ namespace BillAutomatorUI
                                     isEmpty = false;
                                 }
 
+                                //convert the string to a double, being the price of the entry.
                                 double amount = Convert.ToDouble(price);
                                 Console.WriteLine("Value of the entry: " + amount);
                                 Console.WriteLine("Actual Value: " + price);
@@ -1048,9 +1071,12 @@ namespace BillAutomatorUI
             {
                 MessageBox.Show("Cannot find selected entry");
             }
-            else
+            else if(!em.entries[index].isPhotocopy)
             {
                 editSelected(index);
+            } else
+            {
+                MessageBox.Show("This is a photocopy entry");
             }
             
 
@@ -1457,6 +1483,56 @@ namespace BillAutomatorUI
             }
 
             return foundTable;
+        }
+
+        /// <summary>
+        /// Searches for photocopy statements in the description. 
+        /// </summary>
+        /// <param name="row"></param>
+        /// <returns></returns>
+        public bool isPhotocopy(Word.Row row)
+        {
+            Cell cell = row.Cells[4];
+            Range r = cell.Range;
+
+            string txt = r.Text;
+            txt = txt.ToLower();
+
+            if(txt.Contains("photocopied pages") || txt.Contains("coloured copies") || txt.Contains("printed copies"))
+            {
+                return isSolEmpty(row);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Finds out if the solicitors entry is blank in the row that is probably a photocopy entry.
+        /// </summary>
+        /// <param name="row"></param>
+        /// <returns></returns>
+        public bool isSolEmpty(Word.Row row)
+        {
+            Cell cell = row.Cells[3];
+            Range r = cell.Range;
+
+            string txt = r.Text;
+
+            //find if there are only empty characters in the string.
+            string[] test = Regex.Split(txt, "\\s");
+            bool testFull = false;
+            for (int a = 0; a < test.Length; a++)
+            {
+                if (!String.IsNullOrEmpty(test[a]))
+                {
+                    testFull = true;
+                    break;
+                }
+            }
+            if (testFull)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

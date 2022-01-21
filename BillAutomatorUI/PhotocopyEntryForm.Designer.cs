@@ -1,6 +1,6 @@
 ﻿namespace BillAutomatorUI
 {
-    partial class CounselManagementForm
+    partial class PhotocopyEntryForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CounselManagementForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PhotocopyEntryForm));
             this.returnButton = new System.Windows.Forms.Button();
             this.editCounselButton = new System.Windows.Forms.Button();
             this.addCounselButton = new System.Windows.Forms.Button();
@@ -87,11 +87,11 @@
             this.counselLabel.Font = new System.Drawing.Font("Segoe UI Light", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.counselLabel.Location = new System.Drawing.Point(25, 11);
             this.counselLabel.Name = "counselLabel";
-            this.counselLabel.Size = new System.Drawing.Size(127, 45);
+            this.counselLabel.Size = new System.Drawing.Size(185, 45);
             this.counselLabel.TabIndex = 32;
-            this.counselLabel.Text = "Counsel";
+            this.counselLabel.Text = "Photocopies";
             // 
-            // CounselManagementForm
+            // PhotocopyManagementForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 30F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -105,8 +105,8 @@
             this.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(6, 7, 6, 7);
-            this.Name = "CounselManagementForm";
-            this.Text = "Counsel Management";
+            this.Name = "PhotocopyManagementForm";
+            this.Text = "Photocopy Management";
             this.ResumeLayout(false);
             this.PerformLayout();
 
