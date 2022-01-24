@@ -29,5 +29,17 @@ namespace BillAutomatorUI
         /// payable in the current entry.
         /// </summary>
         public double GST { get; set; }
+
+        /// <summary>
+        /// Represents the date that the disbursement
+        /// was billed on.
+        /// </summary>
+        public DateTime date { get; set; }
+
+        /// <summary>
+        /// Represents the amount that the disbursement
+        /// was billed at.
+        /// </summary>
+        public double amount { get; set; }
     }
 }

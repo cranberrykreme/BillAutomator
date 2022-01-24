@@ -17,9 +17,47 @@ namespace BillAutomatorUI
     /// </summary>
     public partial class DisbursementForm : Form
     {
+        private BillModel em;
+        private bool openingNew = false; //Is a new form being opened upon the close of this form?
+
         public DisbursementForm()
         {
             InitializeComponent();
+        }
+
+        // Set up the new entry form, fill out the drop-down with disbursement types
+        public void setBillModel(BillModel aEm)
+        {
+            em = aEm;
+            em.unusedDisbursementTypes.ForEach(delegate (DisbursementTypeModel dtm)
+            {
+                typeDropDown.Items.Add(dtm.type);
+            });
+            
+        }
+
+        private void DisbursementForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!openingNew)
+            {
+                BillForm bf = new BillForm();
+                bf.setBillModel(em);
+                bf.Show();
+            }
+        }
+
+        private void cancelEntryButton_Click(object sender, EventArgs e)
+        {
+            leaveScreen();
+        }
+
+        private void leaveScreen()
+        {
+            BillForm smf = new BillForm();
+            smf.setBillModel(em);
+            smf.Show();
+            openingNew = true;
+            this.Close();
         }
     }
 }

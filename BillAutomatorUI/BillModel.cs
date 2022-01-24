@@ -32,11 +32,11 @@ namespace BillAutomatorUI
         /// <summary>
         /// Represents the list of types of disbursements for the matter.
         /// </summary>
-        public List<DisbursementTypeModel> usedDibursementTypes { get; set; } = new List<DisbursementTypeModel>();
+        public List<DisbursementTypeModel> usedDisbursementTypes { get; set; } = new List<DisbursementTypeModel>();
 
         /// <summary>
         /// Represents the list of types of disbursements that have not been used yet for the matter.
         /// </summary>
-        public List<DisbursementTypeModel> unusedDibursementTypes { get; set; } = new List<DisbursementTypeModel>();
+        public List<DisbursementTypeModel> unusedDisbursementTypes { get; set; } = new List<DisbursementTypeModel>();
     }
 }

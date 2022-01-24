@@ -120,12 +120,13 @@
             this.newDisbursementButton.TabIndex = 6;
             this.newDisbursementButton.Text = "New Disbursement";
             this.newDisbursementButton.UseVisualStyleBackColor = true;
+            this.newDisbursementButton.Click += new System.EventHandler(this.newDisbursementButton_Click);
             // 
             // entriesLabel
             // 
             this.entriesLabel.AutoSize = true;
             this.entriesLabel.Font = new System.Drawing.Font("Segoe UI Light", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.entriesLabel.Location = new System.Drawing.Point(19, 93);
+            this.entriesLabel.Location = new System.Drawing.Point(19, 85);
             this.entriesLabel.Name = "entriesLabel";
             this.entriesLabel.Size = new System.Drawing.Size(117, 45);
             this.entriesLabel.TabIndex = 7;
@@ -287,6 +288,7 @@
             this.displayAllDisbursementsButton.TabIndex = 23;
             this.displayAllDisbursementsButton.Text = "Disbursements";
             this.displayAllDisbursementsButton.UseVisualStyleBackColor = true;
+            this.displayAllDisbursementsButton.Click += new System.EventHandler(this.displayAllDisbursementsButton_Click);
             // 
             // BillForm
             // 

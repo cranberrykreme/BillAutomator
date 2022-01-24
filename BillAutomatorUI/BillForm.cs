@@ -57,8 +57,9 @@ namespace BillAutomatorUI
 
             int solList = em.solicitor.Count;
             int entryList = em.entries.Count;
+            int disList = em.disbursements.Count;
 
-            int totalList = solList + entryList;
+            int totalList = solList + entryList + disList;
             lf.totalLoading(totalList);
 
             //SOLICITORS SECTION.
@@ -149,8 +150,8 @@ namespace BillAutomatorUI
                         numRows++;
                     }
 
-                    Console.WriteLine(em.entries[i].date.ToString("dd.MM.yyyy"));
-                    rows[index].Cells[2].Range.Text = em.entries[i].date.ToString("dd.MM.yyyy");    //Add the entries' date.
+                    Console.WriteLine(em.entries[i].date.ToString("dd.MM.yy"));
+                    rows[index].Cells[2].Range.Text = em.entries[i].date.ToString("dd.MM.yy");    //Add the entries' date.
 
                     if (!em.entries[i].isPhotocopy)
                     {
@@ -204,6 +205,27 @@ namespace BillAutomatorUI
                         break;
                     }
 
+                }
+
+
+                // Disbursements section.
+                try
+                {
+                    //Enter all of the bill disbursements into the bill of costs.
+                    tbl = doc.Tables[disTable];
+                    rows = tbl.Rows;
+                    numRows = rows.Count; //to compare the index of the row to the final index.
+                    cols = tbl.Columns;
+                    finalIndex = -1;
+
+                    for(int i = 0; i < em.disbursements.Count; i++)
+                    {
+
+                    }
+
+                } catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
                 }
             } catch (Exception ex)
             {
@@ -868,13 +890,129 @@ namespace BillAutomatorUI
                 col = tabs.Columns;
 
                 //iterate over rows
-                for(int i = 2; i < row.Count; i++)
+                for (int i = 2; i < row.Count; i++)
                 {
                     //Update loading bar for each new row.
                     lf.progressDisplay();
 
+                    DisbursementsModel disbursement = new DisbursementsModel();
+                    bool isEmpty = true; //Stores if the row is empty
+                    bool isType = false; // is this row a disbursement subheading?
 
+                    //iterate over columns
+                    for (int j = 2; j <= col.Count; j++)
+                    {
+                        Cell cell = row[i].Cells[j];
+                        Range r = cell.Range;
 
+                        string txt = r.Text;
+                        txt = txt.Replace("", "").Replace("\n", "");
+                        
+
+                        //find if there are only empty characters in the string.
+                        string[] test = Regex.Split(txt, "\\s");
+                        bool testFull = false;
+                        for (int a = 0; a < test.Length; a++)
+                        {
+                            if (!String.IsNullOrEmpty(test[a]))
+                            {
+                                testFull = true;
+                                break;
+                            }
+                        }
+                        // If is empty, set the string to be empty.
+                        if (!testFull)
+                        {
+                            txt = "";
+                        }
+
+                        // If the date is not there in the row.
+                        if(j == 2 && String.IsNullOrEmpty(txt))
+                        {
+                            Cell cellType = row[i].Cells[j+1]; // Get the contents of the description
+                            Range rType = cellType.Range;
+                            if(rType.Underline != Word.WdUnderline.wdUnderlineNone)
+                            {
+                                Console.WriteLine("It is underlined: " + rType.Text);
+
+                                string text = rType.Text;
+
+                                text = text.Replace("", "").Replace("\n", "");
+
+                                // Run through the types of disbursements to see if it a new subsection.
+                                //foreach (DisbursementTypeModel dtm in em.unusedDisbursementTypes)
+                                //{
+                                //    string holdText = text.ToLower();
+                                //    if (holdText.Contains(dtm.type))
+                                //    {
+                                //        em.usedDisbursementTypes.Add(dtm);
+                                //        isType = true;
+                                //    }
+                                //}
+
+                                DisbursementTypeModel dtm = new DisbursementTypeModel();
+                                dtm.type = text;
+                                em.usedDisbursementTypes.Add(dtm);
+                                isType = true;
+                            }
+
+                            
+                        } 
+                        else if(j == 2 && !String.IsNullOrEmpty(txt)) // Get the date.
+                        {
+                            isEmpty = false;
+
+                            try
+                            {
+                                DateTime parsedDate = DateTime.Parse(txt);
+                                parsedDate = parsedDate.Date;
+                                Console.WriteLine(parsedDate);
+                                disbursement.date = parsedDate;
+                            } catch (Exception ex)
+                            {
+                                Console.WriteLine(ex);
+                            }
+                        }
+                        else if(j == 3 && !String.IsNullOrEmpty(txt)) // Get the description.
+                        {
+                            isEmpty = false;
+
+                            try
+                            {
+                                string desc = txt;
+                                disbursement.description = desc;
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(ex);
+                            }
+                        }
+                        else if(j == 3 && !String.IsNullOrEmpty(txt)) // Get the amount
+                        {
+                            isEmpty = false;
+
+                            try
+                            {
+                                //convert the string to a double, being the price of the entry.
+                                double amount = Convert.ToDouble(txt);
+                                Console.WriteLine("Value of the entry: " + amount);
+                                Console.WriteLine("Actual Value: " + txt);
+                                disbursement.amount = amount;
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(ex);
+                            }
+                        }
+
+                    }
+
+                    //If at lease one of the cells in the row is not empty.
+                    if (!isEmpty && !isType)
+                    {
+                        disbursement.typeOfDisbursement = em.usedDisbursementTypes[em.usedDisbursementTypes.Count - 1];
+                        em.disbursements.Add(disbursement); // Add the current row to the list of disbursements.
+                    }
                 }
             }
             catch (Exception ex)
@@ -1550,34 +1688,48 @@ namespace BillAutomatorUI
         {
             DisbursementTypeModel dtm = new DisbursementTypeModel();
             dtm.type = "court fees";
-            em.unusedDibursementTypes.Add(dtm);
+            em.unusedDisbursementTypes.Add(dtm);
 
+            dtm = new DisbursementTypeModel();
             dtm.type = "senior counsel";
-            em.unusedDibursementTypes.Add(dtm);
+            em.unusedDisbursementTypes.Add(dtm);
 
+            dtm = new DisbursementTypeModel();
             dtm.type = "junior counsel";
-            em.unusedDibursementTypes.Add(dtm);
+            em.unusedDisbursementTypes.Add(dtm);
 
+            dtm = new DisbursementTypeModel();
             dtm.type = "counsel";
-            em.unusedDibursementTypes.Add(dtm);
+            em.unusedDisbursementTypes.Add(dtm);
 
+            dtm = new DisbursementTypeModel();
             dtm.type = "expert fees";
-            em.unusedDibursementTypes.Add(dtm);
+            em.unusedDisbursementTypes.Add(dtm);
 
+            dtm = new DisbursementTypeModel();
             dtm.type = "medical report fees";
-            em.unusedDibursementTypes.Add(dtm);
+            em.unusedDisbursementTypes.Add(dtm);
 
+            dtm = new DisbursementTypeModel();
             dtm.type = "service fees";
-            em.unusedDibursementTypes.Add(dtm);
+            em.unusedDisbursementTypes.Add(dtm);
 
+            dtm = new DisbursementTypeModel();
             dtm.type = "agency fees";
-            em.unusedDibursementTypes.Add(dtm);
+            em.unusedDisbursementTypes.Add(dtm);
 
+            dtm = new DisbursementTypeModel();
             dtm.type = "witness expenses";
-            em.unusedDibursementTypes.Add(dtm);
+            em.unusedDisbursementTypes.Add(dtm);
 
+            dtm = new DisbursementTypeModel();
             dtm.type = "miscellaneous fees";
-            em.unusedDibursementTypes.Add(dtm);
+            em.unusedDisbursementTypes.Add(dtm);
+
+            // Add one basic one to the used disbursements model.
+            dtm = new DisbursementTypeModel();
+            dtm.type = "Unknown";
+            em.usedDisbursementTypes.Add(dtm);
 
         }
 
@@ -1629,6 +1781,40 @@ namespace BillAutomatorUI
                 return true;
             }
             return false;
+        }
+
+        private void newDisbursementButton_Click(object sender, EventArgs e)
+        {
+            DisbursementForm df = new DisbursementForm();
+            df.setBillModel(em);
+            df.Show();
+            openingNew = true;
+            this.Close();
+        }
+
+        private void displayAllDisbursementsButton_Click(object sender, EventArgs e)
+        {
+            entriesBox.Items.Clear();
+            string type = "";
+            em.disbursements.ForEach(delegate (DisbursementsModel dm)
+            {
+                //Only get the date part of the dateTime entry
+                string date = dm.date.ToString();
+                string[] dates = date.Split(' ');
+                date = dates[0];
+
+                //Find if the type of this disbursement is the same as the previous one.
+                string dmType = dm.typeOfDisbursement.type;
+                if (!type.Contains(dmType))
+                {
+                    type = dmType;
+
+                    entriesBox.Items.Add(dmType.ToUpper());
+                }
+
+                //Display the entry in the box
+                entriesBox.Items.Add(date + " - " + dm.description);
+            });
         }
     }
 }

@@ -59,6 +59,7 @@
             this.cancelEntryButton.TabIndex = 43;
             this.cancelEntryButton.Text = "Cancel";
             this.cancelEntryButton.UseVisualStyleBackColor = true;
+            this.cancelEntryButton.Click += new System.EventHandler(this.cancelEntryButton_Click);
             // 
             // createEntryButton
             // 
@@ -232,6 +233,7 @@
             this.Margin = new System.Windows.Forms.Padding(6, 7, 6, 7);
             this.Name = "DisbursementForm";
             this.Text = "Create Disbursement";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DisbursementForm_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.totalInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gstInput)).EndInit();
             this.ResumeLayout(false);
