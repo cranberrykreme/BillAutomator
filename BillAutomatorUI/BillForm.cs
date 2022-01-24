@@ -217,9 +217,60 @@ namespace BillAutomatorUI
                     numRows = rows.Count; //to compare the index of the row to the final index.
                     cols = tbl.Columns;
                     finalIndex = -1;
+                    int currentType = 0;
+
 
                     for(int i = 0; i < em.disbursements.Count; i++)
                     {
+                        lf.progressDisplay();
+
+                        int index = i + 2;
+
+                        // If the current type is the same as the previous disbursement type.
+                        if (em.disbursements[i].typeOfDisbursement.type.Equals(em.usedDisbursementTypes[currentType]))
+                        {
+                            rows.Add(index); // Add a new row where the new entry should be, will always have an index number.
+
+                            // Add disbursements date
+                            rows[index].Cells[2].Range.Text = em.disbursements[i].date.ToString("dd.MM.yy");
+
+                            // Add disbursements description
+                            rows[index].Cells[3].Range.Text = em.disbursements[i].description;
+
+                            // Add disbursements cost
+                            double cost = em.disbursements[i].amount;
+                            string[] amt = cost.ToString().Split('.');
+
+                            double decimalPt = Convert.ToDouble(amt[amt.Length - 1]);
+                            if (cost % 1 == 0)
+                            {
+                                Console.WriteLine(cost);
+                                rows[index].Cells[4].Range.Text = "$" + em.disbursements[i].amount.ToString() + ".00";
+                                Console.WriteLine(rows[index].Cells[4].Range.Text);
+                            }
+                            else
+                            {
+                                string[] numbers = em.disbursements[i].amount.ToString().Split('.');
+                                Console.WriteLine(numbers[numbers.Length - 1]);
+                                string num = numbers[numbers.Length - 1];
+                                if (num.Length < 2)
+                                {
+                                    rows[index].Cells[4].Range.Text = "$" + em.disbursements[i].amount.ToString() + "0";
+                                }
+                                else
+                                {
+                                    rows[index].Cells[4].Range.Text = "$" + em.disbursements[i].amount.ToString();
+                                }
+                            }
+                        } else // If the current type is not the same type as the previous entry.
+                        {
+                            currentType++;
+                            if(currentType >= em.unusedDisbursementTypes.Count)
+                            {
+                                MessageBox.Show("Error with displaying disbursements by type");
+                                return false;
+                            }
+                        }
 
                     }
 
