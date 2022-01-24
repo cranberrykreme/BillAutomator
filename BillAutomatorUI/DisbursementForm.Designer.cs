@@ -84,12 +84,12 @@
             // 
             // totalInput
             // 
-            this.totalInput.DecimalPlaces = 1;
+            this.totalInput.DecimalPlaces = 2;
             this.totalInput.Increment = new decimal(new int[] {
             1,
             0,
             0,
-            65536});
+            131072});
             this.totalInput.Location = new System.Drawing.Point(779, 260);
             this.totalInput.Name = "totalInput";
             this.totalInput.Size = new System.Drawing.Size(120, 35);
@@ -107,12 +107,12 @@
             // 
             // gstInput
             // 
-            this.gstInput.DecimalPlaces = 1;
+            this.gstInput.DecimalPlaces = 2;
             this.gstInput.Increment = new decimal(new int[] {
             1,
             0,
             0,
-            65536});
+            131072});
             this.gstInput.Location = new System.Drawing.Point(526, 260);
             this.gstInput.Name = "gstInput";
             this.gstInput.Size = new System.Drawing.Size(120, 35);

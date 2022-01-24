@@ -16,7 +16,7 @@ namespace BillAutomatorUI
         /// Represents the subheading that
         /// the disbursement fits into.
         /// </summary>
-        public string typeOfDisbursement { get; set; }
+        public DisbursementTypeModel typeOfDisbursement { get; set; }
 
         /// <summary>
         /// Represents the description of

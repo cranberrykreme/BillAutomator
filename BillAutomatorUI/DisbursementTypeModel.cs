@@ -10,21 +10,16 @@ namespace BillAutomatorUI
     /// Creates and manages the individual photocopying,
     /// rates that will need to be handled.
     /// </summary>
-    public class PhotocopyModel
+    public class DisbursementTypeModel
     {
         /// <summary>
-        /// Represents starting rate for the photocopying.
+        /// Represents type of disbursement.
         /// </summary>
-        public double initialRate { get; set; }
-
-        /// <summary>
-        /// Represents the page at which the rate changes.
-        /// </summary>
-        public int pageRateChange { get; set; }
+        public string type { get; set; }
 
         /// <summary>
         /// Represents rate of photocopying per page after the rate change page.
         /// </summary>
-        public double secondRate { get; set; }
+        //public double secondRate { get; set; }
     }
 }

@@ -103,7 +103,7 @@
     <Compile Include="PhotocopyEntryForm.Designer.cs">
       <DependentUpon>PhotocopyEntryForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="PhotocopyModel.cs" />
+    <Compile Include="DisbursementTypeModel.cs" />
     <Compile Include="CreateNewForm.cs">
       <SubType>Form</SubType>
     </Compile>

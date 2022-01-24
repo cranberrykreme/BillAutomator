@@ -26,12 +26,6 @@ namespace BillAutomatorUI
             public SolicitorsModel solicitor { get; set; } = new SolicitorsModel();
 
             /// <summary>
-            /// Represents that this was a completed photocopying
-            /// work in the entry.
-            /// </summary>
-            public PhotocopyModel photocopy { get; set; } = new PhotocopyModel();
-
-            /// <summary>
             /// Represents the description of
             /// the work that has been completed.
             /// </summary>

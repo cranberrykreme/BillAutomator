@@ -32,10 +32,11 @@ namespace BillAutomatorUI
         /// <param name="entTable"></param>
         /// <param name="aDoc"></param>
         /// <param name="aFileName"></param>
-        public void initialise(int solTable, int entTable, Document aDoc, string aFileName)
+        public void initialise(int solTable, int entTable, int disTable, Document aDoc, string aFileName)
         {
             solTableTextBox.Text = solTable.ToString();
             entriesTableTextBox.Text = entTable.ToString();
+            disbursementsTableTextBox.Text = disTable.ToString();
             doc = aDoc;
             fileName = aFileName;
         }
@@ -52,11 +53,13 @@ namespace BillAutomatorUI
             {
                 solTableTextBox.Text = "2";
                 entriesTableTextBox.Text = "3";
+                disbursementsTableTextBox.Text = "4";
             }
             else // Solicitor/Client
             {
                 solTableTextBox.Text = "1";
                 entriesTableTextBox.Text = "2";
+                disbursementsTableTextBox.Text = "3";
             }
         }
 
@@ -86,7 +89,7 @@ namespace BillAutomatorUI
         /// <param name="e"></param>
         private void confirmTablesButton_Click(object sender, EventArgs e)
         {
-            if (String.IsNullOrEmpty(solTableTextBox.Text) || String.IsNullOrEmpty(entriesTableTextBox.Text))
+            if (String.IsNullOrEmpty(solTableTextBox.Text) || String.IsNullOrEmpty(entriesTableTextBox.Text) || String.IsNullOrEmpty(disbursementsTableTextBox.Text))
             {
                 MessageBox.Show("Please enter the correct numbers into the table input boxes.");
                 return;
@@ -95,16 +98,17 @@ namespace BillAutomatorUI
             // Get the inputted table numbers.
             int solTable = Int32.Parse(solTableTextBox.Text);
             int entTable = Int32.Parse(entriesTableTextBox.Text);
+            int disTable = Int32.Parse(disbursementsTableTextBox.Text);
 
             //Handle errors with the input tables.
             int tableCount = doc.Tables.Count;
-            if(solTable > tableCount || entTable > tableCount)
+            if(solTable > tableCount || entTable > tableCount || disTable > tableCount)
             {
                 MessageBox.Show("You cannot access a table number higher than the total number of tables in the document, " +
                     "which is " + tableCount + " tables.");
                 return;
             }
-            if(solTable < 1 || entTable < 1)
+            if(solTable < 1 || entTable < 1 || disTable < 1)
             {
                 MessageBox.Show("You cannot access any table before the first one. Please enter a value of 1 or greater in both boxes.");
                 return;
@@ -113,7 +117,7 @@ namespace BillAutomatorUI
             try
             {
                 BillForm billForm = new BillForm();
-                billForm.runStartup(doc, fileName, solTable, entTable, entTable+1); // have to fix for disbursements reading.
+                billForm.runStartup(doc, fileName, solTable, entTable, disTable); // feed back into the bill form to read the tables.
 
                 billForm.Show();
             }

@@ -30,8 +30,13 @@ namespace BillAutomatorUI
         public List<DisbursementsModel> disbursements  { get; set; } = new List<DisbursementsModel>();
 
         /// <summary>
-        /// Represents the list of photocopying rates for the matter.
+        /// Represents the list of types of disbursements for the matter.
         /// </summary>
-        public List<PhotocopyModel> photocopies { get; set; } = new List<PhotocopyModel>();
+        public List<DisbursementTypeModel> usedDibursementTypes { get; set; } = new List<DisbursementTypeModel>();
+
+        /// <summary>
+        /// Represents the list of types of disbursements that have not been used yet for the matter.
+        /// </summary>
+        public List<DisbursementTypeModel> unusedDibursementTypes { get; set; } = new List<DisbursementTypeModel>();
     }
 }

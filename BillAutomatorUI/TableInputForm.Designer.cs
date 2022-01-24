@@ -37,6 +37,8 @@
             this.typeBillLabel = new System.Windows.Forms.Label();
             this.solTableTextBox = new System.Windows.Forms.TextBox();
             this.solTableLabel = new System.Windows.Forms.Label();
+            this.disbursementsTableTextBox = new System.Windows.Forms.TextBox();
+            this.disbursementsTableLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // cancelTablesButton
@@ -67,7 +69,7 @@
             // 
             // entriesTableTextBox
             // 
-            this.entriesTableTextBox.Location = new System.Drawing.Point(450, 179);
+            this.entriesTableTextBox.Location = new System.Drawing.Point(450, 153);
             this.entriesTableTextBox.Name = "entriesTableTextBox";
             this.entriesTableTextBox.Size = new System.Drawing.Size(373, 35);
             this.entriesTableTextBox.TabIndex = 20;
@@ -76,7 +78,7 @@
             // 
             this.entriesTableLabel.AutoSize = true;
             this.entriesTableLabel.Font = new System.Drawing.Font("Segoe UI Light", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.entriesTableLabel.Location = new System.Drawing.Point(14, 170);
+            this.entriesTableLabel.Location = new System.Drawing.Point(14, 144);
             this.entriesTableLabel.Name = "entriesTableLabel";
             this.entriesTableLabel.Size = new System.Drawing.Size(311, 45);
             this.entriesTableLabel.TabIndex = 19;
@@ -103,7 +105,7 @@
             // 
             // solTableTextBox
             // 
-            this.solTableTextBox.Location = new System.Drawing.Point(450, 115);
+            this.solTableTextBox.Location = new System.Drawing.Point(450, 89);
             this.solTableTextBox.Name = "solTableTextBox";
             this.solTableTextBox.Size = new System.Drawing.Size(373, 35);
             this.solTableTextBox.TabIndex = 16;
@@ -112,11 +114,28 @@
             // 
             this.solTableLabel.AutoSize = true;
             this.solTableLabel.Font = new System.Drawing.Font("Segoe UI Light", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.solTableLabel.Location = new System.Drawing.Point(14, 106);
+            this.solTableLabel.Location = new System.Drawing.Point(14, 80);
             this.solTableLabel.Name = "solTableLabel";
             this.solTableLabel.Size = new System.Drawing.Size(330, 45);
             this.solTableLabel.TabIndex = 15;
             this.solTableLabel.Text = "Solicitor Table Number";
+            // 
+            // disbursementsTableTextBox
+            // 
+            this.disbursementsTableTextBox.Location = new System.Drawing.Point(450, 217);
+            this.disbursementsTableTextBox.Name = "disbursementsTableTextBox";
+            this.disbursementsTableTextBox.Size = new System.Drawing.Size(373, 35);
+            this.disbursementsTableTextBox.TabIndex = 22;
+            // 
+            // disbursementsTableLabel
+            // 
+            this.disbursementsTableLabel.AutoSize = true;
+            this.disbursementsTableLabel.Font = new System.Drawing.Font("Segoe UI Light", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.disbursementsTableLabel.Location = new System.Drawing.Point(14, 208);
+            this.disbursementsTableLabel.Name = "disbursementsTableLabel";
+            this.disbursementsTableLabel.Size = new System.Drawing.Size(418, 45);
+            this.disbursementsTableLabel.TabIndex = 21;
+            this.disbursementsTableLabel.Text = "Disbursements Table Number";
             // 
             // TableInputForm
             // 
@@ -124,6 +143,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(836, 334);
+            this.Controls.Add(this.disbursementsTableTextBox);
+            this.Controls.Add(this.disbursementsTableLabel);
             this.Controls.Add(this.entriesTableTextBox);
             this.Controls.Add(this.entriesTableLabel);
             this.Controls.Add(this.billTypeDropDown);
@@ -151,5 +172,7 @@
         private System.Windows.Forms.Label typeBillLabel;
         private System.Windows.Forms.TextBox solTableTextBox;
         private System.Windows.Forms.Label solTableLabel;
+        private System.Windows.Forms.TextBox disbursementsTableTextBox;
+        private System.Windows.Forms.Label disbursementsTableLabel;
     }
 }

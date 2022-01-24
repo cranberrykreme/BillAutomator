@@ -322,19 +322,20 @@ namespace BillAutomatorUI
             entTable = aEntTable;
             disTable = aDisTable;
 
-            if(solTable == 0 && entTable == 0)
+            if(solTable == 0 && entTable == 0 && disTable == 0)
             {
                 //Determine which tables are which.
                 solTable = findSolTable();
                 entTable = findEntTable();
+                disTable = findDisTable();
             }
             
 
             // If there has been some type of error.
-            if(solTable == 0 || entTable == 0)
+            if(solTable == 0 || entTable == 0 || disTable == 0)
             {
                 TableInputForm tif = new TableInputForm();
-                tif.initialise(solTable, entTable, doc, fileName);
+                tif.initialise(solTable, entTable, disTable, doc, fileName);
                 tif.Show();
 
                 //MessageBox.Show("something is wrong" + " Sol Table is: " + solTable + " & Ent table is: " + entTable);
@@ -354,6 +355,10 @@ namespace BillAutomatorUI
 
             em.solicitor.Add(s);
 
+            // Set the types of disbursements.
+            setUnusedDisbursements();
+
+
             //Initialise Loading Form. 
             LoadingForm lf = new LoadingForm();
             lf.Show();
@@ -363,16 +368,11 @@ namespace BillAutomatorUI
             int solTableLength = testTable.Rows.Count;
             testTable = doc.Tables[entTable];
             int entTableLength = testTable.Rows.Count;
+            testTable = doc.Tables[disTable];
+            int disTableLength = testTable.Rows.Count;
 
-            int totalLength = solTableLength + entTableLength;
+            int totalLength = solTableLength + entTableLength + disTableLength;
             lf.totalLoading(totalLength);
-
-            // Set the photocopying information section.
-            PhotocopyModel pm = new PhotocopyModel();
-            pm.initialRate = -1;
-            pm.pageRateChange = -1;
-            pm.secondRate = -1;
-            em.photocopies.Add(pm);
 
 
             try
@@ -639,6 +639,7 @@ namespace BillAutomatorUI
 
 
 
+
                 // FOR THE ENTRIES.
                 Word.Table tabs = doc.Tables[entTable];
                 Rows row = tabs.Rows;
@@ -736,9 +737,6 @@ namespace BillAutomatorUI
                                     }
 
                                     Console.WriteLine(entries.solicitor.initials);
-                                } else
-                                {
-                                    entries.photocopy = em.photocopies[0];
                                 }
 
                             } catch (Exception ex)
@@ -861,6 +859,22 @@ namespace BillAutomatorUI
                         em.entries.Add(entries); // Add the current row to the list of entries
                     }
                     
+                }
+
+
+                // FOR THE DISBURSEMENTS.
+                tabs = doc.Tables[disTable];
+                row = tabs.Rows;
+                col = tabs.Columns;
+
+                //iterate over rows
+                for(int i = 2; i < row.Count; i++)
+                {
+                    //Update loading bar for each new row.
+                    lf.progressDisplay();
+
+
+
                 }
             }
             catch (Exception ex)
@@ -1479,6 +1493,92 @@ namespace BillAutomatorUI
             }
 
             return foundTable;
+        }
+
+        /// <summary>
+        /// Returns the table with the disbursements in it.
+        /// </summary>
+        /// <returns></returns>
+        private int findDisTable()
+        {
+            int foundTable = 0;
+
+            // Iterate through all of the tables starting with the first table after the entries table.
+            for(int i = entTable+1; i <= doc.Tables.Count; i++)
+            {
+                Table table;
+                try
+                {
+                    table = doc.Tables[i];
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    Console.WriteLine("Table " + i + " out of " + doc.Tables.Count);
+                    break;
+                }
+
+                // Search for the correct table, the disbursements table.
+                if (table.Columns.Count > 3)
+                {
+                    Rows rows = table.Rows;
+                    Cell firstCell = rows[1].Cells[2];
+                    Cell secondCell = rows[1].Cells[3];
+                    Cell thirdCell = rows[1].Cells[4];
+
+                    Range first = firstCell.Range;
+                    Range second = secondCell.Range;
+                    Range third = thirdCell.Range;
+
+                    string firstTxt = first.Text;
+                    string secondTxt = second.Text;
+                    string thirdTxt = third.Text;
+
+                    // Check if the table has all of the right parameters
+                    if (firstTxt.Contains("Date") && secondTxt.Contains("Description of Work Performed") && thirdTxt.Contains("Amount"))
+                    {
+                        foundTable = i;
+                        break;
+                    }
+                }
+            }
+
+            return foundTable;
+        }
+
+        private void setUnusedDisbursements()
+        {
+            DisbursementTypeModel dtm = new DisbursementTypeModel();
+            dtm.type = "court fees";
+            em.unusedDibursementTypes.Add(dtm);
+
+            dtm.type = "senior counsel";
+            em.unusedDibursementTypes.Add(dtm);
+
+            dtm.type = "junior counsel";
+            em.unusedDibursementTypes.Add(dtm);
+
+            dtm.type = "counsel";
+            em.unusedDibursementTypes.Add(dtm);
+
+            dtm.type = "expert fees";
+            em.unusedDibursementTypes.Add(dtm);
+
+            dtm.type = "medical report fees";
+            em.unusedDibursementTypes.Add(dtm);
+
+            dtm.type = "service fees";
+            em.unusedDibursementTypes.Add(dtm);
+
+            dtm.type = "agency fees";
+            em.unusedDibursementTypes.Add(dtm);
+
+            dtm.type = "witness expenses";
+            em.unusedDibursementTypes.Add(dtm);
+
+            dtm.type = "miscellaneous fees";
+            em.unusedDibursementTypes.Add(dtm);
+
         }
 
         /// <summary>
