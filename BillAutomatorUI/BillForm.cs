@@ -34,6 +34,7 @@ namespace BillAutomatorUI
         private static int entTable; //Stores the table number of the entries table
         private bool openingNew = false; //Is a new form being opened upon the close of this form?
         private static int disTable; //Stores the table number of the disbursements table
+        private bool currentlyEntries = true; //Is the display table set to disbursements or entries?
 
         public BillForm()
         {
@@ -1128,17 +1129,6 @@ namespace BillAutomatorUI
 
                                 text = text.Replace("", "").Replace("\n", "").Replace("\r", "");
 
-                                // Run through the types of disbursements to see if it a new subsection.
-                                //foreach (DisbursementTypeModel dtm in em.unusedDisbursementTypes)
-                                //{
-                                //    string holdText = text.ToLower();
-                                //    if (holdText.Contains(dtm.type))
-                                //    {
-                                //        em.usedDisbursementTypes.Add(dtm);
-                                //        isType = true;
-                                //    }
-                                //}
-
                                 DisbursementTypeModel dtm = new DisbursementTypeModel();
                                 dtm.type = text;
                                 em.usedDisbursementTypes.Add(dtm);
@@ -1224,6 +1214,7 @@ namespace BillAutomatorUI
                     if (!isEmpty && !isType)
                     {
                         disbursement.typeOfDisbursement = em.usedDisbursementTypes[em.usedDisbursementTypes.Count - 1];
+                        em.usedDisbursementTypes[em.usedDisbursementTypes.Count - 1].numDisbursements = em.usedDisbursementTypes[em.usedDisbursementTypes.Count - 1].numDisbursements + 1; // Add another disbursement to this number.
                         em.disbursements.Add(disbursement); // Add the current row to the list of disbursements.
                     }
                 }
@@ -1256,6 +1247,7 @@ namespace BillAutomatorUI
         private void displayEntries()
         {
             entriesBox.Items.Clear();
+            currentlyEntries = true;
             em.entries.ForEach(delegate (EntriesModel entry)
             {
                 //Only get the date part of the dateTime entry
@@ -1275,6 +1267,7 @@ namespace BillAutomatorUI
         private void displayEntries(DateTime date)
         {
             entriesBox.Items.Clear();
+            currentlyEntries = true;
             bool firstHit = false;
             int i = -1;
             em.entries.ForEach(delegate (EntriesModel ent)
@@ -1317,14 +1310,10 @@ namespace BillAutomatorUI
 
         private void newEntryButton_Click(object sender, EventArgs e)
         {
-            
-
-
             NewEntryForm nef = new NewEntryForm();
             nef.setBillModel(em);
             if (entriesBox.SelectedIndex > -1)
             {
-
                 int selected = entriesBox.SelectedIndex;
                 string chosenEntry = entriesBox.SelectedItem.ToString();
                 int index = entriesFindIndex(chosenEntry);
@@ -1353,7 +1342,7 @@ namespace BillAutomatorUI
             catch
             {
                 MessageBox.Show("There is no open document, so your work will not be saved." +
-                " Please close this window and open a new document.");
+                " Please close this window and open a new document, or try the re-open word button on the bottom left of the screen.");
                 return;
             }
             
@@ -1389,13 +1378,21 @@ namespace BillAutomatorUI
         /// <param name="e"></param>
         private void deleteSelectedButton_Click(object sender, EventArgs e)
         {
+            
+
             if(entriesBox.SelectedIndex == -1)
             {
                 MessageBox.Show("Please select an entry to delete");
                 return;
             }
 
-            int selected = entriesBox.SelectedIndex;
+            // If the user has selected a disbursement.
+            if (!currentlyEntries)
+            {
+                deleteDisbursement(entriesBox.SelectedIndex, entriesBox.SelectedItem.ToString());
+                return;
+            }
+
             string chosenEntry = entriesBox.SelectedItem.ToString();
             int index = entriesFindIndex(chosenEntry);
             
@@ -1415,6 +1412,98 @@ namespace BillAutomatorUI
         }
 
         /// <summary>
+        /// Deletes a selected disbursement.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="description"></param>
+        public void deleteDisbursement(int index, string description)
+        {
+            int disIndex = findDisbursement(description);
+            if (disIndex < 0)
+            {
+                MessageBox.Show("Cannot find selected disbursement entry.");
+                return;
+            }
+
+            // Get the disbursement type and reduce it's count by one.
+            string disType = em.disbursements[disIndex].typeOfDisbursement.type;
+            bool deleteType = false;
+            int i = -1;
+            int disTypeIndex = -1;
+            
+            foreach(DisbursementTypeModel dtm in em.usedDisbursementTypes)
+            {
+                i++;
+
+                // If we have found the right type of disbursement, reduce its count, and remove it from the used list if necessary.
+                if (dtm.type.Equals(disType))
+                {
+                    dtm.numDisbursements = dtm.numDisbursements - 1;
+                    disTypeIndex = i;
+                    if(dtm.numDisbursements < 1)
+                    {
+                        deleteType = true;
+                    }
+                    break;
+                }
+            }
+
+
+            if (deleteType && disTypeIndex > -1)
+            {
+                em.usedDisbursementTypes.RemoveAt(disTypeIndex);
+            }
+
+
+            em.disbursements.RemoveAt(disIndex);
+
+            displayDisbursements();
+
+        }
+
+        /// <summary>
+        /// Finds the location of the disbursement in the em.disbursements list 
+        /// by matching the description.
+        /// </summary>
+        /// <param name="description"></param>
+        /// <returns></returns>
+        public int findDisbursement(string description)
+        {
+            int index = -1;
+
+            string[] descriptions = description.Split('-');
+            description = descriptions[descriptions.Length - 1].Substring(1);
+
+            foreach(DisbursementsModel dm in em.disbursements)
+            {
+                Console.WriteLine(description);
+                Console.WriteLine(dm.description);
+                index++;
+                if (dm.description.Equals(description))
+                {
+                    return index;
+                }
+            }
+
+            return -1;
+        }
+
+        /// <summary>
+        /// Opens the edit screen for a particular disbursement.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="description"></param>
+        public void editDisbursement(int index, string description)
+        {
+            int disIndex = findDisbursement(description);
+            if(disIndex < 0)
+            {
+                MessageBox.Show("Cannot find selected disbursement entry.");
+                return;
+            }
+        }
+
+        /// <summary>
         /// Connect to the entry that has been selected and open the NewEntryForm,
         /// class to edit the selected entry.
         /// </summary>
@@ -1428,7 +1517,13 @@ namespace BillAutomatorUI
                 return;
             }
 
-            int selected = entriesBox.SelectedIndex;
+            // If the user has selected a disbursement.
+            if (!currentlyEntries)
+            {
+                editDisbursement(entriesBox.SelectedIndex, entriesBox.SelectedItem.ToString());
+                return;
+            }
+
             string chosenEntry = entriesBox.SelectedItem.ToString();
             int index = entriesFindIndex(chosenEntry);
 
@@ -1452,6 +1547,11 @@ namespace BillAutomatorUI
         /// <returns></returns>
         private int entriesFindIndex(string chosenEntry)
         {
+            if (!currentlyEntries)
+            {
+                return -1;
+            }
+
             string[] entryParams = chosenEntry.Split('-');
             string description = "";
 
@@ -1502,6 +1602,11 @@ namespace BillAutomatorUI
         //Move the selected entry upwards/earlier.
         private void upButton_Click(object sender, EventArgs e)
         {
+            if (!currentlyEntries)
+            {
+                return;
+            }
+
             //If nothing is selected, tell the user and return.
             if(entriesBox.SelectedIndex < 0)
             {
@@ -1556,6 +1661,11 @@ namespace BillAutomatorUI
         //Move the selected entry downwards/later.
         private void downButton_Click(object sender, EventArgs e)
         {
+            if (!currentlyEntries)
+            {
+                return;
+            }
+
             //If nothing is selected, tell the user and return.
             if (entriesBox.SelectedIndex < 0)
             {
@@ -1609,7 +1719,7 @@ namespace BillAutomatorUI
 
         private void entriesBox_doubleClick(object sender, EventArgs e)
         {
-            if(entriesBox.SelectedIndex > -1)
+            if(entriesBox.SelectedIndex > -1 && currentlyEntries)
             {
                 string chosenEntry = entriesBox.SelectedItem.ToString();
                 int selected = entriesFindIndex(chosenEntry);
@@ -2005,9 +2115,23 @@ namespace BillAutomatorUI
             this.Close();
         }
 
+        /// <summary>
+        /// When the button is clicked to display the disbursements.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void displayAllDisbursementsButton_Click(object sender, EventArgs e)
         {
+            displayDisbursements();
+        }
+
+        /// <summary>
+        /// Clears the displaybox and shows only the disbursements.
+        /// </summary>
+        private void displayDisbursements()
+        {
             entriesBox.Items.Clear();
+            currentlyEntries = false;
             string type = "";
             em.disbursements.ForEach(delegate (DisbursementsModel dm)
             {
@@ -2027,6 +2151,11 @@ namespace BillAutomatorUI
 
                 //Display the entry in the box
                 entriesBox.Items.Add(date + " - " + dm.description);
+            });
+
+            em.usedDisbursementTypes.ForEach(delegate (DisbursementTypeModel dtm)
+            {
+                entriesBox.Items.Add(dtm.type.ToUpper() + " - " + dtm.numDisbursements);
             });
         }
     }

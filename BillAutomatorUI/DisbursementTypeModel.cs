@@ -18,8 +18,9 @@ namespace BillAutomatorUI
         public string type { get; set; }
 
         /// <summary>
-        /// Represents rate of photocopying per page after the rate change page.
+        /// Represents number of disbursements in the bill that
+        /// use this particular type of disbursement.
         /// </summary>
-        //public double secondRate { get; set; }
+        public int numDisbursements { get; set; }
     }
 }

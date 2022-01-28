@@ -29,7 +29,7 @@ namespace BillAutomatorUI
         public void setBillModel(BillModel aEm)
         {
             em = aEm;
-            em.unusedDisbursementTypes.ForEach(delegate (DisbursementTypeModel dtm)
+            em.usedDisbursementTypes.ForEach(delegate (DisbursementTypeModel dtm)
             {
                 typeDropDown.Items.Add(dtm.type);
             });

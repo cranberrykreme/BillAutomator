@@ -133,7 +133,7 @@
             // 
             this.typeLabel.AutoSize = true;
             this.typeLabel.Font = new System.Drawing.Font("Segoe UI Light", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.typeLabel.Location = new System.Drawing.Point(16, 250);
+            this.typeLabel.Location = new System.Drawing.Point(474, 23);
             this.typeLabel.Name = "typeLabel";
             this.typeLabel.Size = new System.Drawing.Size(85, 45);
             this.typeLabel.TabIndex = 33;
@@ -202,9 +202,9 @@
             // typeDropDown
             // 
             this.typeDropDown.FormattingEnabled = true;
-            this.typeDropDown.Location = new System.Drawing.Point(194, 259);
+            this.typeDropDown.Location = new System.Drawing.Point(572, 32);
             this.typeDropDown.Name = "typeDropDown";
-            this.typeDropDown.Size = new System.Drawing.Size(165, 38);
+            this.typeDropDown.Size = new System.Drawing.Size(327, 38);
             this.typeDropDown.TabIndex = 46;
             // 
             // DisbursementForm
