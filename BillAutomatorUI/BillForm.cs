@@ -307,13 +307,34 @@ namespace BillAutomatorUI
                             rows.Add(rows[index]);
                             numRows++;
 
-                            if(currentType > 1)
+                            int numList = 0; // is there a number at the start of this row?
+
+                            if (currentType > 1)
                             { 
                                 //Add another additional row.
                                 rows.Add(rows[index]);
                                 numRows++;
-                                index++;
+                                
                                 currentDiff++;
+
+                                try
+                                {
+                                    numList = rows[index].Cells[1].Range.ListFormat.CountNumberedItems();
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine(ex);
+                                }
+
+
+                                // If there are numbers in the left-hand most column, remove them.
+                                if (numList > 0)
+                                {
+                                    rows[index].Cells[1].Range.ListFormat.ApplyNumberDefault();
+                                }
+
+                                index++; // iterate the index.
+
                             }
 
                             if (currentType >= em.usedDisbursementTypes.Count)
@@ -322,7 +343,7 @@ namespace BillAutomatorUI
                                 return false;
                             }
 
-                            int numList = 0;
+                            numList = 0;
 
                             try
                             {
@@ -1105,7 +1126,7 @@ namespace BillAutomatorUI
 
                                 string text = rType.Text;
 
-                                text = text.Replace("", "").Replace("\n", "");
+                                text = text.Replace("", "").Replace("\n", "").Replace("\r", "");
 
                                 // Run through the types of disbursements to see if it a new subsection.
                                 //foreach (DisbursementTypeModel dtm in em.unusedDisbursementTypes)
@@ -1148,6 +1169,9 @@ namespace BillAutomatorUI
                             try
                             {
                                 string desc = txt;
+
+                                desc = desc.Replace("\r", "");
+
                                 disbursement.description = desc;
                             }
                             catch (Exception ex)
