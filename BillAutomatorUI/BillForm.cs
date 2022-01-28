@@ -1179,16 +1179,37 @@ namespace BillAutomatorUI
                                 Console.WriteLine(ex);
                             }
                         }
-                        else if(j == 3 && !String.IsNullOrEmpty(txt)) // Get the amount
+                        else if(j == 4 && !String.IsNullOrEmpty(txt)) // Get the amount
                         {
                             isEmpty = false;
 
                             try
                             {
                                 //convert the string to a double, being the price of the entry.
-                                double amount = Convert.ToDouble(txt);
+                                // An attempt to split the cell string into sections, one section having no \ characters in it.
+                                string[] cellText = Regex.Split(txt, "\\s");
+                                int cellIndex = 0;
+                                while (String.IsNullOrEmpty(cellText[cellIndex]) && cellIndex < cellText.Length - 1)
+                                {
+                                    cellIndex++;
+                                }
+                                txt = cellText[cellIndex];
+
+
+
+                                string price = txt.Replace("", "").Replace("$", "");
+
+                                //price = price.Substring(0, price.Length - 1);
+
+                                if (!String.IsNullOrEmpty(price))
+                                {
+                                    isEmpty = false;
+                                }
+
+                                //convert the string to a double, being the price of the entry.
+                                double amount = Convert.ToDouble(price);
                                 Console.WriteLine("Value of the entry: " + amount);
-                                Console.WriteLine("Actual Value: " + txt);
+                                Console.WriteLine("Actual Value: " + price);
                                 disbursement.amount = amount;
                             }
                             catch (Exception ex)
