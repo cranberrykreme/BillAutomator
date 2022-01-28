@@ -39,6 +39,7 @@
             this.solTableLabel = new System.Windows.Forms.Label();
             this.disbursementsTableTextBox = new System.Windows.Forms.TextBox();
             this.disbursementsTableLabel = new System.Windows.Forms.Label();
+            this.hasDisbursementsCheckBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // cancelTablesButton
@@ -137,12 +138,23 @@
             this.disbursementsTableLabel.TabIndex = 21;
             this.disbursementsTableLabel.Text = "Disbursements Table Number";
             // 
+            // hasDisbursementsCheckBox
+            // 
+            this.hasDisbursementsCheckBox.AutoSize = true;
+            this.hasDisbursementsCheckBox.Location = new System.Drawing.Point(22, 266);
+            this.hasDisbursementsCheckBox.Name = "hasDisbursementsCheckBox";
+            this.hasDisbursementsCheckBox.Size = new System.Drawing.Size(160, 64);
+            this.hasDisbursementsCheckBox.TabIndex = 28;
+            this.hasDisbursementsCheckBox.Text = "Matter has \r\nDibursements";
+            this.hasDisbursementsCheckBox.UseVisualStyleBackColor = true;
+            // 
             // TableInputForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 30F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(836, 334);
+            this.Controls.Add(this.hasDisbursementsCheckBox);
             this.Controls.Add(this.disbursementsTableTextBox);
             this.Controls.Add(this.disbursementsTableLabel);
             this.Controls.Add(this.entriesTableTextBox);
@@ -174,5 +186,6 @@
         private System.Windows.Forms.Label solTableLabel;
         private System.Windows.Forms.TextBox disbursementsTableTextBox;
         private System.Windows.Forms.Label disbursementsTableLabel;
+        private System.Windows.Forms.CheckBox hasDisbursementsCheckBox;
     }
 }

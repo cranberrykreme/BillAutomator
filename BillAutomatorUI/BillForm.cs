@@ -35,6 +35,7 @@ namespace BillAutomatorUI
         private bool openingNew = false; //Is a new form being opened upon the close of this form?
         private static int disTable; //Stores the table number of the disbursements table
         private bool currentlyEntries = true; //Is the display table set to disbursements or entries?
+        private static bool hasDisTable; //Does this bill have a disbursements table?
 
         public BillForm()
         {
@@ -208,115 +209,147 @@ namespace BillAutomatorUI
 
                 }
 
-
-                // Disbursements section.
-                try
+                // Only write to the disbursements table if there is a table there.
+                if(disTable != 0)
                 {
-                    //Enter all of the bill disbursements into the bill of costs.
-                    tbl = doc.Tables[disTable];
-                    rows = tbl.Rows;
-                    numRows = rows.Count; //to compare the index of the row to the final index.
-                    cols = tbl.Columns;
-                    finalIndex = -1;
-                    int currentType = 0;
-                    int currentDiff = 2; //the difference between the iterator number and the actual row we want to look at.
-
-                    // Iterate through the entire list.
-                    for(int i = 0; i < em.disbursements.Count; i++)
+                    // Disbursements section.
+                    try
                     {
-                        lf.progressDisplay();
+                        //Enter all of the bill disbursements into the bill of costs.
+                        tbl = doc.Tables[disTable];
+                        rows = tbl.Rows;
+                        numRows = rows.Count; //to compare the index of the row to the final index.
+                        cols = tbl.Columns;
+                        finalIndex = -1;
+                        int currentType = 0;
+                        int currentDiff = 2; //the difference between the iterator number and the actual row we want to look at.
 
-                        int index = i + currentDiff;
-                        finalIndex = index;
-
-                        // Add new rows as is needed
-                        if (index > numRows - 2)
+                        // Iterate through the entire list.
+                        for (int i = 0; i < em.disbursements.Count; i++)
                         {
-                            //For the entries we must always add only the second last row.
-                            Console.WriteLine(rows.Count);
-                            rows.Add(rows[rows.Count - 1]);
-                            numRows++;
+                            lf.progressDisplay();
 
-                        }
+                            int index = i + currentDiff;
+                            finalIndex = index;
 
-                        
-
-                        // If the current type is the same as the previous disbursement type.
-                        if (em.disbursements[i].typeOfDisbursement.type.Equals(em.usedDisbursementTypes[currentType].type))
-                        {
-                            //rows.Add(index); // Add a new row where the new entry should be, will always have an index number.
-
-                            int numList = rows[index].Cells[1].Range.ListFormat.CountNumberedItems();
-                            Console.WriteLine("Number of numbered items: " + numList + " in row number: " + i);
-
-                            // If there are no numbers in the left-hand most column, then set one there.
-                            if (numList < 1)
+                            // Add new rows as is needed
+                            if (index > numRows - 2)
                             {
-                                rows[index].Cells[1].Range.ListFormat.ApplyNumberDefault();
+                                //For the entries we must always add only the second last row.
+                                Console.WriteLine(rows.Count);
+                                rows.Add(rows[rows.Count - 1]);
+                                numRows++;
+
                             }
 
-                            Range rType = rows[index].Cells[2].Range;
-                            rType.Font.Size = 9; //Set the font size to be 9
 
-                            // Add disbursements date
-                            rType.Text = em.disbursements[i].date.ToString("dd.MM.yy");
 
-                            rType = rows[index].Cells[3].Range;
-                            rType.Underline = WdUnderline.wdUnderlineNone; //Remove underline from the description
-
-                            // Add disbursements description
-                            rType.Text = em.disbursements[i].description;
-
-                            // Add disbursements cost
-                            double cost = em.disbursements[i].amount;
-                            string[] amt = cost.ToString().Split('.');
-
-                            double decimalPt = Convert.ToDouble(amt[amt.Length - 1]);
-                            if (cost % 1 == 0)
+                            // If the current type is the same as the previous disbursement type.
+                            if (em.disbursements[i].typeOfDisbursement.type.Equals(em.usedDisbursementTypes[currentType].type))
                             {
-                                Console.WriteLine(cost);
-                                rows[index].Cells[4].Range.Text = "$" + em.disbursements[i].amount.ToString() + ".00";
-                                Console.WriteLine(rows[index].Cells[4].Range.Text);
-                            }
-                            else
-                            {
-                                string[] numbers = em.disbursements[i].amount.ToString().Split('.');
-                                Console.WriteLine(numbers[numbers.Length - 1]);
-                                string num = numbers[numbers.Length - 1];
-                                if (num.Length < 2)
+                                //rows.Add(index); // Add a new row where the new entry should be, will always have an index number.
+
+                                int numList = rows[index].Cells[1].Range.ListFormat.CountNumberedItems();
+                                Console.WriteLine("Number of numbered items: " + numList + " in row number: " + i);
+
+                                // If there are no numbers in the left-hand most column, then set one there.
+                                if (numList < 1)
                                 {
-                                    rows[index].Cells[4].Range.Text = "$" + em.disbursements[i].amount.ToString() + "0";
+                                    rows[index].Cells[1].Range.ListFormat.ApplyNumberDefault();
+                                }
+
+                                Range rType = rows[index].Cells[2].Range;
+                                rType.Font.Size = 9; //Set the font size to be 9
+
+                                // Add disbursements date
+                                rType.Text = em.disbursements[i].date.ToString("dd.MM.yy");
+
+                                rType = rows[index].Cells[3].Range;
+                                rType.Underline = WdUnderline.wdUnderlineNone; //Remove underline from the description
+
+                                // Add disbursements description
+                                rType.Text = em.disbursements[i].description;
+
+                                // Add disbursements cost
+                                double cost = em.disbursements[i].amount;
+                                string[] amt = cost.ToString().Split('.');
+
+                                double decimalPt = Convert.ToDouble(amt[amt.Length - 1]);
+                                if (cost % 1 == 0)
+                                {
+                                    Console.WriteLine(cost);
+                                    rows[index].Cells[4].Range.Text = "$" + em.disbursements[i].amount.ToString() + ".00";
+                                    Console.WriteLine(rows[index].Cells[4].Range.Text);
                                 }
                                 else
                                 {
-                                    rows[index].Cells[4].Range.Text = "$" + em.disbursements[i].amount.ToString();
+                                    string[] numbers = em.disbursements[i].amount.ToString().Split('.');
+                                    Console.WriteLine(numbers[numbers.Length - 1]);
+                                    string num = numbers[numbers.Length - 1];
+                                    if (num.Length < 2)
+                                    {
+                                        rows[index].Cells[4].Range.Text = "$" + em.disbursements[i].amount.ToString() + "0";
+                                    }
+                                    else
+                                    {
+                                        rows[index].Cells[4].Range.Text = "$" + em.disbursements[i].amount.ToString();
+                                    }
                                 }
+
                             }
-                            
-                        } else // If the current type is not the same type as the previous entry.
-                        {
-                            Console.WriteLine("Current Disbursement type: " + em.disbursements[i].typeOfDisbursement.type);
-                            Console.WriteLine("What the previous disbursement was: " + em.usedDisbursementTypes[currentType].type);
+                            else // If the current type is not the same type as the previous entry.
+                            {
+                                Console.WriteLine("Current Disbursement type: " + em.disbursements[i].typeOfDisbursement.type);
+                                Console.WriteLine("What the previous disbursement was: " + em.usedDisbursementTypes[currentType].type);
 
-                            while (!em.disbursements[i].typeOfDisbursement.type.Equals(em.usedDisbursementTypes[currentType].type)){
-                                currentType++;
-                            }
-                            
-                            currentDiff++;
+                                while (!em.disbursements[i].typeOfDisbursement.type.Equals(em.usedDisbursementTypes[currentType].type))
+                                {
+                                    currentType++;
+                                }
 
-                            //Add additional row.
-                            rows.Add(rows[index]);
-                            numRows++;
+                                currentDiff++;
 
-                            int numList = 0; // is there a number at the start of this row?
-
-                            if (currentType > 1)
-                            { 
-                                //Add another additional row.
+                                //Add additional row.
                                 rows.Add(rows[index]);
                                 numRows++;
-                                
-                                currentDiff++;
+
+                                int numList = 0; // is there a number at the start of this row?
+
+                                if (currentType > 1)
+                                {
+                                    //Add another additional row.
+                                    rows.Add(rows[index]);
+                                    numRows++;
+
+                                    currentDiff++;
+
+                                    try
+                                    {
+                                        numList = rows[index].Cells[1].Range.ListFormat.CountNumberedItems();
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Console.WriteLine(ex);
+                                    }
+
+
+                                    // If there are numbers in the left-hand most column, remove them.
+                                    if (numList > 0)
+                                    {
+                                        rows[index].Cells[1].Range.ListFormat.ApplyNumberDefault();
+                                    }
+
+                                    index++; // iterate the index.
+
+                                }
+
+                                if (currentType >= em.usedDisbursementTypes.Count)
+                                {
+                                    MessageBox.Show("Error with displaying disbursements by type");
+                                    return false;
+                                }
+
+                                numList = 0;
 
                                 try
                                 {
@@ -334,73 +367,49 @@ namespace BillAutomatorUI
                                     rows[index].Cells[1].Range.ListFormat.ApplyNumberDefault();
                                 }
 
-                                index++; // iterate the index.
+                                // Add the information necessary.
+                                Range rType = rows[index].Cells[3].Range;
+                                rType.Underline = WdUnderline.wdUnderlineSingle;
+                                rType.Text = em.disbursements[i].typeOfDisbursement.type;
+
+                                i--; // Move the iterator backwards to re-do the same entry.
+
 
                             }
-
-                            if (currentType >= em.usedDisbursementTypes.Count)
-                            {
-                                MessageBox.Show("Error with displaying disbursements by type");
-                                return false;
-                            }
-
-                            numList = 0;
-
-                            try
-                            {
-                                numList = rows[index].Cells[1].Range.ListFormat.CountNumberedItems();
-                            } catch (Exception ex)
-                            {
-                                Console.WriteLine(ex);
-                            }
-                            
-
-                            // If there are numbers in the left-hand most column, remove them.
-                            if (numList > 0)
-                            {
-                                rows[index].Cells[1].Range.ListFormat.ApplyNumberDefault();
-                            }
-
-                            // Add the information necessary.
-                            Range rType = rows[index].Cells[3].Range;
-                            rType.Underline = WdUnderline.wdUnderlineSingle;
-                            rType.Text = em.disbursements[i].typeOfDisbursement.type;
-
-                            i--; // Move the iterator backwards to re-do the same entry.
-
 
                         }
 
                     }
-
-                } catch (Exception ex)
-                {
-                    Console.WriteLine(ex);
-                }
-
-                finalIndex++;
-
-                //Delete all unused entries. Keep the very last row as that is the summary.
-                while (finalIndex < numRows && finalIndex > -1)
-                {
-                    try
-                    {
-                        rows[finalIndex].Delete();
-                        numRows--;
-                    }
                     catch (Exception ex)
                     {
                         Console.WriteLine(ex);
-                        Console.WriteLine("Final Index is: " + finalIndex + " and number of rows is: " + numRows);
-                        break;
                     }
 
+                    finalIndex++;
+
+                    //Delete all unused entries. Keep the very last row as that is the summary.
+                    while (finalIndex < numRows && finalIndex > -1)
+                    {
+                        try
+                        {
+                            rows[finalIndex].Delete();
+                            numRows--;
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex);
+                            Console.WriteLine("Final Index is: " + finalIndex + " and number of rows is: " + numRows);
+                            break;
+                        }
+
+                    }
+
+
+
+                    // Add one more row of buffer between the final subtotal and the end of the disbursements.
+                    rows.Add(rows[numRows]);
                 }
 
-
-
-                // Add one more row of buffer between the final subtotal and the end of the disbursements.
-                rows.Add(rows[numRows]);
 
             } catch (Exception ex)
             {
@@ -521,7 +530,7 @@ namespace BillAutomatorUI
         // existing bill of costs to open up and run. It will parse all
         // of the information from the bill and present it to the
         // user in the style set out in the forms.
-        public void runStartup(Document aDoc, string aFileName, int aSolTable, int aEntTable, int aDisTable)
+        public void runStartup(Document aDoc, string aFileName, int aSolTable, int aEntTable, int aDisTable, bool aHasDisTable)
         {
             em = new BillModel();
             SolicitorsModel s = new SolicitorsModel();
@@ -532,17 +541,24 @@ namespace BillAutomatorUI
             entTable = aEntTable;
             disTable = aDisTable;
 
+            hasDisTable = aHasDisTable;
+
             if(solTable == 0 && entTable == 0 && disTable == 0)
             {
                 //Determine which tables are which.
                 solTable = findSolTable();
                 entTable = findEntTable();
-                disTable = findDisTable();
+
+                if (hasDisTable)
+                {
+                    disTable = findDisTable();
+                }
+                
             }
             
 
             // If there has been some type of error.
-            if(solTable == 0 || entTable == 0 || disTable == 0)
+            if(solTable == 0 || entTable == 0 || (hasDisTable && disTable == 0))
             {
                 TableInputForm tif = new TableInputForm();
                 tif.initialise(solTable, entTable, disTable, doc, fileName);
@@ -551,7 +567,6 @@ namespace BillAutomatorUI
                 //MessageBox.Show("something is wrong" + " Sol Table is: " + solTable + " & Ent table is: " + entTable);
                 this.Close();
                 return;
-
             }
 
             //Initialise a solicitor's profile for "unknown".
@@ -578,11 +593,29 @@ namespace BillAutomatorUI
             int solTableLength = testTable.Rows.Count;
             testTable = doc.Tables[entTable];
             int entTableLength = testTable.Rows.Count;
-            testTable = doc.Tables[disTable];
-            int disTableLength = testTable.Rows.Count;
 
-            int totalLength = solTableLength + entTableLength + disTableLength;
-            lf.totalLoading(totalLength);
+            int totalLength = -1;
+            if(disTable > 0)
+            {
+                testTable = doc.Tables[disTable];
+                int disTableLength = testTable.Rows.Count;
+
+                totalLength = solTableLength + entTableLength + disTableLength;
+            }
+            else
+            {
+                totalLength = solTableLength + entTableLength;
+            }
+
+            try
+            {
+                lf.totalLoading(totalLength);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("problem with loading screen");
+                Console.WriteLine(ex);
+            }
 
 
             try
@@ -845,377 +878,394 @@ namespace BillAutomatorUI
                     MessageBox.Show("Error with reading solicitor's tables");
                     Console.WriteLine(ex);
                 }
-                
-
-
-
 
                 // FOR THE ENTRIES.
                 Word.Table tabs = doc.Tables[entTable];
                 Rows row = tabs.Rows;
                 Columns col = tabs.Columns;
-                //iterate over rows
-                for (int i = 2; i < row.Count; i++)
+                try
                 {
-                    //Update loading bar for each new row.
-                    lf.progressDisplay();
-
-                    string ftxt = "";
-                    EntriesModel entries = new EntriesModel();
-                    bool isEmpty = true; //Stores if the row is empty
-
-                    entries.isPhotocopy = isPhotocopy(row[i]);
-
-                    //iterate over columns
-                    for (int j = 2; j <= col.Count; j++)
+                    //iterate over rows
+                    for (int i = 2; i < row.Count; i++)
                     {
-                        Cell cell = row[i].Cells[j];
-                        Range r = cell.Range;
+                        //Update loading bar for each new row.
+                        lf.progressDisplay();
 
-                        string txt = r.Text;
-                        txt = txt.Replace("", "").Replace("\n", "");
+                        string ftxt = "";
+                        EntriesModel entries = new EntriesModel();
+                        bool isEmpty = true; //Stores if the row is empty
 
-                        //find if there are only empty characters in the string.
-                        string[] test = Regex.Split(txt, "\\s");
-                        bool testFull = false;
-                        for (int a = 0; a < test.Length; a++)
+                        entries.isPhotocopy = isPhotocopy(row[i]);
+
+                        //iterate over columns
+                        for (int j = 2; j <= col.Count; j++)
                         {
-                            if (!String.IsNullOrEmpty(test[a]))
+                            Cell cell = row[i].Cells[j];
+                            Range r = cell.Range;
+
+                            string txt = r.Text;
+                            txt = txt.Replace("", "").Replace("\n", "");
+
+                            //find if there are only empty characters in the string.
+                            string[] test = Regex.Split(txt, "\\s");
+                            bool testFull = false;
+                            for (int a = 0; a < test.Length; a++)
                             {
-                                testFull = true;
-                                break;
-                            }
-                        }
-                        if (!testFull)
-                        {
-                            txt = "";
-                        }
-
-                        ftxt = ftxt + " | " + txt;
-                        // Iterate through the entries by cell. TODO - add differently to photocopy entries.
-                        if (j == 2 && !String.IsNullOrEmpty(txt)) // Date of the entry
-                        {
-                            try
-                            {
-                                string entryDate = txt.Replace("", "");
-                                entryDate = entryDate.Substring(0, entryDate.Length - 1);
-                                Console.WriteLine("The date in question: " + entryDate);
-                                if (!String.IsNullOrEmpty(entryDate))
+                                if (!String.IsNullOrEmpty(test[a]))
                                 {
-                                    isEmpty = false;
+                                    testFull = true;
+                                    break;
                                 }
-                                var parsedDate = DateTime.Parse(entryDate);
-                                parsedDate = parsedDate.Date;
-                                Console.WriteLine(parsedDate);
-                                entries.date = parsedDate;
-
-                            } catch (Exception ex)
-                            {
-                                Console.WriteLine(ex);
                             }
-                        } else if((j == 3 && !String.IsNullOrEmpty(txt)) || j == 3 && entries.isPhotocopy) // Entries solicitor or photocopy
-                        { 
-                            try
+                            if (!testFull)
                             {
-                                if (!entries.isPhotocopy)
+                                txt = "";
+                            }
+
+                            ftxt = ftxt + " | " + txt;
+                            // Iterate through the entries by cell. TODO - add differently to photocopy entries.
+                            if (j == 2 && !String.IsNullOrEmpty(txt)) // Date of the entry
+                            {
+                                try
                                 {
-                                    string solicitor = txt.Replace("", "");
-                                    solicitor = solicitor.Substring(0, solicitor.Length - 1);
-                                    Console.WriteLine(solicitor);
-                                    bool found = false;
-                                    int index = 0;
-
-                                    // Loop over the existing solicitor profiles
-                                    while (found == false && index < em.solicitor.Count)
+                                    string entryDate = txt.Replace("", "");
+                                    entryDate = entryDate.Substring(0, entryDate.Length - 1);
+                                    Console.WriteLine("The date in question: " + entryDate);
+                                    if (!String.IsNullOrEmpty(entryDate))
                                     {
-                                        SolicitorsModel hold = em.solicitor[index];
+                                        isEmpty = false;
+                                    }
+                                    var parsedDate = DateTime.Parse(entryDate);
+                                    parsedDate = parsedDate.Date;
+                                    Console.WriteLine(parsedDate);
+                                    entries.date = parsedDate;
 
-                                        if (String.Equals(hold.initials, solicitor))
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine(ex);
+                                }
+                            }
+                            else if ((j == 3 && !String.IsNullOrEmpty(txt)) || j == 3 && entries.isPhotocopy) // Entries solicitor or photocopy
+                            {
+                                try
+                                {
+                                    if (!entries.isPhotocopy)
+                                    {
+                                        string solicitor = txt.Replace("", "");
+                                        solicitor = solicitor.Substring(0, solicitor.Length - 1);
+                                        Console.WriteLine(solicitor);
+                                        bool found = false;
+                                        int index = 0;
+
+                                        // Loop over the existing solicitor profiles
+                                        while (found == false && index < em.solicitor.Count)
                                         {
-                                            found = true;
-                                            entries.solicitor = hold;
-                                            isEmpty = false; //update that the cell is not empty.
+                                            SolicitorsModel hold = em.solicitor[index];
+
+                                            if (String.Equals(hold.initials, solicitor))
+                                            {
+                                                found = true;
+                                                entries.solicitor = hold;
+                                                isEmpty = false; //update that the cell is not empty.
+                                            }
+                                            index++;
                                         }
-                                        index++;
-                                    }
-                                    // If there is still no solicitor found, put it down as empty
-                                    if (found != true)
-                                    {
-                                        //SolicitorsModel notFound = new SolicitorsModel();
-                                        //notFound.initials = "Not Found";
-                                        entries.solicitor = em.solicitor[0];
+                                        // If there is still no solicitor found, put it down as empty
+                                        if (found != true)
+                                        {
+                                            //SolicitorsModel notFound = new SolicitorsModel();
+                                            //notFound.initials = "Not Found";
+                                            entries.solicitor = em.solicitor[0];
+                                        }
+
+                                        Console.WriteLine(entries.solicitor.initials);
                                     }
 
-                                    Console.WriteLine(entries.solicitor.initials);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine(ex);
                                 }
 
-                            } catch (Exception ex)
-                            {
-                                Console.WriteLine(ex);
                             }
-
-                        } else if(j == 4 && !String.IsNullOrEmpty(txt)) // Entries description
-                        {
-                            try
+                            else if (j == 4 && !String.IsNullOrEmpty(txt)) // Entries description
                             {
-                                entries.noCharge = false;
-                                string desc = txt.Replace("", "");
-                                desc = desc.Substring(0, desc.Length - 1);
-                                Console.WriteLine(desc);
-                                entries.description = desc;
+                                try
+                                {
+                                    entries.noCharge = false;
+                                    string desc = txt.Replace("", "");
+                                    desc = desc.Substring(0, desc.Length - 1);
+                                    Console.WriteLine(desc);
+                                    entries.description = desc;
 
-                                if (!String.IsNullOrEmpty(entries.description))
+                                    if (!String.IsNullOrEmpty(entries.description))
+                                    {
+                                        isEmpty = false;
+                                    }
+
+                                    string[] descriptions = desc.Split('–'); //Split the entire description
+
+                                    //If some hours have been entered into the description.
+                                    if (txt.Contains('–'))
+                                    {
+                                        string[] descHours = descriptions[descriptions.Length - 1].Split(' '); //Split what comes after the hyphen
+                                        string hours = descHours[1]; //take just the double value for the hours
+                                        Console.WriteLine("Input hours is: " + hours + " Length of entry is: " + descriptions.Length);
+                                        entries.hours = Convert.ToDouble(hours); //Add the hours to the entry
+                                    }
+                                    else
+                                    {
+                                        entries.hours = 0;
+                                    }
+
+
+                                    //Get the percentage of the entry that is claimed.
+                                    string getPercent = descriptions[descriptions.Length - 1];
+                                    if (getPercent.Contains('%'))
+                                    {
+                                        string[] percentages = getPercent.Split('%');
+                                        string per = percentages[0];
+                                        percentages = per.Split('(');
+                                        per = percentages[percentages.Length - 1];
+
+                                        double percentageClaimed = 100;
+                                        try
+                                        {
+                                            percentageClaimed = Convert.ToDouble(per);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Console.WriteLine(ex);
+                                        }
+
+                                        entries.percentage = percentageClaimed;
+                                        Console.WriteLine("The % claimed is: " + entries.percentage);
+                                    }
+                                    else if (getPercent.Contains("No Charge"))
+                                    {
+                                        entries.noCharge = true;
+                                        entries.percentage = 100;
+                                    }
+                                    else
+                                    {
+                                        entries.percentage = 100;
+                                    }
+
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine(ex);
+                                    Console.WriteLine("String that caused issue from description is: " + @txt + " and is it null or empty? " + String.IsNullOrEmpty(txt));
+                                }
+
+
+                            }
+                            else if (j == 5 && !String.IsNullOrEmpty(txt)) // Price of the entry
+                            {
+                                try
+                                {
+                                    // An attempt to split the cell string into sections, one section having no \ characters in it.
+                                    string[] cellText = Regex.Split(txt, "\\s");
+                                    int cellIndex = 0;
+                                    while (String.IsNullOrEmpty(cellText[cellIndex]) && cellIndex < cellText.Length - 1)
+                                    {
+                                        cellIndex++;
+                                    }
+                                    txt = cellText[cellIndex];
+
+
+
+                                    string price = txt.Replace("", "").Replace("$", "");
+
+                                    //price = price.Substring(0, price.Length - 1);
+
+                                    if (!String.IsNullOrEmpty(price))
+                                    {
+                                        isEmpty = false;
+                                    }
+
+                                    //convert the string to a double, being the price of the entry.
+                                    double amount = Convert.ToDouble(price);
+                                    Console.WriteLine("Value of the entry: " + amount);
+                                    Console.WriteLine("Actual Value: " + price);
+                                    entries.amount = amount;
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine(ex);
+                                }
+                            }
+                        }
+
+                        //entry has not been changed yet.
+                        entries.changed = false;
+
+                        //If at lease one of the cells in the row is not empty.
+                        if (!isEmpty)
+                        {
+                            em.entries.Add(entries); // Add the current row to the list of entries
+                        }
+
+                    }
+                } catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+
+                // FOR THE DISBURSEMENTS.
+                if (disTable > 0)
+                {
+                    tabs = doc.Tables[disTable];
+                    row = tabs.Rows;
+                    col = tabs.Columns;
+                    try
+                    {
+                        //iterate over rows
+                        for (int i = 2; i < row.Count; i++)
+                        {
+                            //Update loading bar for each new row.
+                            lf.progressDisplay();
+
+                            DisbursementsModel disbursement = new DisbursementsModel();
+                            bool isEmpty = true; //Stores if the row is empty
+                            bool isType = false; // is this row a disbursement subheading?
+
+
+
+                            //iterate over columns
+                            for (int j = 2; j <= col.Count; j++)
+                            {
+                                Cell cell = row[i].Cells[j];
+                                Range r = cell.Range;
+
+                                string txt = r.Text;
+                                txt = txt.Replace("", "").Replace("\n", "");
+
+
+                                //find if there are only empty characters in the string.
+                                string[] test = Regex.Split(txt, "\\s");
+                                bool testFull = false;
+                                for (int a = 0; a < test.Length; a++)
+                                {
+                                    if (!String.IsNullOrEmpty(test[a]))
+                                    {
+                                        testFull = true;
+                                        break;
+                                    }
+                                }
+                                // If is empty, set the string to be empty.
+                                if (!testFull)
+                                {
+                                    txt = "";
+                                }
+
+                                // If the date is not there in the row.
+                                if (j == 2 && String.IsNullOrEmpty(txt))
+                                {
+                                    Cell cellType = row[i].Cells[j + 1]; // Get the contents of the description
+                                    Range rType = cellType.Range;
+                                    if (rType.Underline != Word.WdUnderline.wdUnderlineNone)
+                                    {
+                                        Console.WriteLine("It is underlined: " + rType.Text);
+
+                                        string text = rType.Text;
+
+                                        text = text.Replace("", "").Replace("\n", "").Replace("\r", "");
+
+                                        DisbursementTypeModel dtm = new DisbursementTypeModel();
+                                        dtm.type = text;
+                                        em.usedDisbursementTypes.Add(dtm);
+                                        isType = true;
+                                    }
+
+
+                                }
+                                else if (j == 2 && !String.IsNullOrEmpty(txt)) // Get the date.
                                 {
                                     isEmpty = false;
-                                }
 
-                                string[] descriptions = desc.Split('–'); //Split the entire description
-
-                                //If some hours have been entered into the description.
-                                if (txt.Contains('–'))
-                                {
-                                    string[] descHours = descriptions[descriptions.Length - 1].Split(' '); //Split what comes after the hyphen
-                                    string hours = descHours[1]; //take just the double value for the hours
-                                    Console.WriteLine("Input hours is: " + hours + " Length of entry is: " + descriptions.Length);
-                                    entries.hours = Convert.ToDouble(hours); //Add the hours to the entry
-                                }
-                                else
-                                {
-                                    entries.hours = 0;
-                                }
-                                
-
-                                //Get the percentage of the entry that is claimed.
-                                string getPercent = descriptions[descriptions.Length - 1];
-                                if (getPercent.Contains('%'))
-                                {
-                                    string[] percentages = getPercent.Split('%');
-                                    string per = percentages[0];
-                                    percentages = per.Split('(');
-                                    per = percentages[percentages.Length - 1];
-
-                                    double percentageClaimed = 100;
                                     try
                                     {
-                                        percentageClaimed = Convert.ToDouble(per);
-                                    } catch (Exception ex)
+                                        DateTime parsedDate = DateTime.Parse(txt);
+                                        parsedDate = parsedDate.Date;
+                                        Console.WriteLine(parsedDate);
+                                        disbursement.date = parsedDate;
+                                    }
+                                    catch (Exception ex)
                                     {
                                         Console.WriteLine(ex);
                                     }
-
-                                    entries.percentage = percentageClaimed;
-                                    Console.WriteLine("The % claimed is: " + entries.percentage);
-                                } else if(getPercent.Contains("No Charge"))
-                                {
-                                    entries.noCharge = true;
-                                    entries.percentage = 100;
                                 }
-                                else
-                                {
-                                    entries.percentage = 100;
-                                }
-
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine(ex);
-                                Console.WriteLine("String that caused issue from description is: " + @txt + " and is it null or empty? " + String.IsNullOrEmpty(txt));
-                            }
-
-
-                        } else if (j == 5 && !String.IsNullOrEmpty(txt)) // Price of the entry
-                        {
-                            try
-                            {
-                                // An attempt to split the cell string into sections, one section having no \ characters in it.
-                                string[] cellText = Regex.Split(txt, "\\s");
-                                int cellIndex = 0;
-                                while (String.IsNullOrEmpty(cellText[cellIndex]) && cellIndex < cellText.Length - 1)
-                                {
-                                    cellIndex++;
-                                }
-                                txt = cellText[cellIndex];
-
-
-
-                                string price = txt.Replace("", "").Replace("$","");
-
-                                //price = price.Substring(0, price.Length - 1);
-
-                                if (!String.IsNullOrEmpty(price))
+                                else if (j == 3 && !String.IsNullOrEmpty(txt)) // Get the description.
                                 {
                                     isEmpty = false;
+
+                                    try
+                                    {
+                                        string desc = txt;
+
+                                        desc = desc.Replace("\r", "");
+
+                                        disbursement.description = desc;
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Console.WriteLine(ex);
+                                    }
                                 }
-
-                                //convert the string to a double, being the price of the entry.
-                                double amount = Convert.ToDouble(price);
-                                Console.WriteLine("Value of the entry: " + amount);
-                                Console.WriteLine("Actual Value: " + price);
-                                entries.amount = amount;
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine(ex);
-                            }
-                        }
-                    }
-
-                    //entry has not been changed yet.
-                    entries.changed = false;
-
-                    //If at lease one of the cells in the row is not empty.
-                    if (!isEmpty)
-                    {
-                        em.entries.Add(entries); // Add the current row to the list of entries
-                    }
-                    
-                }
-
-
-                // FOR THE DISBURSEMENTS.
-                tabs = doc.Tables[disTable];
-                row = tabs.Rows;
-                col = tabs.Columns;
-
-                //iterate over rows
-                for (int i = 2; i < row.Count; i++)
-                {
-                    //Update loading bar for each new row.
-                    lf.progressDisplay();
-
-                    DisbursementsModel disbursement = new DisbursementsModel();
-                    bool isEmpty = true; //Stores if the row is empty
-                    bool isType = false; // is this row a disbursement subheading?
-
-                    
-
-                    //iterate over columns
-                    for (int j = 2; j <= col.Count; j++)
-                    {
-                        Cell cell = row[i].Cells[j];
-                        Range r = cell.Range;
-
-                        string txt = r.Text;
-                        txt = txt.Replace("", "").Replace("\n", "");
-                        
-
-                        //find if there are only empty characters in the string.
-                        string[] test = Regex.Split(txt, "\\s");
-                        bool testFull = false;
-                        for (int a = 0; a < test.Length; a++)
-                        {
-                            if (!String.IsNullOrEmpty(test[a]))
-                            {
-                                testFull = true;
-                                break;
-                            }
-                        }
-                        // If is empty, set the string to be empty.
-                        if (!testFull)
-                        {
-                            txt = "";
-                        }
-
-                        // If the date is not there in the row.
-                        if(j == 2 && String.IsNullOrEmpty(txt))
-                        {
-                            Cell cellType = row[i].Cells[j+1]; // Get the contents of the description
-                            Range rType = cellType.Range;
-                            if(rType.Underline != Word.WdUnderline.wdUnderlineNone)
-                            {
-                                Console.WriteLine("It is underlined: " + rType.Text);
-
-                                string text = rType.Text;
-
-                                text = text.Replace("", "").Replace("\n", "").Replace("\r", "");
-
-                                DisbursementTypeModel dtm = new DisbursementTypeModel();
-                                dtm.type = text;
-                                em.usedDisbursementTypes.Add(dtm);
-                                isType = true;
-                            }
-
-                            
-                        } 
-                        else if(j == 2 && !String.IsNullOrEmpty(txt)) // Get the date.
-                        {
-                            isEmpty = false;
-
-                            try
-                            {
-                                DateTime parsedDate = DateTime.Parse(txt);
-                                parsedDate = parsedDate.Date;
-                                Console.WriteLine(parsedDate);
-                                disbursement.date = parsedDate;
-                            } catch (Exception ex)
-                            {
-                                Console.WriteLine(ex);
-                            }
-                        }
-                        else if(j == 3 && !String.IsNullOrEmpty(txt)) // Get the description.
-                        {
-                            isEmpty = false;
-
-                            try
-                            {
-                                string desc = txt;
-
-                                desc = desc.Replace("\r", "");
-
-                                disbursement.description = desc;
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine(ex);
-                            }
-                        }
-                        else if(j == 4 && !String.IsNullOrEmpty(txt)) // Get the amount
-                        {
-                            isEmpty = false;
-
-                            try
-                            {
-                                //convert the string to a double, being the price of the entry.
-                                // An attempt to split the cell string into sections, one section having no \ characters in it.
-                                string[] cellText = Regex.Split(txt, "\\s");
-                                int cellIndex = 0;
-                                while (String.IsNullOrEmpty(cellText[cellIndex]) && cellIndex < cellText.Length - 1)
-                                {
-                                    cellIndex++;
-                                }
-                                txt = cellText[cellIndex];
-
-
-
-                                string price = txt.Replace("", "").Replace("$", "");
-
-                                //price = price.Substring(0, price.Length - 1);
-
-                                if (!String.IsNullOrEmpty(price))
+                                else if (j == 4 && !String.IsNullOrEmpty(txt)) // Get the amount
                                 {
                                     isEmpty = false;
+
+                                    try
+                                    {
+                                        //convert the string to a double, being the price of the entry.
+                                        // An attempt to split the cell string into sections, one section having no \ characters in it.
+                                        string[] cellText = Regex.Split(txt, "\\s");
+                                        int cellIndex = 0;
+                                        while (String.IsNullOrEmpty(cellText[cellIndex]) && cellIndex < cellText.Length - 1)
+                                        {
+                                            cellIndex++;
+                                        }
+                                        txt = cellText[cellIndex];
+
+
+
+                                        string price = txt.Replace("", "").Replace("$", "");
+
+                                        //price = price.Substring(0, price.Length - 1);
+
+                                        if (!String.IsNullOrEmpty(price))
+                                        {
+                                            isEmpty = false;
+                                        }
+
+                                        //convert the string to a double, being the price of the entry.
+                                        double amount = Convert.ToDouble(price);
+                                        Console.WriteLine("Value of the entry: " + amount);
+                                        Console.WriteLine("Actual Value: " + price);
+                                        disbursement.amount = amount;
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Console.WriteLine(ex);
+                                    }
                                 }
 
-                                //convert the string to a double, being the price of the entry.
-                                double amount = Convert.ToDouble(price);
-                                Console.WriteLine("Value of the entry: " + amount);
-                                Console.WriteLine("Actual Value: " + price);
-                                disbursement.amount = amount;
                             }
-                            catch (Exception ex)
+
+                            //If at lease one of the cells in the row is not empty.
+                            if (!isEmpty && !isType)
                             {
-                                Console.WriteLine(ex);
+                                disbursement.typeOfDisbursement = em.usedDisbursementTypes[em.usedDisbursementTypes.Count - 1];
+                                em.usedDisbursementTypes[em.usedDisbursementTypes.Count - 1].numDisbursements = em.usedDisbursementTypes[em.usedDisbursementTypes.Count - 1].numDisbursements + 1; // Add another disbursement to this number.
+                                em.disbursements.Add(disbursement); // Add the current row to the list of disbursements.
                             }
                         }
-
-                    }
-
-                    //If at lease one of the cells in the row is not empty.
-                    if (!isEmpty && !isType)
+                    } catch (Exception ex)
                     {
-                        disbursement.typeOfDisbursement = em.usedDisbursementTypes[em.usedDisbursementTypes.Count - 1];
-                        em.usedDisbursementTypes[em.usedDisbursementTypes.Count - 1].numDisbursements = em.usedDisbursementTypes[em.usedDisbursementTypes.Count - 1].numDisbursements + 1; // Add another disbursement to this number.
-                        em.disbursements.Add(disbursement); // Add the current row to the list of disbursements.
+                        Console.WriteLine(ex);
                     }
                 }
             }
@@ -1241,6 +1291,12 @@ namespace BillAutomatorUI
             }
 
             lf.Close();
+
+            // For debugging purposes.
+            if (disTable == 0 && !hasDisTable)
+            {
+                MessageBox.Show("Automator opened without disbursements table.");
+            }
 
         }
 

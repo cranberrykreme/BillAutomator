@@ -23,6 +23,8 @@ namespace BillAutomatorUI
 
             billTypeDropDown.Items.Add("Solicitor/Client");
             billTypeDropDown.Items.Add("Party/Party");
+
+            hasDisbursementsCheckBox.Checked = true;
         }
 
         /// <summary>
@@ -108,16 +110,20 @@ namespace BillAutomatorUI
                     "which is " + tableCount + " tables.");
                 return;
             }
-            if(solTable < 1 || entTable < 1 || disTable < 1)
+            if(solTable < 1 || entTable < 1)
             {
-                MessageBox.Show("You cannot access any table before the first one. Please enter a value of 1 or greater in both boxes.");
+                MessageBox.Show("You cannot access any table before the first one. Please enter a value of 1 or greater in both initial boxes.");
+                return;
+            } else if(disTable < 1 && hasDisbursementsCheckBox.Checked)
+            {
+                MessageBox.Show("You cannot access any table before the first one. Please enter a value of 1 or greater in the disbursement box.");
                 return;
             }
 
             try
             {
                 BillForm billForm = new BillForm();
-                billForm.runStartup(doc, fileName, solTable, entTable, disTable); // feed back into the bill form to read the tables.
+                billForm.runStartup(doc, fileName, solTable, entTable, disTable, hasDisbursementsCheckBox.Checked); // feed back into the bill form to read the tables.
 
                 billForm.Show();
             }

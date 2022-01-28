@@ -33,6 +33,7 @@ namespace BillAutomatorUI
         {
             typeBillDropDown.Items.Add("Solicitor/Client");
             typeBillDropDown.Items.Add("Party/Party");
+            hasDisbursementsCheckBox.Checked = true;
         }
 
         private void fileLocationButton_Click(object sender, EventArgs e)
@@ -146,7 +147,7 @@ namespace BillAutomatorUI
                         ap.Visible = true;
 
                         BillForm billForm = new BillForm();
-                        billForm.runStartup(doc, loc + ".docx", 2, 3, 4);
+                        billForm.runStartup(doc, loc + ".docx", 2, 3, 4, hasDisbursementsCheckBox.Checked);
                         billForm.Show();
                         openingNew = true;
                         this.Close();
@@ -200,7 +201,7 @@ namespace BillAutomatorUI
                         ap.Visible = true;
 
                         BillForm billForm = new BillForm();
-                        billForm.runStartup(doc, loc + ".docx", 1, 2, 3);
+                        billForm.runStartup(doc, loc + ".docx", 1, 2, 3, hasDisbursementsCheckBox.Checked);
                         billForm.Show();
                         openingNew = true;
                         this.Close();

@@ -33,6 +33,7 @@
             this.createFileButton = new System.Windows.Forms.Button();
             this.fileLocTextBox = new System.Windows.Forms.TextBox();
             this.fileLocLabel = new System.Windows.Forms.Label();
+            this.hasDisbursementsCheckBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // openFileButton
@@ -78,12 +79,23 @@
             this.fileLocLabel.TabIndex = 11;
             this.fileLocLabel.Text = "File Location";
             // 
+            // hasDisbursementsCheckBox
+            // 
+            this.hasDisbursementsCheckBox.AutoSize = true;
+            this.hasDisbursementsCheckBox.Location = new System.Drawing.Point(218, 96);
+            this.hasDisbursementsCheckBox.Name = "hasDisbursementsCheckBox";
+            this.hasDisbursementsCheckBox.Size = new System.Drawing.Size(160, 64);
+            this.hasDisbursementsCheckBox.TabIndex = 27;
+            this.hasDisbursementsCheckBox.Text = "Matter has \r\nDibursements";
+            this.hasDisbursementsCheckBox.UseVisualStyleBackColor = true;
+            // 
             // DashboardForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 30F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(614, 162);
+            this.Controls.Add(this.hasDisbursementsCheckBox);
             this.Controls.Add(this.fileLocTextBox);
             this.Controls.Add(this.fileLocLabel);
             this.Controls.Add(this.createFileButton);
@@ -103,6 +115,7 @@
         private System.Windows.Forms.Button createFileButton;
         private System.Windows.Forms.TextBox fileLocTextBox;
         private System.Windows.Forms.Label fileLocLabel;
+        private System.Windows.Forms.CheckBox hasDisbursementsCheckBox;
     }
 }
 

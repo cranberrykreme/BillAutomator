@@ -40,6 +40,7 @@
             this.typeBillDropDown = new System.Windows.Forms.ComboBox();
             this.createFileButton = new System.Windows.Forms.Button();
             this.returnButton = new System.Windows.Forms.Button();
+            this.hasDisbursementsCheckBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // fileLocationLabel
@@ -152,12 +153,23 @@
             this.returnButton.Text = "Go Back";
             this.returnButton.UseVisualStyleBackColor = true;
             // 
+            // hasDisbursementsCheckBox
+            // 
+            this.hasDisbursementsCheckBox.AutoSize = true;
+            this.hasDisbursementsCheckBox.Location = new System.Drawing.Point(665, 89);
+            this.hasDisbursementsCheckBox.Name = "hasDisbursementsCheckBox";
+            this.hasDisbursementsCheckBox.Size = new System.Drawing.Size(160, 64);
+            this.hasDisbursementsCheckBox.TabIndex = 28;
+            this.hasDisbursementsCheckBox.Text = "Matter has \r\nDibursements";
+            this.hasDisbursementsCheckBox.UseVisualStyleBackColor = true;
+            // 
             // CreateNewForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 30F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(839, 312);
+            this.Controls.Add(this.hasDisbursementsCheckBox);
             this.Controls.Add(this.returnButton);
             this.Controls.Add(this.createFileButton);
             this.Controls.Add(this.typeBillDropDown);
@@ -193,5 +205,6 @@
         private System.Windows.Forms.ComboBox typeBillDropDown;
         private System.Windows.Forms.Button createFileButton;
         private System.Windows.Forms.Button returnButton;
+        private System.Windows.Forms.CheckBox hasDisbursementsCheckBox;
     }
 }
