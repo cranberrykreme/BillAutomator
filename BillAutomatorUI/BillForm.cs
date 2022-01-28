@@ -218,24 +218,53 @@ namespace BillAutomatorUI
                     cols = tbl.Columns;
                     finalIndex = -1;
                     int currentType = 0;
+                    int currentDiff = 2; //the difference between the iterator number and the actual row we want to look at.
 
-
+                    // Iterate through the entire list.
                     for(int i = 0; i < em.disbursements.Count; i++)
                     {
                         lf.progressDisplay();
 
-                        int index = i + 2;
+                        int index = i + currentDiff;
+                        finalIndex = index;
+
+                        // Add new rows as is needed
+                        if (index > numRows - 2)
+                        {
+                            //For the entries we must always add only the second last row.
+                            Console.WriteLine(rows.Count);
+                            rows.Add(rows[rows.Count - 1]);
+                            numRows++;
+
+                        }
+
+                        
 
                         // If the current type is the same as the previous disbursement type.
-                        if (em.disbursements[i].typeOfDisbursement.type.Equals(em.usedDisbursementTypes[currentType]))
+                        if (em.disbursements[i].typeOfDisbursement.type.Equals(em.usedDisbursementTypes[currentType].type))
                         {
-                            rows.Add(index); // Add a new row where the new entry should be, will always have an index number.
+                            //rows.Add(index); // Add a new row where the new entry should be, will always have an index number.
+
+                            int numList = rows[index].Cells[1].Range.ListFormat.CountNumberedItems();
+                            Console.WriteLine("Number of numbered items: " + numList + " in row number: " + i);
+
+                            // If there are no numbers in the left-hand most column, then set one there.
+                            if (numList < 1)
+                            {
+                                rows[index].Cells[1].Range.ListFormat.ApplyNumberDefault();
+                            }
+
+                            Range rType = rows[index].Cells[2].Range;
+                            rType.Font.Size = 9; //Set the font size to be 9
 
                             // Add disbursements date
-                            rows[index].Cells[2].Range.Text = em.disbursements[i].date.ToString("dd.MM.yy");
+                            rType.Text = em.disbursements[i].date.ToString("dd.MM.yy");
+
+                            rType = rows[index].Cells[3].Range;
+                            rType.Underline = WdUnderline.wdUnderlineNone; //Remove underline from the description
 
                             // Add disbursements description
-                            rows[index].Cells[3].Range.Text = em.disbursements[i].description;
+                            rType.Text = em.disbursements[i].description;
 
                             // Add disbursements cost
                             double cost = em.disbursements[i].amount;
@@ -262,14 +291,62 @@ namespace BillAutomatorUI
                                     rows[index].Cells[4].Range.Text = "$" + em.disbursements[i].amount.ToString();
                                 }
                             }
+                            
                         } else // If the current type is not the same type as the previous entry.
                         {
-                            currentType++;
-                            if(currentType >= em.unusedDisbursementTypes.Count)
+                            Console.WriteLine("Current Disbursement type: " + em.disbursements[i].typeOfDisbursement.type);
+                            Console.WriteLine("What the previous disbursement was: " + em.usedDisbursementTypes[currentType].type);
+
+                            while (!em.disbursements[i].typeOfDisbursement.type.Equals(em.usedDisbursementTypes[currentType].type)){
+                                currentType++;
+                            }
+                            
+                            currentDiff++;
+
+                            //Add additional row.
+                            rows.Add(rows[index]);
+                            numRows++;
+
+                            if(currentType > 1)
+                            { 
+                                //Add another additional row.
+                                rows.Add(rows[index]);
+                                numRows++;
+                                index++;
+                                currentDiff++;
+                            }
+
+                            if (currentType >= em.usedDisbursementTypes.Count)
                             {
                                 MessageBox.Show("Error with displaying disbursements by type");
                                 return false;
                             }
+
+                            int numList = 0;
+
+                            try
+                            {
+                                numList = rows[index].Cells[1].Range.ListFormat.CountNumberedItems();
+                            } catch (Exception ex)
+                            {
+                                Console.WriteLine(ex);
+                            }
+                            
+
+                            // If there are numbers in the left-hand most column, remove them.
+                            if (numList > 0)
+                            {
+                                rows[index].Cells[1].Range.ListFormat.ApplyNumberDefault();
+                            }
+
+                            // Add the information necessary.
+                            Range rType = rows[index].Cells[3].Range;
+                            rType.Underline = WdUnderline.wdUnderlineSingle;
+                            rType.Text = em.disbursements[i].typeOfDisbursement.type;
+
+                            i--; // Move the iterator backwards to re-do the same entry.
+
+
                         }
 
                     }
@@ -278,6 +355,31 @@ namespace BillAutomatorUI
                 {
                     Console.WriteLine(ex);
                 }
+
+                finalIndex++;
+
+                //Delete all unused entries. Keep the very last row as that is the summary.
+                while (finalIndex < numRows && finalIndex > -1)
+                {
+                    try
+                    {
+                        rows[finalIndex].Delete();
+                        numRows--;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex);
+                        Console.WriteLine("Final Index is: " + finalIndex + " and number of rows is: " + numRows);
+                        break;
+                    }
+
+                }
+
+
+
+                // Add one more row of buffer between the final subtotal and the end of the disbursements.
+                rows.Add(rows[numRows]);
+
             } catch (Exception ex)
             {
                 Console.WriteLine(ex);
@@ -285,8 +387,21 @@ namespace BillAutomatorUI
                 return false;
             }
 
-            
-            
+            // Set disbursement's table widths
+            tbl.Columns[1].PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPercent;
+            tbl.Columns[1].PreferredWidth = 7.7f;
+
+            tbl.Columns[2].PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPercent;
+            tbl.Columns[2].PreferredWidth = 11.8f;
+
+            tbl.Columns[3].PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPercent;
+            tbl.Columns[3].PreferredWidth = 67.4f;
+
+            tbl.Columns[4].PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPercent;
+            tbl.Columns[4].PreferredWidth = 12.9f;
+
+            // Reset table to entries table
+            tbl = doc.Tables[entTable];
 
             tbl.Columns[1].PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPercent;
             tbl.Columns[1].PreferredWidth = 6.9f;
@@ -341,8 +456,8 @@ namespace BillAutomatorUI
                     //Save and close document.
                     doc.Save();
                     doc.Close();
-                } else
-                {
+                }
+                else { 
                     MessageBox.Show("As an error has occured, the document will not close automatically.");
                 }
                 
@@ -949,6 +1064,8 @@ namespace BillAutomatorUI
                     DisbursementsModel disbursement = new DisbursementsModel();
                     bool isEmpty = true; //Stores if the row is empty
                     bool isType = false; // is this row a disbursement subheading?
+
+                    
 
                     //iterate over columns
                     for (int j = 2; j <= col.Count; j++)
