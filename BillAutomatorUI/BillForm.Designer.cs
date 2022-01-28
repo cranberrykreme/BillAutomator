@@ -108,6 +108,7 @@
             this.DisbursementTypesButton.TabIndex = 5;
             this.DisbursementTypesButton.Text = "Disubrsement Types";
             this.DisbursementTypesButton.UseVisualStyleBackColor = true;
+            this.DisbursementTypesButton.Click += new System.EventHandler(this.DisbursementTypesButton_Click);
             // 
             // newDisbursementButton
             // 

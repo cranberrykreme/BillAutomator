@@ -210,7 +210,7 @@ namespace BillAutomatorUI
                 }
 
                 // Only write to the disbursements table if there is a table there.
-                if(disTable != 0)
+                if(disTable != 0 && hasDisTable)
                 {
                     // Disbursements section.
                     try
@@ -2164,6 +2164,12 @@ namespace BillAutomatorUI
 
         private void newDisbursementButton_Click(object sender, EventArgs e)
         {
+            if (!hasDisTable)
+            {
+                MessageBox.Show("No disbursements were loaded");
+                return;
+            }
+
             DisbursementForm df = new DisbursementForm();
             df.setBillModel(em);
             df.Show();
@@ -2186,6 +2192,11 @@ namespace BillAutomatorUI
         /// </summary>
         private void displayDisbursements()
         {
+            if (!hasDisTable)
+            {
+                MessageBox.Show("No disbursements were loaded");
+                return;
+            }
             entriesBox.Items.Clear();
             currentlyEntries = false;
             string type = "";
@@ -2213,6 +2224,15 @@ namespace BillAutomatorUI
             {
                 entriesBox.Items.Add(dtm.type.ToUpper() + " - " + dtm.numDisbursements);
             });
+        }
+
+        private void DisbursementTypesButton_Click(object sender, EventArgs e)
+        {
+            if (!hasDisTable)
+            {
+                MessageBox.Show("No disbursements were loaded");
+                return;
+            }
         }
     }
 }
