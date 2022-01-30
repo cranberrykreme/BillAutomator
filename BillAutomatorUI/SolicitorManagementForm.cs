@@ -127,7 +127,6 @@ namespace BillAutomatorUI
                 bf.setBillModel(em);
                 bf.Show();
             }
-            
         }
     }
 }

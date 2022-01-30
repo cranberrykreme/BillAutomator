@@ -91,11 +91,11 @@
       <DependentUpon>BillForm.cs</DependentUpon>
     </Compile>
     <Compile Include="BillModel.cs" />
-    <Compile Include="CounselDisbursementForm.cs">
+    <Compile Include="DisbursementTypeManagementForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CounselDisbursementForm.Designer.cs">
-      <DependentUpon>CounselDisbursementForm.cs</DependentUpon>
+    <Compile Include="DisbursementTypeManagementForm.Designer.cs">
+      <DependentUpon>DisbursementTypeManagementForm.cs</DependentUpon>
     </Compile>
     <Compile Include="PhotocopyEntryForm.cs">
       <SubType>Form</SubType>
@@ -123,11 +123,11 @@
       <DependentUpon>DisbursementForm.cs</DependentUpon>
     </Compile>
     <Compile Include="DisbursementsModel.cs" />
-    <Compile Include="EditCreateCounselForm.cs">
+    <Compile Include="EditCreateDisbursementTypeForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="EditCreateCounselForm.Designer.cs">
-      <DependentUpon>EditCreateCounselForm.cs</DependentUpon>
+    <Compile Include="EditCreateDisbursementTypeForm.Designer.cs">
+      <DependentUpon>EditCreateDisbursementTypeForm.cs</DependentUpon>
     </Compile>
     <Compile Include="EditCreateSolicitorForm.cs">
       <SubType>Form</SubType>
@@ -167,8 +167,8 @@
     <EmbeddedResource Include="BillForm.resx">
       <DependentUpon>BillForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CounselDisbursementForm.resx">
-      <DependentUpon>CounselDisbursementForm.cs</DependentUpon>
+    <EmbeddedResource Include="DisbursementTypeManagementForm.resx">
+      <DependentUpon>DisbursementTypeManagementForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PhotocopyEntryForm.resx">
       <DependentUpon>PhotocopyEntryForm.cs</DependentUpon>
@@ -182,8 +182,8 @@
     <EmbeddedResource Include="DisbursementForm.resx">
       <DependentUpon>DisbursementForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="EditCreateCounselForm.resx">
-      <DependentUpon>EditCreateCounselForm.cs</DependentUpon>
+    <EmbeddedResource Include="EditCreateDisbursementTypeForm.resx">
+      <DependentUpon>EditCreateDisbursementTypeForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="EditCreateSolicitorForm.resx">
       <DependentUpon>EditCreateSolicitorForm.cs</DependentUpon>
