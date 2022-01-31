@@ -70,7 +70,7 @@
             this.createEntryButton.Name = "createEntryButton";
             this.createEntryButton.Size = new System.Drawing.Size(148, 52);
             this.createEntryButton.TabIndex = 42;
-            this.createEntryButton.Text = "Create";
+            this.createEntryButton.Text = "Save";
             this.createEntryButton.UseVisualStyleBackColor = true;
             this.createEntryButton.Click += new System.EventHandler(this.createEntryButton_Click);
             // 
@@ -188,7 +188,7 @@
             this.barristersFeesButton.Name = "barristersFeesButton";
             this.barristersFeesButton.Size = new System.Drawing.Size(164, 52);
             this.barristersFeesButton.TabIndex = 44;
-            this.barristersFeesButton.Text = "Barristers Fees";
+            this.barristersFeesButton.Text = "No Function";
             this.barristersFeesButton.UseVisualStyleBackColor = true;
             // 
             // gstCheckBox

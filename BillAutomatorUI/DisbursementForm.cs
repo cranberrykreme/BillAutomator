@@ -103,6 +103,7 @@ namespace BillAutomatorUI
             string desc;
             double value;
             DisbursementTypeModel dtm;
+            updateDescription();
 
             //Try to retrieve the relevant information required to save the disbursement entry.
             try
@@ -222,6 +223,14 @@ namespace BillAutomatorUI
         {
             Decimal val = totalInput.Value;
             gstInput.Value = val / 10;
+        }
+
+        /// <summary>
+        /// Changes all short hyphens into long hypens in the description box (where gramatically correct).
+        /// </summary>
+        private void updateDescription()
+        {
+            descriptionTextBox.Text = descriptionTextBox.Text.Replace(" - ", " – ");
         }
     }
 }

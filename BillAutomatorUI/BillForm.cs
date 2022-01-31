@@ -1529,14 +1529,33 @@ namespace BillAutomatorUI
             int index = -1;
 
             string[] descriptions = description.Split('-');
-            description = descriptions[descriptions.Length - 1].Substring(1);
+
+            string desc = "";
+            int curr = 1;
+
+            while (curr < descriptions.Length)
+            {
+                // If a hypen has been taken out due to the search, put it back in.
+                if(curr > 1)
+                {
+                    desc = desc + "-" + descriptions[curr];
+                }
+                // Else just put in a normal description.
+                else
+                {
+                    desc = desc + descriptions[curr];
+                }
+                curr++;
+            }
+
+            desc = desc.Substring(1); //Remove the first character in the substring.
 
             foreach(DisbursementsModel dm in em.disbursements)
             {
-                Console.WriteLine(description);
+                Console.WriteLine(desc);
                 Console.WriteLine(dm.description);
                 index++;
-                if (dm.description.Equals(description))
+                if (dm.description.Equals(desc))
                 {
                     return index;
                 }
