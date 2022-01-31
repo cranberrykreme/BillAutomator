@@ -37,7 +37,7 @@ namespace BillAutomatorUI
         {
             if(em != null)
             {
-                disTypeModel = em.unusedDisbursementTypes;
+                disTypeModel = em.usedDisbursementTypes;
                 
                 //Loop through the list of disbursement types (be it used or unused)
                 foreach(DisbursementTypeModel dtm in disTypeModel)
@@ -97,6 +97,11 @@ namespace BillAutomatorUI
             this.Close();
         }
 
+        /// <summary>
+        /// Takes the selected disbursement type and sets up the edit disbursement type form.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void editTypeButton_Click(object sender, EventArgs e)
         {
             if(DisbursementTypesBox.SelectedIndex < 0)
@@ -114,7 +119,12 @@ namespace BillAutomatorUI
                 return;
             }
 
-
+            EditCreateDisbursementTypeForm ecdtf = new EditCreateDisbursementTypeForm();
+            ecdtf.setBillModel(em);
+            ecdtf.setExistingType(index);
+            ecdtf.Show();
+            openingNew = true;
+            this.Close();
         }
 
         /// <summary>

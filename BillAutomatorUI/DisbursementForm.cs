@@ -19,6 +19,9 @@ namespace BillAutomatorUI
     {
         private BillModel em;
         private bool openingNew = false; //Is a new form being opened upon the close of this form?
+        private bool editing = false; //Is the current disbursement a new entry or editing of an old one?
+        private int index; //The index of the disbursement in the list.
+        private DisbursementsModel dm; //The disbursements model to edit/create.
 
         public DisbursementForm()
         {
@@ -33,7 +36,40 @@ namespace BillAutomatorUI
             {
                 typeDropDown.Items.Add(dtm.type);
             });
-            
+        }
+
+        /// <summary>
+        /// Set all of the relevant information on the form for editing an existing
+        /// disbursement entry.
+        /// </summary>
+        /// <param name="aIndex"></param>
+        public void runEditingSetup(int aIndex)
+        {
+            index = aIndex;
+            dm = em.disbursements[index];
+
+            //Set the date box
+            dateTimeBox.Value = dm.date;
+
+            //Set the type box
+            string disType = dm.typeOfDisbursement.type;
+            int i = -1;
+            foreach(string type in typeDropDown.Items)
+            {
+                i++;
+                if (type.Equals(disType))
+                {
+                    typeDropDown.SelectedIndex = i;
+                    break;
+                }
+            }
+
+            //Set the description
+            descriptionTextBox.Text = dm.description;
+
+            //Set the amount
+            decimal input = Convert.ToDecimal(dm.amount);
+            totalInput.Value = input;
         }
 
         private void DisbursementForm_FormClosing(object sender, FormClosingEventArgs e)

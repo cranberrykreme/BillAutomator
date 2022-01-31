@@ -19,6 +19,8 @@ namespace BillAutomatorUI
         BillModel em;
         private bool openingNew = false; //Is a new form being opened upon the close of this form?
         private bool editing = false; //Are we editing an existing entry or making a new one?
+        private DisbursementTypeModel dtm; //stores the disbursement type model fed in to edit.
+        private int index; //stores the index of the type in the entries list.
 
         public EditCreateDisbursementTypeForm()
         {
@@ -36,9 +38,13 @@ namespace BillAutomatorUI
         /// we are editing.
         /// </summary>
         /// <param name="aType"></param>
-        public void setExistingType(String aType)
+        public void setExistingType(int aIndex)
         {
             editing = true;
+            index = aIndex;
+            dtm = em.usedDisbursementTypes[index];
+
+            typeTextBox.Text = dtm.type;
         }
 
         /// <summary>
@@ -70,6 +76,47 @@ namespace BillAutomatorUI
                 bf.setBillModel(em);
                 bf.Show();
             }
+        }
+
+        /// <summary>
+        /// Handles the process of adding/editing a type to the disbursements type list.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void saveButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string type = typeTextBox.Text;
+                if (string.IsNullOrEmpty(type))
+                {
+                    MessageBox.Show("Please fill in the type text input box before saving.");
+                    return;
+                }
+            } catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return;
+            }
+
+            if (editing)
+            {
+                em.usedDisbursementTypes[index].type = typeTextBox.Text;
+            } else
+            {
+                DisbursementTypeModel disTypeModel = new DisbursementTypeModel();
+                disTypeModel.numDisbursements = 0;
+                disTypeModel.type = typeTextBox.Text;
+                em.usedDisbursementTypes.Add(disTypeModel);
+            }
+
+            //Close this form and open the management form.
+            DisbursementTypeManagementForm dtmf = new DisbursementTypeManagementForm();
+            dtmf.setBillModel(em);
+            dtmf.runSetUp();
+            dtmf.Show();
+            openingNew = true;
+            this.Close();
         }
     }
 }

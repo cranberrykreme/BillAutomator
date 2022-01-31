@@ -1176,7 +1176,7 @@ namespace BillAutomatorUI
                                         DisbursementTypeModel dtm = new DisbursementTypeModel();
                                         dtm.type = text;
                                         em.usedDisbursementTypes.Add(dtm);
-                                        em.unusedDisbursementTypes.Add(dtm);
+                                        //em.unusedDisbursementTypes.Add(dtm);
                                         isType = true;
                                     }
 
@@ -1558,6 +1558,13 @@ namespace BillAutomatorUI
                 MessageBox.Show("Cannot find selected disbursement entry.");
                 return;
             }
+
+            DisbursementForm df = new DisbursementForm();
+            df.setBillModel(em);
+            df.runEditingSetup(disIndex);
+            df.Show();
+            openingNew = true;
+            this.Close();
         }
 
         /// <summary>
@@ -2110,7 +2117,7 @@ namespace BillAutomatorUI
             //dtm = new DisbursementTypeModel();
             dtm.type = "Unknown";
             em.usedDisbursementTypes.Add(dtm);
-            em.unusedDisbursementTypes.Add(dtm);
+            //em.unusedDisbursementTypes.Add(dtm);
         }
 
         /// <summary>
@@ -2221,10 +2228,10 @@ namespace BillAutomatorUI
                 entriesBox.Items.Add(date + " - " + dm.description);
             });
 
-            em.usedDisbursementTypes.ForEach(delegate (DisbursementTypeModel dtm)
-            {
-                entriesBox.Items.Add(dtm.type.ToUpper() + " - " + dtm.numDisbursements);
-            });
+            //em.usedDisbursementTypes.ForEach(delegate (DisbursementTypeModel dtm)
+            //{
+            //    entriesBox.Items.Add(dtm.type.ToUpper() + " - " + dtm.numDisbursements);
+            //});
         }
 
         /// <summary>
