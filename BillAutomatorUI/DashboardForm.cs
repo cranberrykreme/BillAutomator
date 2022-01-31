@@ -24,6 +24,9 @@ namespace BillAutomatorUI
     public partial class DashboardForm : Form
     {
         public string fileName;
+        bool safeClose = false;
+        Application ap = new Application();
+        Document document;
 
         public DashboardForm()
         {
@@ -91,8 +94,6 @@ namespace BillAutomatorUI
 
                 try
                     {
-                    Application ap = new Application();
-                    Document document;
                     try
                     {
                         document = ap.Documents.Open(@fileName);
@@ -111,9 +112,18 @@ namespace BillAutomatorUI
                         {
                             if (!File.Exists(@newFileName))
                             {
-                                document.SaveAs2(@newFileName);
-                                MessageBox.Show("Document saved with new date.");
-                                fileName = newFileName;
+                                try
+                                {
+                                    document.SaveAs2(@newFileName);
+                                    MessageBox.Show("Document saved with new date.");
+                                    fileName = newFileName;
+                                } catch (Exception ex)
+                                {
+                                    Console.WriteLine(ex);
+                                    document.Close();
+                                    return;
+                                }
+                                
                             }
                             else
                             {
@@ -153,6 +163,7 @@ namespace BillAutomatorUI
                         
                     }
 
+                    safeClose = true;
                     ap.Visible = true;
                     //System.Diagnostics.Process.Start(@fileName);
                     //this.Application.Documents.Open(@"C:\Test\NewDocument.docx");
@@ -177,6 +188,27 @@ namespace BillAutomatorUI
             CreateNewForm newForm = new CreateNewForm();
             newForm.runStartup();
             newForm.Show();
+        }
+
+        /// <summary>
+        /// If this application is closed prematurely, check to see if a document is open.
+        /// If it is then try to close that document. This should hopefully result in there being no
+        /// word files open in the background.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DashboardForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!safeClose)
+            {
+                try
+                {
+                    document.Close();
+                } catch (Exception ex)
+                {
+                    Console.WriteLine("Cannot find document to close.\n\n" + ex);
+                }
+            }
         }
     }
 }
