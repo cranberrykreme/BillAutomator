@@ -1666,17 +1666,19 @@ namespace BillAutomatorUI
         //Move the selected entry upwards/earlier.
         private void upButton_Click(object sender, EventArgs e)
         {
-            if (!currentlyEntries)
-            {
-                return;
-            }
-
             //If nothing is selected, tell the user and return.
-            if(entriesBox.SelectedIndex < 0)
+            if (entriesBox.SelectedIndex < 0)
             {
                 MessageBox.Show("Please select an entry to move upwards");
                 return;
             }
+
+            if (!currentlyEntries)
+            {
+                moveDisbursementUp();
+                return;
+            }
+
             //If there is no room left to move the entry up.
             if (entriesBox.SelectedIndex == 0)
             {
@@ -1725,17 +1727,19 @@ namespace BillAutomatorUI
         //Move the selected entry downwards/later.
         private void downButton_Click(object sender, EventArgs e)
         {
-            if (!currentlyEntries)
-            {
-                return;
-            }
-
             //If nothing is selected, tell the user and return.
             if (entriesBox.SelectedIndex < 0)
             {
                 MessageBox.Show("Please select an entry to move downwards");
                 return;
             }
+
+            if (!currentlyEntries)
+            {
+                moveDisbursementDown();
+                return;
+            }
+
             //If there is no room left to move the entry down.
             if (entriesBox.SelectedIndex == (em.entries.Count - 1)){
                 MessageBox.Show("Cannot move last entry further down the list.");
@@ -1779,6 +1783,66 @@ namespace BillAutomatorUI
             
             //MessageBox.Show(entriesBox.SelectedItem.ToString() + " " + em.entries[selected].description);
 
+        }
+
+        //Move the selected disbursement down.
+        private void moveDisbursementDown()
+        {
+            int numItems = entriesBox.Items.Count;
+            int selectedIndex = entriesBox.SelectedIndex;
+
+            if(selectedIndex >= numItems)
+            {
+                MessageBox.Show("Cannot move lowest item downwards.");
+                return;
+            }
+            bool isType = selectedIndexIsDisbursementType(selectedIndex);
+            if (isType)
+            {
+                
+            } else
+            {
+
+            }
+
+            displayDisbursements();
+        }
+
+        /// <summary>
+        /// Find if the selected index is a disbursement type or not.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        private bool selectedIndexIsDisbursementType(int index)
+        {
+            bool ans = false;
+
+            string desc = entriesBox.Items[index].ToString();
+
+            foreach(DisbursementTypeModel type in em.usedDisbursementTypes)
+            {
+                if (type.type.Equals(desc))
+                {
+                    ans = true;
+                    break;
+                }
+            }
+            return ans;
+        }
+
+        //Move the selected disbursement up.
+        private void moveDisbursementUp()
+        {
+            int index = entriesBox.SelectedIndex;
+            bool isType = selectedIndexIsDisbursementType(index);
+
+            if (isType)
+            {
+
+            } else
+            {
+
+            }
         }
 
         private void entriesBox_doubleClick(object sender, EventArgs e)
@@ -1857,7 +1921,6 @@ namespace BillAutomatorUI
             }
             MessageBox.Show("All done!");
         }
-
 
 
         private void BillForm_FormClosing(object sender, FormClosingEventArgs e)
