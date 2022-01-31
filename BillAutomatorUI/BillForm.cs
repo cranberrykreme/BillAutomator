@@ -1797,12 +1797,92 @@ namespace BillAutomatorUI
                 return;
             }
             bool isType = selectedIndexIsDisbursementType(selectedIndex);
-            if (isType)
+            if (isType) // If the selected entry is a type of disbursement.
             {
-                
-            } else
-            {
+                //MessageBox.Show("This is a type");
+                string selected = entriesBox.Items[selectedIndex].ToString();
 
+                // Find if this is the final type of disbursement, show message and return.
+                string finalType = em.disbursements[em.disbursements.Count - 1].typeOfDisbursement.type.ToUpper();
+                if (finalType.Equals(selected))
+                {
+                    MessageBox.Show("Cannot move final disbursement type downwards.");
+                    return;
+                }
+
+                int i = -1;
+                int indexType = -1; //Stores the final index of the type of disbursement
+                //Find type of disbursement.
+                foreach(DisbursementTypeModel dtm in em.usedDisbursementTypes)
+                {
+                    string hold = dtm.type.ToUpper();
+                    i++;
+
+                    if (hold.Equals(selected))
+                    {
+                        indexType = i;
+                        break;
+                    }
+                }
+
+                // Store number of entries
+                int startOfType = -1; //Stores the index of the first disbursement of that type.
+                int endOfType = -1;   //Stores the index of the last disbursement of that type.
+                int typeIndex = -1;
+
+                foreach(DisbursementsModel dm in em.disbursements)
+                {
+                    typeIndex++;
+                    if (dm.typeOfDisbursement.type.ToUpper().Equals(selected) && startOfType < 0)
+                    {
+                        startOfType = typeIndex;
+                    } else if(startOfType > -1 && !dm.typeOfDisbursement.type.ToUpper().Equals(selected) && endOfType < 0)
+                    {
+                        endOfType = typeIndex - 1;
+                        break;
+                    }
+                }
+
+                int nextTypeEnd = -1;
+                string nextType = em.disbursements[endOfType+1].typeOfDisbursement.type;
+                // Store number of entries for the next type of disbursement
+                for(int q = endOfType+2; q < em.disbursements.Count; q++)
+                {
+                    string holdType = em.disbursements[q].typeOfDisbursement.type;
+                    if (!nextType.Equals(holdType))
+                    {
+                        nextTypeEnd = q - 1;
+                        break;
+                    }
+                }
+
+                // If the next of the disbursements are at the end of the list the final entry will be the last entry in the entire list.
+                if (nextTypeEnd < 0)
+                {
+                    nextTypeEnd = em.disbursements.Count - 1;
+                }
+
+                int numbMove = nextTypeEnd - endOfType;
+
+                for(int j = numbMove; j > 0; j--)
+                {
+                    DisbursementsModel hold = new DisbursementsModel();
+                    hold = em.disbursements[nextTypeEnd];
+
+                    em.disbursements.RemoveAt(nextTypeEnd);
+                    em.disbursements.Insert(startOfType, hold);
+                }
+
+                
+                //Have to update the ordering of the used disbursement list too.
+                DisbursementTypeModel typeModel = new DisbursementTypeModel();
+                typeModel = em.usedDisbursementTypes[indexType + 1];
+                em.usedDisbursementTypes.RemoveAt(indexType + 1);
+                em.usedDisbursementTypes.Insert(indexType, typeModel);
+
+            } else // If the selected entry is a simple disbursement.
+            {
+                MessageBox.Show("This is a disbursement");
             }
 
             displayDisbursements();
@@ -1821,7 +1901,8 @@ namespace BillAutomatorUI
 
             foreach(DisbursementTypeModel type in em.usedDisbursementTypes)
             {
-                if (type.type.Equals(desc))
+                string hold = type.type.ToUpper();
+                if (hold.Equals(desc))
                 {
                     ans = true;
                     break;
@@ -1838,11 +1919,13 @@ namespace BillAutomatorUI
 
             if (isType)
             {
-
+                MessageBox.Show("This is a type");
             } else
             {
-
+                MessageBox.Show("This is a disbursement");
             }
+
+            displayDisbursements();
         }
 
         private void entriesBox_doubleClick(object sender, EventArgs e)
