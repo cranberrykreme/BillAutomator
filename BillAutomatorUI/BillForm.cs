@@ -1882,7 +1882,30 @@ namespace BillAutomatorUI
 
             } else // If the selected entry is a simple disbursement.
             {
-                MessageBox.Show("This is a disbursement");
+                int index = findDisbursement(entriesBox.SelectedItem.ToString());
+
+                DateTime thisDate = em.disbursements[index].date;
+                DateTime nextDate = em.disbursements[index + 1].date;
+                int diff = DateTime.Compare(thisDate, nextDate);
+
+                string thisType = em.disbursements[index].typeOfDisbursement.type;
+                string nextType = em.disbursements[index + 1].typeOfDisbursement.type;
+
+                if (!thisType.Equals(nextType))
+                {
+                    MessageBox.Show("Cannot move disbursements between different types.");
+                    return;
+                } else if(diff != 0)
+                {
+                    return;
+                } else
+                {
+                    DisbursementsModel dm = new DisbursementsModel();
+                    dm = em.disbursements[index + 1];
+
+                    em.disbursements.RemoveAt(index + 1);
+                    em.disbursements.Insert(index, dm);
+                }
             }
 
             displayDisbursements();
