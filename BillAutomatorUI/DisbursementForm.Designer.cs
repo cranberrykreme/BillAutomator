@@ -72,6 +72,7 @@
             this.createEntryButton.TabIndex = 42;
             this.createEntryButton.Text = "Create";
             this.createEntryButton.UseVisualStyleBackColor = true;
+            this.createEntryButton.Click += new System.EventHandler(this.createEntryButton_Click);
             // 
             // noChargeCheckBox
             // 
@@ -95,6 +96,7 @@
             this.totalInput.Name = "totalInput";
             this.totalInput.Size = new System.Drawing.Size(120, 35);
             this.totalInput.TabIndex = 38;
+            this.totalInput.ValueChanged += new System.EventHandler(this.totalInput_ValueChanged);
             // 
             // totalLabel
             // 

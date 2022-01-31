@@ -2227,11 +2227,6 @@ namespace BillAutomatorUI
                 //Display the entry in the box
                 entriesBox.Items.Add(date + " - " + dm.description);
             });
-
-            //em.usedDisbursementTypes.ForEach(delegate (DisbursementTypeModel dtm)
-            //{
-            //    entriesBox.Items.Add(dtm.type.ToUpper() + " - " + dtm.numDisbursements);
-            //});
         }
 
         /// <summary>
