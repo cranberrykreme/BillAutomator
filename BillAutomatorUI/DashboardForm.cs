@@ -24,9 +24,6 @@ namespace BillAutomatorUI
     public partial class DashboardForm : Form
     {
         public string fileName;
-        bool safeClose = false;
-        Application ap = new Application();
-        Document document;
 
         public DashboardForm()
         {
@@ -50,50 +47,59 @@ namespace BillAutomatorUI
                 fileName = ofd.FileName;
                 fileLocTextBox.Text = fileName;
 
-                string days = DateTime.Now.ToString("dd");
-                string months = DateTime.Now.ToString("MM");
-                string years = DateTime.Now.ToString("yyyy");
+                string fileDays = "";
+                string fileMonths = "";
+                string fileYears = "";
 
-                // Get the date listed on the file.
-                string[] names = fileName.Split('\\');
-                string name = names[names.Length - 1];
-
-                string[] dates = name.Split('-');
-                string date = dates[0];
-
-                // Get days, months and year.
-                string[] individualDates = date.Split(' ');
-                string fileDays = individualDates[2];
-                string fileMonths = individualDates[1];
-                string fileYears = individualDates[0];
-
-                if(!String.Equals(days,fileDays) || !String.Equals(months, fileMonths) || !String.Equals(years, fileYears))
+                try
                 {
-                    //Save a string with the new/updated fileName.
-                    individualDates[0] = years;
-                    individualDates[1] = months;
-                    individualDates[2] = days;
+                    string days = DateTime.Now.ToString("dd");
+                    string months = DateTime.Now.ToString("MM");
+                    string years = DateTime.Now.ToString("yyyy");
 
-                    date = String.Join(" ", individualDates);
-                    dates[0] = date;
+                    // Get the date listed on the file.
+                    string[] names = fileName.Split('\\');
+                    string name = names[names.Length - 1];
 
-                    name = String.Join("-", dates);
-                    names[names.Length - 1] = name;
+                    string[] dates = name.Split('-');
+                    string date = dates[0];
 
-                    newFileName = String.Join(@"\", names);
+                    // Get days, months and year.
+                    string[] individualDates = date.Split(' ');
+                    fileDays = individualDates[2];
+                    fileMonths = individualDates[1];
+                    fileYears = individualDates[0];
 
-                    newDate = true;
+                    if (!String.Equals(days, fileDays) || !String.Equals(months, fileMonths) || !String.Equals(years, fileYears))
+                    {
+                        //Save a string with the new/updated fileName.
+                        individualDates[0] = years;
+                        individualDates[1] = months;
+                        individualDates[2] = days;
+
+                        date = String.Join(" ", individualDates);
+                        dates[0] = date;
+
+                        name = String.Join("-", dates);
+                        names[names.Length - 1] = name;
+
+                        newFileName = String.Join(@"\", names);
+
+                        newDate = true;
+                    }
+                } catch (Exception ex)
+                {
+                    MessageBox.Show("Error with reading the title.");
+                    Console.WriteLine("Error with reading the title.\n\n" + ex);
+                    return;
                 }
-
-                //MessageBox.Show(date);
-                //MessageBox.Show(name);
-
-                //MessageBox.Show(newFileName);
 
 
 
                 try
                     {
+                    Application ap = new Application();
+                    Document document;
                     try
                     {
                         document = ap.Documents.Open(@fileName);
@@ -163,7 +169,6 @@ namespace BillAutomatorUI
                         
                     }
 
-                    safeClose = true;
                     ap.Visible = true;
                     //System.Diagnostics.Process.Start(@fileName);
                     //this.Application.Documents.Open(@"C:\Test\NewDocument.docx");
@@ -188,27 +193,6 @@ namespace BillAutomatorUI
             CreateNewForm newForm = new CreateNewForm();
             newForm.runStartup();
             newForm.Show();
-        }
-
-        /// <summary>
-        /// If this application is closed prematurely, check to see if a document is open.
-        /// If it is then try to close that document. This should hopefully result in there being no
-        /// word files open in the background.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void DashboardForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (!safeClose)
-            {
-                try
-                {
-                    document.Close();
-                } catch (Exception ex)
-                {
-                    Console.WriteLine("Cannot find document to close.\n\n" + ex);
-                }
-            }
         }
     }
 }

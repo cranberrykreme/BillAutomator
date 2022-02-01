@@ -169,7 +169,7 @@ namespace BillAutomatorUI
                         else if (foundStart && !dm.typeOfDisbursement.type.Equals(disModel.typeOfDisbursement.type) && !foundEnd) // if the types are not equal, and the start has been found, and the end has not been found.
                         {
                             foundEnd = true;
-                            typeEndIndex = index;
+                            typeEndIndex = index-1;
                             break;
                         }
                     }

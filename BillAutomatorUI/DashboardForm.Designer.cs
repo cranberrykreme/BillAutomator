@@ -105,7 +105,6 @@
             this.Margin = new System.Windows.Forms.Padding(6, 7, 6, 7);
             this.Name = "DashboardForm";
             this.Text = "Bill of costs Automator";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DashboardForm_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 

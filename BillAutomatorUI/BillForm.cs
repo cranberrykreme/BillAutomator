@@ -1165,13 +1165,13 @@ namespace BillAutomatorUI
                                 {
                                     Cell cellType = row[i].Cells[j + 1]; // Get the contents of the description
                                     Range rType = cellType.Range;
-                                    if (rType.Underline != Word.WdUnderline.wdUnderlineNone)
+
+                                    string text = rType.Text;
+                                    text = text.Replace("", "").Replace("\n", "").Replace("\r", "");
+
+                                    if (rType.Underline != Word.WdUnderline.wdUnderlineNone && !String.IsNullOrEmpty(text))
                                     {
                                         Console.WriteLine("It is underlined: " + rType.Text);
-
-                                        string text = rType.Text;
-
-                                        text = text.Replace("", "").Replace("\n", "").Replace("\r", "");
 
                                         DisbursementTypeModel dtm = new DisbursementTypeModel();
                                         dtm.type = text;
@@ -1421,11 +1421,46 @@ namespace BillAutomatorUI
             this.Close();
         }
 
+        /// <summary>
+        /// When the user is playing with the dateTime box, display the relevant entries 
+        /// on that date in the entries box.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void dateTimeBox_ValueChanged(object sender, EventArgs e)
         {
-            //MessageBox.Show("Time was changed");
+            
             DateTime dt = dateTimeBox.Value.Date;
-            displayEntries(dt);
+            if (!currentlyEntries)
+            {
+                displayDisbursements(dt);
+            } else
+            {
+                displayEntries(dt);
+            }
+            
+        }
+
+        /// <summary>
+        /// Displays disbursements only for certain dates.
+        /// </summary>
+        /// <param name="dt"></param>
+        private void displayDisbursements(DateTime dt)
+        {
+            entriesBox.Items.Clear();
+            foreach(DisbursementsModel dm in em.disbursements)
+            {
+                int diff = DateTime.Compare(dt, dm.date);
+                if(diff == 0)
+                {
+                    //Only get the date part of the dateTime entry
+                    string date = dm.date.ToString();
+                    string[] dates = date.Split(' ');
+                    date = dates[0];
+
+                    entriesBox.Items.Add(date + "(" + dm.typeOfDisbursement.type + ")" + " - " + dm.description);
+                }
+            }
         }
 
         /// <summary>
@@ -1547,8 +1582,11 @@ namespace BillAutomatorUI
                 }
                 curr++;
             }
-
-            desc = desc.Substring(1); //Remove the first character in the substring.
+            if(desc.Length > 0)
+            {
+                desc = desc.Substring(1); //Remove the first character in the substring.
+            }
+            
 
             foreach(DisbursementsModel dm in em.disbursements)
             {
@@ -2553,6 +2591,11 @@ namespace BillAutomatorUI
                 //Display the entry in the box
                 entriesBox.Items.Add(date + " - " + dm.description);
             });
+
+            em.usedDisbursementTypes.ForEach(delegate (DisbursementTypeModel dtm)
+            {
+                entriesBox.Items.Add(dtm.type.ToUpper() + " - " + dtm.numDisbursements);
+            });
         }
 
         /// <summary>
@@ -2574,6 +2617,21 @@ namespace BillAutomatorUI
             dtmf.Show();
             openingNew = true;
             this.Close();
+        }
+
+        /// <summary>
+        /// Sets the selected index of the entries table.
+        /// </summary>
+        public void setSelectedIndex(int index)
+        {
+            if (index > -1 && index < entriesBox.Items.Count)
+            {
+                entriesBox.SelectedIndex = index;
+            }
+            else if (index == -1)
+            {
+                entriesBox.SelectedIndex = entriesBox.Items.Count - 1;
+            }
         }
     }
 }

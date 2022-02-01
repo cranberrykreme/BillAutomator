@@ -248,9 +248,11 @@ namespace BillAutomatorUI
                 MessageBox.Show("Please Fill in all of the relevant sections before creating entry");
             }
 
+            int i = -2;
+
             if (!exists) //If making a new entry, add at the correct location.
             {
-                int i = enterEntry(ent);
+                i = enterEntry(ent);
                 if (i > -1)
                 {
                     em.entries.Insert(i, ent);
@@ -264,7 +266,7 @@ namespace BillAutomatorUI
                 if (diff != 0)
                 {
                     em.entries.RemoveAt(existingIndex);
-                    int i = enterEntry(ent);
+                    i = enterEntry(ent);
                     if(i > -1)
                     {
                         em.entries.Insert(i, ent);
@@ -279,6 +281,7 @@ namespace BillAutomatorUI
             BillForm bf = new BillForm();
             bf.setBillModel(em);
             bf.Show();
+            bf.setSelectedIndex(i);
             openingNew = true;
             this.Close();
         }

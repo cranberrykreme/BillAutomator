@@ -99,6 +99,8 @@ namespace BillAutomatorUI
                 return;
             }
 
+            updateDescription();
+
             if (editing)
             {
                 em.usedDisbursementTypes[index].type = typeTextBox.Text;
@@ -117,6 +119,14 @@ namespace BillAutomatorUI
             dtmf.Show();
             openingNew = true;
             this.Close();
+        }
+
+        /// <summary>
+        /// Changes all short hyphens into long hypens in the description box (where gramatically correct).
+        /// </summary>
+        private void updateDescription()
+        {
+            typeTextBox.Text = typeTextBox.Text.Replace(" - ", " – ");
         }
     }
 }
