@@ -1218,6 +1218,32 @@ namespace BillAutomatorUI
                                     {
                                         Console.WriteLine(ex);
                                     }
+
+                                    // Get the no charge or no GST status from the description.
+                                    try
+                                    {
+                                        if (!isType)
+                                        {
+                                            string desc = txt.Replace("\r", "");
+
+                                            string[] descriptions = desc.Split('(');
+                                            string description = descriptions[descriptions.Length - 1];
+
+                                            if(description.Contains("No Charge"))
+                                            {
+                                                disbursement.noCharge = true;
+                                                disbursement.noGST = true;
+                                            } else if(description.Contains("No GST"))
+                                            {
+                                                disbursement.noGST = true;
+                                            }
+
+                                        }
+                                    } catch (Exception ex)
+                                    {
+                                        Console.WriteLine(ex);
+                                    }
+                                    
                                 }
                                 else if (j == 4 && !String.IsNullOrEmpty(txt)) // Get the amount
                                 {

@@ -71,6 +71,22 @@ namespace BillAutomatorUI
             //Set the amount
             decimal input = Convert.ToDecimal(dm.amount);
             totalInput.Value = input;
+
+            try
+            {
+                //Set the gst and charge checkboxes.
+                noChargeCheckBox.Checked = dm.noCharge;
+                gstCheckBox.Checked = dm.noGST;
+                
+
+                if (dm.noCharge)
+                {
+                    gstCheckBox.Checked = true;
+                }
+            } catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
 
         private void DisbursementForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -139,6 +155,8 @@ namespace BillAutomatorUI
             dm.description = desc;
             dm.amount = value;
             dm.typeOfDisbursement = dtm;
+            dm.noGST = gstCheckBox.Checked;
+            dm.noCharge = noChargeCheckBox.Checked;
 
             if (editing == true)
             {
@@ -246,6 +264,155 @@ namespace BillAutomatorUI
             } catch (Exception ex)
             {
                 Console.WriteLine(ex);
+            }
+        }
+
+        /// <summary>
+        /// If the no gst checkbox is toggled.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void gstCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (gstCheckBox.Checked) //If we are going from a no-GST situation to a GST situation.
+            {
+                gstInput.Value = 0;
+                gstInput.ReadOnly = true;
+                gstInput.Increment = 0;
+
+                string[] descriptions = descriptionTextBox.Text.Split('(');
+                string description = descriptions[descriptions.Length - 1];
+
+                if(descriptions.Length < 2 && noChargeCheckBox.Checked) //If there is no charge, and there is currently no () in the description.
+                {
+                    description += " (No Charge)";
+                    descriptionTextBox.Text = description;
+                } else if (descriptions.Length < 2 && !noChargeCheckBox.Checked) //If there is not no charge and there is currently no () in the description.
+                {
+                    description += " (No GST)";
+                    descriptionTextBox.Text = description;
+                } else if(noChargeCheckBox.Checked) //Already a () in the description and there is no charge.
+                {
+                    if (description.Contains("No GST") || description.Contains("No Charge"))
+                    {
+                        description = "No Charge)";
+                        descriptions[descriptions.Length - 1] = description;
+
+                        string desc = String.Join("(", descriptions);
+                        descriptionTextBox.Text = desc;
+                    } else
+                    {
+                        //Re-join the list and add on the no charge
+                        description = descriptionTextBox.Text;
+                        descriptionTextBox.Text = description + " (No Charge)";
+                    }
+                } else //Already a () in the description and there is not no charge.
+                {
+                    if (description.Contains("No GST") || description.Contains("No Charge"))
+                    {
+                        description = "No GST)";
+                        descriptions[descriptions.Length - 1] = description;
+
+                        string desc = String.Join("(", descriptions);
+                        descriptionTextBox.Text = desc;
+                    }
+                    else
+                    {
+                        //Re-join the list and add on the no GST
+                        description = descriptionTextBox.Text;
+                        descriptionTextBox.Text = description + " (No GST)";
+                    }
+                }
+            } else // If we are going from a Gst situation to a no Gst situation.
+            {
+                gstInput.Value = totalInput.Value / 10;
+                if (!noChargeCheckBox.Checked)
+                {
+                    gstInput.ReadOnly = false;
+                    gstInput.Increment = Convert.ToDecimal(0.01);
+                }
+
+                string description = descriptionTextBox.Text;
+                string[] descriptions = description.Split('(');
+
+                string desc = descriptions[descriptions.Length - 1];
+
+                if(desc.Contains("No Charge") && noChargeCheckBox.Checked) // If the description says no charge and the checkbox is also no charge, we have nothing to do.
+                {
+                    return;
+                } else if((desc.Contains("No Charge") || desc.Contains("No GST")) && !noChargeCheckBox.Checked) // No charge, we have to delete the () from the description.
+                {
+                    descriptions[descriptions.Length - 1] = "";
+                    description = String.Join("(", descriptions);
+                    description = description.Substring(0, description.Length - 2);
+
+                    descriptionTextBox.Text = description;
+                }
+            }
+        }
+
+        /// <summary>
+        /// If the no charge check box is toggled.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void noChargeCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (noChargeCheckBox.Checked) // Going from Charge to no-Charge
+            {
+                totalInput.Value = 0;
+                totalInput.ReadOnly = true;
+                totalInput.Increment = 0;
+
+                gstInput.ReadOnly = true;
+                gstInput.Increment = 0;
+
+                string description = descriptionTextBox.Text;
+                string[] descriptions = description.Split('(');
+                string desc = descriptions[descriptions.Length - 1];
+
+                if(desc.Contains("No GST") || desc.Contains("No Charge")) //If a () currently exists in the description.
+                {
+                    desc = "No Charge)";
+                    descriptions[descriptions.Length - 1] = desc;
+                    description = String.Join("(", descriptions);
+                    descriptionTextBox.Text = description;
+                } else //if no () currently exists in the description.
+                {
+                    description = description + " (No Charge)";
+                    descriptionTextBox.Text = description;
+                }
+
+            } else // Going from No-Charge to charge.
+            {
+                totalInput.ReadOnly = false;
+                totalInput.Increment = Convert.ToDecimal(0.01);
+
+                if (!gstCheckBox.Checked)
+                {
+                    gstInput.ReadOnly = false;
+                    gstInput.Increment = Convert.ToDecimal(0.01);
+                }
+
+                string description = descriptionTextBox.Text;
+                string[] descriptions = description.Split('(');
+                string desc = descriptions[descriptions.Length - 1];
+
+                if ((desc.Contains("No Charge") || desc.Contains("No GST")) && !gstCheckBox.Checked) // Remove the current ()
+                {
+                    desc = "";
+                    descriptions[descriptions.Length - 1] = desc;
+                    description = String.Join("(", descriptions);
+
+                    description = description.Substring(0, description.Length - 2);
+                    descriptionTextBox.Text = description;
+                } else if (gstCheckBox.Checked) // change the description to be (No GST).
+                {
+                    desc = "No GST)";
+                    descriptions[descriptions.Length - 1] = desc;
+                    description = String.Join("(", descriptions);
+                    descriptionTextBox.Text = description;
+                }
             }
         }
     }

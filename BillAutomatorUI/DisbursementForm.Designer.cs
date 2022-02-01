@@ -41,7 +41,6 @@
             this.descriptionLabel = new System.Windows.Forms.Label();
             this.dateTimeBox = new System.Windows.Forms.DateTimePicker();
             this.dateLabel = new System.Windows.Forms.Label();
-            this.barristersFeesButton = new System.Windows.Forms.Button();
             this.gstCheckBox = new System.Windows.Forms.CheckBox();
             this.typeDropDown = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.totalInput)).BeginInit();
@@ -53,7 +52,7 @@
             this.cancelEntryButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
             this.cancelEntryButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
             this.cancelEntryButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cancelEntryButton.Location = new System.Drawing.Point(597, 329);
+            this.cancelEntryButton.Location = new System.Drawing.Point(597, 268);
             this.cancelEntryButton.Name = "cancelEntryButton";
             this.cancelEntryButton.Size = new System.Drawing.Size(148, 52);
             this.cancelEntryButton.TabIndex = 43;
@@ -66,7 +65,7 @@
             this.createEntryButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
             this.createEntryButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
             this.createEntryButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.createEntryButton.Location = new System.Drawing.Point(751, 329);
+            this.createEntryButton.Location = new System.Drawing.Point(751, 268);
             this.createEntryButton.Name = "createEntryButton";
             this.createEntryButton.Size = new System.Drawing.Size(148, 52);
             this.createEntryButton.TabIndex = 42;
@@ -77,12 +76,13 @@
             // noChargeCheckBox
             // 
             this.noChargeCheckBox.AutoSize = true;
-            this.noChargeCheckBox.Location = new System.Drawing.Point(455, 339);
+            this.noChargeCheckBox.Location = new System.Drawing.Point(24, 214);
             this.noChargeCheckBox.Name = "noChargeCheckBox";
             this.noChargeCheckBox.Size = new System.Drawing.Size(132, 34);
             this.noChargeCheckBox.TabIndex = 41;
             this.noChargeCheckBox.Text = "No Charge";
             this.noChargeCheckBox.UseVisualStyleBackColor = true;
+            this.noChargeCheckBox.CheckedChanged += new System.EventHandler(this.noChargeCheckBox_CheckedChanged);
             // 
             // totalInput
             // 
@@ -92,7 +92,7 @@
             0,
             0,
             131072});
-            this.totalInput.Location = new System.Drawing.Point(779, 260);
+            this.totalInput.Location = new System.Drawing.Point(348, 277);
             this.totalInput.Name = "totalInput";
             this.totalInput.Size = new System.Drawing.Size(120, 35);
             this.totalInput.TabIndex = 38;
@@ -102,7 +102,7 @@
             // 
             this.totalLabel.AutoSize = true;
             this.totalLabel.Font = new System.Drawing.Font("Segoe UI Light", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.totalLabel.Location = new System.Drawing.Point(686, 250);
+            this.totalLabel.Location = new System.Drawing.Point(255, 267);
             this.totalLabel.Name = "totalLabel";
             this.totalLabel.Size = new System.Drawing.Size(87, 45);
             this.totalLabel.TabIndex = 37;
@@ -116,7 +116,7 @@
             0,
             0,
             131072});
-            this.gstInput.Location = new System.Drawing.Point(526, 260);
+            this.gstInput.Location = new System.Drawing.Point(95, 277);
             this.gstInput.Name = "gstInput";
             this.gstInput.Size = new System.Drawing.Size(120, 35);
             this.gstInput.TabIndex = 36;
@@ -125,7 +125,7 @@
             // 
             this.gstLabel.AutoSize = true;
             this.gstLabel.Font = new System.Drawing.Font("Segoe UI Light", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gstLabel.Location = new System.Drawing.Point(447, 250);
+            this.gstLabel.Location = new System.Drawing.Point(16, 267);
             this.gstLabel.Name = "gstLabel";
             this.gstLabel.Size = new System.Drawing.Size(73, 45);
             this.gstLabel.TabIndex = 35;
@@ -179,27 +179,16 @@
             this.dateLabel.TabIndex = 29;
             this.dateLabel.Text = "Date";
             // 
-            // barristersFeesButton
-            // 
-            this.barristersFeesButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
-            this.barristersFeesButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-            this.barristersFeesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.barristersFeesButton.Location = new System.Drawing.Point(24, 329);
-            this.barristersFeesButton.Name = "barristersFeesButton";
-            this.barristersFeesButton.Size = new System.Drawing.Size(164, 52);
-            this.barristersFeesButton.TabIndex = 44;
-            this.barristersFeesButton.Text = "No Function";
-            this.barristersFeesButton.UseVisualStyleBackColor = true;
-            // 
             // gstCheckBox
             // 
             this.gstCheckBox.AutoSize = true;
-            this.gstCheckBox.Location = new System.Drawing.Point(291, 339);
+            this.gstCheckBox.Location = new System.Drawing.Point(24, 165);
             this.gstCheckBox.Name = "gstCheckBox";
             this.gstCheckBox.Size = new System.Drawing.Size(102, 34);
             this.gstCheckBox.TabIndex = 45;
             this.gstCheckBox.Text = "No GST";
             this.gstCheckBox.UseVisualStyleBackColor = true;
+            this.gstCheckBox.CheckedChanged += new System.EventHandler(this.gstCheckBox_CheckedChanged);
             // 
             // typeDropDown
             // 
@@ -214,10 +203,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 30F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(915, 405);
+            this.ClientSize = new System.Drawing.Size(915, 339);
             this.Controls.Add(this.typeDropDown);
             this.Controls.Add(this.gstCheckBox);
-            this.Controls.Add(this.barristersFeesButton);
             this.Controls.Add(this.cancelEntryButton);
             this.Controls.Add(this.createEntryButton);
             this.Controls.Add(this.noChargeCheckBox);
@@ -257,7 +245,6 @@
         private System.Windows.Forms.Label descriptionLabel;
         private System.Windows.Forms.DateTimePicker dateTimeBox;
         private System.Windows.Forms.Label dateLabel;
-        private System.Windows.Forms.Button barristersFeesButton;
         private System.Windows.Forms.CheckBox gstCheckBox;
         private System.Windows.Forms.ComboBox typeDropDown;
     }

@@ -41,5 +41,17 @@ namespace BillAutomatorUI
         /// was billed at.
         /// </summary>
         public double amount { get; set; }
+
+        /// <summary>
+        /// Represents whether there is no gst being charged in this
+        /// disbursement or not.
+        /// </summary>
+        public bool noGST { get; set; }
+
+        /// <summary>
+        /// Represents whether or not there is any charge
+        /// for this disbursement at all.
+        /// </summary>
+        public bool noCharge { get; set; }
     }
 }
