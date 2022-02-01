@@ -31,6 +31,11 @@ namespace BillAutomatorUI
         public void setBillModel(BillModel aEm)
         {
             em = aEm;
+
+            foreach(DisbursementTypeModel dtm in em.unusedDisbursementTypes)
+            {
+                DefaultTypesBox.Items.Add(dtm.type);
+            }
         }
 
         /// <summary>
@@ -106,6 +111,17 @@ namespace BillAutomatorUI
                 em.usedDisbursementTypes[index].type = typeTextBox.Text;
             } else
             {
+                string type = typeTextBox.Text;
+
+                // does this type of disbursement already exist?
+                foreach(DisbursementTypeModel dtm in em.usedDisbursementTypes)
+                {
+                    if (type.Equals(dtm.type))
+                    {
+                        MessageBox.Show("This disbursement type already exists.");
+                        return;
+                    }
+                }
                 DisbursementTypeModel disTypeModel = new DisbursementTypeModel();
                 disTypeModel.numDisbursements = 0;
                 disTypeModel.type = typeTextBox.Text;
@@ -127,6 +143,15 @@ namespace BillAutomatorUI
         private void updateDescription()
         {
             typeTextBox.Text = typeTextBox.Text.Replace(" - ", " – ");
+        }
+
+        private void DefaultTypesBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int index = DefaultTypesBox.SelectedIndex;
+            if (index > -1)
+            {
+                typeTextBox.Text = em.unusedDisbursementTypes[index].type;
+            }
         }
     }
 }

@@ -2477,47 +2477,47 @@ namespace BillAutomatorUI
         private void setUnusedDisbursements()
         {
             DisbursementTypeModel dtm = new DisbursementTypeModel();
-            //dtm.type = "court fees";
-            //em.unusedDisbursementTypes.Add(dtm);
+            dtm.type = "Court Fees";
+            em.unusedDisbursementTypes.Add(dtm);
 
-            //dtm = new DisbursementTypeModel();
-            //dtm.type = "senior counsel";
-            //em.unusedDisbursementTypes.Add(dtm);
+            dtm = new DisbursementTypeModel();
+            dtm.type = "Senior Counsel";
+            em.unusedDisbursementTypes.Add(dtm);
 
-            //dtm = new DisbursementTypeModel();
-            //dtm.type = "junior counsel";
-            //em.unusedDisbursementTypes.Add(dtm);
+            dtm = new DisbursementTypeModel();
+            dtm.type = "Junior Counsel";
+            em.unusedDisbursementTypes.Add(dtm);
 
-            //dtm = new DisbursementTypeModel();
-            //dtm.type = "counsel";
-            //em.unusedDisbursementTypes.Add(dtm);
+            dtm = new DisbursementTypeModel();
+            dtm.type = "Counsel";
+            em.unusedDisbursementTypes.Add(dtm);
 
-            //dtm = new DisbursementTypeModel();
-            //dtm.type = "expert fees";
-            //em.unusedDisbursementTypes.Add(dtm);
+            dtm = new DisbursementTypeModel();
+            dtm.type = "Expert Fees";
+            em.unusedDisbursementTypes.Add(dtm);
 
-            //dtm = new DisbursementTypeModel();
-            //dtm.type = "medical report fees";
-            //em.unusedDisbursementTypes.Add(dtm);
+            dtm = new DisbursementTypeModel();
+            dtm.type = "Medical Report Fees";
+            em.unusedDisbursementTypes.Add(dtm);
 
-            //dtm = new DisbursementTypeModel();
-            //dtm.type = "service fees";
-            //em.unusedDisbursementTypes.Add(dtm);
+            dtm = new DisbursementTypeModel();
+            dtm.type = "Service Fees";
+            em.unusedDisbursementTypes.Add(dtm);
 
-            //dtm = new DisbursementTypeModel();
-            //dtm.type = "agency fees";
-            //em.unusedDisbursementTypes.Add(dtm);
+            dtm = new DisbursementTypeModel();
+            dtm.type = "Agency Fees";
+            em.unusedDisbursementTypes.Add(dtm);
 
-            //dtm = new DisbursementTypeModel();
-            //dtm.type = "witness expenses";
-            //em.unusedDisbursementTypes.Add(dtm);
+            dtm = new DisbursementTypeModel();
+            dtm.type = "Witness Expenses";
+            em.unusedDisbursementTypes.Add(dtm);
 
-            //dtm = new DisbursementTypeModel();
-            //dtm.type = "miscellaneous fees";
-            //em.unusedDisbursementTypes.Add(dtm);
+            dtm = new DisbursementTypeModel();
+            dtm.type = "Miscellaneous Fees";
+            em.unusedDisbursementTypes.Add(dtm);
 
             // Add one basic one to the used disbursements model.
-            //dtm = new DisbursementTypeModel();
+            dtm = new DisbursementTypeModel();
             dtm.type = "Unknown";
             em.usedDisbursementTypes.Add(dtm);
             //em.unusedDisbursementTypes.Add(dtm);
@@ -2644,10 +2644,10 @@ namespace BillAutomatorUI
                 entriesBox.Items.Add(date + " - " + dm.description);
             });
 
-            //em.usedDisbursementTypes.ForEach(delegate (DisbursementTypeModel dtm)
-            //{
-            //    entriesBox.Items.Add(dtm.type.ToUpper() + " - " + dtm.numDisbursements);
-            //});
+            em.usedDisbursementTypes.ForEach(delegate (DisbursementTypeModel dtm)
+            {
+                entriesBox.Items.Add(dtm.type.ToUpper() + " - " + dtm.numDisbursements);
+            });
         }
 
         /// <summary>

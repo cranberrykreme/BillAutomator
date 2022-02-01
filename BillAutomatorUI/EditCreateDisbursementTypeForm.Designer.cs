@@ -33,13 +33,15 @@
             this.typeLabel = new System.Windows.Forms.Label();
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
+            this.DefaultTypesBox = new System.Windows.Forms.ListBox();
+            this.defaultTypesLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // typeTextBox
             // 
             this.typeTextBox.Location = new System.Drawing.Point(113, 21);
             this.typeTextBox.Name = "typeTextBox";
-            this.typeTextBox.Size = new System.Drawing.Size(398, 35);
+            this.typeTextBox.Size = new System.Drawing.Size(407, 35);
             this.typeTextBox.TabIndex = 22;
             // 
             // typeLabel
@@ -57,7 +59,7 @@
             this.saveButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
             this.saveButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
             this.saveButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.saveButton.Location = new System.Drawing.Point(283, 81);
+            this.saveButton.Location = new System.Drawing.Point(285, 373);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(148, 52);
             this.saveButton.TabIndex = 35;
@@ -70,7 +72,7 @@
             this.cancelButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
             this.cancelButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
             this.cancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cancelButton.Location = new System.Drawing.Point(97, 81);
+            this.cancelButton.Location = new System.Drawing.Point(99, 373);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(148, 52);
             this.cancelButton.TabIndex = 34;
@@ -78,12 +80,34 @@
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
+            // DefaultTypesBox
+            // 
+            this.DefaultTypesBox.FormattingEnabled = true;
+            this.DefaultTypesBox.ItemHeight = 30;
+            this.DefaultTypesBox.Location = new System.Drawing.Point(30, 123);
+            this.DefaultTypesBox.Name = "DefaultTypesBox";
+            this.DefaultTypesBox.Size = new System.Drawing.Size(490, 244);
+            this.DefaultTypesBox.TabIndex = 37;
+            this.DefaultTypesBox.SelectedIndexChanged += new System.EventHandler(this.DefaultTypesBox_SelectedIndexChanged);
+            // 
+            // defaultTypesLabel
+            // 
+            this.defaultTypesLabel.AutoSize = true;
+            this.defaultTypesLabel.Font = new System.Drawing.Font("Segoe UI Light", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.defaultTypesLabel.Location = new System.Drawing.Point(22, 75);
+            this.defaultTypesLabel.Name = "defaultTypesLabel";
+            this.defaultTypesLabel.Size = new System.Drawing.Size(203, 45);
+            this.defaultTypesLabel.TabIndex = 36;
+            this.defaultTypesLabel.Text = "Default Types";
+            // 
             // EditCreateDisbursementTypeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 30F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(532, 145);
+            this.ClientSize = new System.Drawing.Size(532, 436);
+            this.Controls.Add(this.DefaultTypesBox);
+            this.Controls.Add(this.defaultTypesLabel);
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.typeTextBox);
@@ -104,5 +128,7 @@
         private System.Windows.Forms.Label typeLabel;
         private System.Windows.Forms.Button saveButton;
         private System.Windows.Forms.Button cancelButton;
+        private System.Windows.Forms.ListBox DefaultTypesBox;
+        private System.Windows.Forms.Label defaultTypesLabel;
     }
 }

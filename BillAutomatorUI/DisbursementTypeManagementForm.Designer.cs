@@ -34,6 +34,7 @@
             this.addTypeButton = new System.Windows.Forms.Button();
             this.DisbursementTypesBox = new System.Windows.Forms.ListBox();
             this.disbursementTypesLabel = new System.Windows.Forms.Label();
+            this.deleteButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // returnButton
@@ -94,12 +95,26 @@
             this.disbursementTypesLabel.TabIndex = 32;
             this.disbursementTypesLabel.Text = "Disbursement Types";
             // 
+            // deleteButton
+            // 
+            this.deleteButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
+            this.deleteButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+            this.deleteButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.deleteButton.Location = new System.Drawing.Point(458, 169);
+            this.deleteButton.Name = "deleteButton";
+            this.deleteButton.Size = new System.Drawing.Size(148, 52);
+            this.deleteButton.TabIndex = 37;
+            this.deleteButton.Text = "Delete";
+            this.deleteButton.UseVisualStyleBackColor = true;
+            this.deleteButton.Click += new System.EventHandler(this.deleteButton_Click);
+            // 
             // DisbursementTypeManagementForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 30F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(629, 420);
+            this.Controls.Add(this.deleteButton);
             this.Controls.Add(this.returnButton);
             this.Controls.Add(this.editTypeButton);
             this.Controls.Add(this.addTypeButton);
@@ -123,5 +138,6 @@
         private System.Windows.Forms.Button addTypeButton;
         private System.Windows.Forms.ListBox DisbursementTypesBox;
         private System.Windows.Forms.Label disbursementTypesLabel;
+        private System.Windows.Forms.Button deleteButton;
     }
 }
