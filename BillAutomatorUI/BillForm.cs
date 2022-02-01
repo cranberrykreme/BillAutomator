@@ -803,6 +803,7 @@ namespace BillAutomatorUI
                                         {
                                             cellIndex++;
                                         }
+
                                         txt = cellText[cellIndex];
 
                                         string rate = txt.Replace("$", "");
@@ -817,7 +818,10 @@ namespace BillAutomatorUI
                                         rates.Add(hourly);
                                         sol.hourlyRates = rates;
 
-                                        
+                                    } catch (System.FormatException sfe)
+                                    {
+                                        Console.WriteLine("hourly rate has a format error.");
+                                        Console.WriteLine(sfe);
                                     }
                                     catch (Exception ex)
                                     {
@@ -1376,10 +1380,14 @@ namespace BillAutomatorUI
                 int index = entriesFindIndex(chosenEntry);
                 try
                 {
-                    nef.setDateBox(em.entries[index].date);
+                    if(index > -1)
+                    {
+                        nef.setDateBox(em.entries[index].date);
+                    }
+                    
                 } catch (Exception ex)
                 {
-                    Console.WriteLine(ex);
+                    Console.WriteLine("Index is: " + index + "\n\n" + ex);
                 }
                 
             }
@@ -1460,6 +1468,11 @@ namespace BillAutomatorUI
 
                     entriesBox.Items.Add(date + "(" + dm.typeOfDisbursement.type + ")" + " - " + dm.description);
                 }
+            }
+
+            if(entriesBox.Items.Count < 1)
+            {
+                entriesBox.Items.Add("No Disbursements on this date.");
             }
         }
 
@@ -2545,6 +2558,19 @@ namespace BillAutomatorUI
             DisbursementForm df = new DisbursementForm();
             df.setBillModel(em);
             df.Show();
+
+            //Set the date time box for the new disbursement.
+            if (entriesBox.SelectedIndex > -1)
+            {
+                string desc = entriesBox.SelectedItem.ToString();
+                int index = findDisbursement(desc);
+                if(index > -1)
+                {
+                    DateTime date = em.disbursements[index].date;
+                    df.setDate(date);
+                }
+            }
+
             openingNew = true;
             this.Close();
         }
@@ -2592,10 +2618,10 @@ namespace BillAutomatorUI
                 entriesBox.Items.Add(date + " - " + dm.description);
             });
 
-            em.usedDisbursementTypes.ForEach(delegate (DisbursementTypeModel dtm)
-            {
-                entriesBox.Items.Add(dtm.type.ToUpper() + " - " + dtm.numDisbursements);
-            });
+            //em.usedDisbursementTypes.ForEach(delegate (DisbursementTypeModel dtm)
+            //{
+            //    entriesBox.Items.Add(dtm.type.ToUpper() + " - " + dtm.numDisbursements);
+            //});
         }
 
         /// <summary>
@@ -2632,6 +2658,14 @@ namespace BillAutomatorUI
             {
                 entriesBox.SelectedIndex = entriesBox.Items.Count - 1;
             }
+        }
+
+        /// <summary>
+        /// Allows outside classes to choose the disbursements tab to be displayed.
+        /// </summary>
+        public void showDis()
+        {
+            displayDisbursements();
         }
     }
 }

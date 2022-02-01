@@ -93,6 +93,7 @@ namespace BillAutomatorUI
             BillForm smf = new BillForm();
             smf.setBillModel(em);
             smf.Show();
+            smf.showDis();
             openingNew = true;
             this.Close();
         }
@@ -231,6 +232,21 @@ namespace BillAutomatorUI
         private void updateDescription()
         {
             descriptionTextBox.Text = descriptionTextBox.Text.Replace(" - ", " – ");
+        }
+
+        /// <summary>
+        /// Allows the dateTime box to be set to a date by an incoming disbursement.
+        /// </summary>
+        /// <param name="date"></param>
+        public void setDate(DateTime date)
+        {
+            try
+            {
+                dateTimeBox.Value = date;
+            } catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
     }
 }
