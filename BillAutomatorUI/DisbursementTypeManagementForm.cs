@@ -183,8 +183,15 @@ namespace BillAutomatorUI
                         em.disbursements.Insert(0, dis);
                     }
 
-                    // Sort the new set of unknowns.
-                    sortUnknown();
+                    try
+                    {
+                        // Sort the new set of unknowns.
+                        sortUnknown();
+                    } catch (Exception ex)
+                    {
+                        Console.WriteLine(ex);
+                    }
+                    
                 }
 
                 //Try to delete the entry.

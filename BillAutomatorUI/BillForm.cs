@@ -1492,7 +1492,7 @@ namespace BillAutomatorUI
                     string[] dates = date.Split(' ');
                     date = dates[0];
 
-                    entriesBox.Items.Add(date + "(" + dm.typeOfDisbursement.type + ")" + " - " + dm.description);
+                    entriesBox.Items.Add(date + " (" + dm.typeOfDisbursement.type + ")" + " - " + dm.description);
                 }
             }
 
@@ -2195,6 +2195,19 @@ namespace BillAutomatorUI
                 DateTime date = em.entries[selected].date;
 
                 displayEntries(date);
+            } else if(entriesBox.SelectedIndex > -1 && !currentlyEntries)
+            {
+                string chosenEntry = entriesBox.SelectedItem.ToString();
+                int selected = findDisbursement(chosenEntry);
+
+                // If a legitimate disbursement was chosen.
+                if(selected > -1)
+                {
+                    DateTime date = em.disbursements[selected].date;
+
+                    displayDisbursements(date);
+                }
+                
             }
         }
 
