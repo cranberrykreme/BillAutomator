@@ -175,10 +175,11 @@
             // 
             // solicitorDropDown
             // 
+            this.solicitorDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.solicitorDropDown.FormattingEnabled = true;
-            this.solicitorDropDown.Location = new System.Drawing.Point(665, 32);
+            this.solicitorDropDown.Location = new System.Drawing.Point(621, 32);
             this.solicitorDropDown.Name = "solicitorDropDown";
-            this.solicitorDropDown.Size = new System.Drawing.Size(234, 38);
+            this.solicitorDropDown.Size = new System.Drawing.Size(278, 38);
             this.solicitorDropDown.TabIndex = 24;
             this.solicitorDropDown.TextChanged += new System.EventHandler(this.solicitorDropDown_valueChanged);
             // 

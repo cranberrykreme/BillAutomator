@@ -192,6 +192,7 @@
             // 
             // typeDropDown
             // 
+            this.typeDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.typeDropDown.FormattingEnabled = true;
             this.typeDropDown.Location = new System.Drawing.Point(572, 32);
             this.typeDropDown.Name = "typeDropDown";

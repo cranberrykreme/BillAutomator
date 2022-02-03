@@ -21,7 +21,7 @@ namespace BillAutomatorUI
         private bool openingNew = false; //Is a new form being opened upon the close of this form?
         private bool editing = false; //Is the current disbursement a new entry or editing of an old one?
         private int index; //The index of the disbursement in the list.
-        private DisbursementsModel dm; //The disbursements model to edit/create.
+        private DisbursementsModel disModel; //The disbursements model to edit/create.
 
         public DisbursementForm()
         {
@@ -46,14 +46,14 @@ namespace BillAutomatorUI
         public void runEditingSetup(int aIndex)
         {
             index = aIndex;
-            dm = em.disbursements[index];
+            disModel = em.disbursements[index]; // get the disbursement
             editing = true;
 
             //Set the date box
-            dateTimeBox.Value = dm.date;
+            dateTimeBox.Value = disModel.date;
 
             //Set the type box
-            string disType = dm.typeOfDisbursement.type;
+            string disType = disModel.typeOfDisbursement.type;
             int i = -1;
             foreach(string type in typeDropDown.Items)
             {
@@ -61,25 +61,26 @@ namespace BillAutomatorUI
                 if (type.Equals(disType))
                 {
                     typeDropDown.SelectedIndex = i;
+                    em.usedDisbursementTypes[i].numDisbursements--; // Reduce the number of disbursements in this type by 1.
                     break;
                 }
             }
 
             //Set the description
-            descriptionTextBox.Text = dm.description;
+            descriptionTextBox.Text = disModel.description;
 
             //Set the amount
-            decimal input = Convert.ToDecimal(dm.amount);
+            decimal input = Convert.ToDecimal(disModel.amount);
             totalInput.Value = input;
 
             try
             {
                 //Set the gst and charge checkboxes.
-                noChargeCheckBox.Checked = dm.noCharge;
-                gstCheckBox.Checked = dm.noGST;
+                noChargeCheckBox.Checked = disModel.noCharge;
+                gstCheckBox.Checked = disModel.noGST;
                 
 
-                if (dm.noCharge)
+                if (disModel.noCharge)
                 {
                     gstCheckBox.Checked = true;
                 }
@@ -89,6 +90,13 @@ namespace BillAutomatorUI
             }
         }
 
+        /// <summary>
+        /// If the form is closing, if it is closing in a way intended then this method won't do anything,
+        /// however if something else has happened, the bill form shall be re-opened, with all of the
+        /// relevant information in the em list.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void DisbursementForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (!openingNew)
@@ -158,79 +166,157 @@ namespace BillAutomatorUI
             dm.noGST = gstCheckBox.Checked;
             dm.noCharge = noChargeCheckBox.Checked;
 
-            if (editing == true)
+            if (editing == true) // If the current entry already exists and is just being edited.
             {
-                em.usedDisbursementTypes[typeDropDown.SelectedIndex].numDisbursements++;
-                em.disbursements[index] = dm;
-            } else
-            {
-                int typeStartIndex = -1;
-                int typeEndIndex = -1;
-                bool foundStart = false;
-                bool foundEnd = false;
-                int index = -1;
-
-                if(dm.typeOfDisbursement.numDisbursements < 1)
+                int diff = DateTime.Compare(disModel.date, dm.date);
+                if (disModel.typeOfDisbursement.type.Equals(dm.typeOfDisbursement.type) && diff == 0) //If the disType and date are the same as before.
                 {
                     em.usedDisbursementTypes[typeDropDown.SelectedIndex].numDisbursements++;
-                    em.disbursements.Add(dm);
-                }
-                else
+                    em.disbursements[index] = dm;
+                } else if (dm.typeOfDisbursement.numDisbursements < 1 && !disModel.typeOfDisbursement.type.Equals(dm.typeOfDisbursement.type)) //If this is the first of that disbursment type, and the type is being changed.
                 {
-                    foreach (DisbursementsModel disModel in em.disbursements)
+                    em.disbursements.RemoveAt(index);   // remove the relevant disbursement, that has been edited.
+                    if (dm.typeOfDisbursement.type.Equals("Unknown"))
                     {
-                        index++;
-                        if (dm.typeOfDisbursement.type.Equals(disModel.typeOfDisbursement.type) && !foundStart) // if the types are equal and the first index has not yet been found
-                        {
-                            foundStart = true;
-                            typeStartIndex = index;
-                        }
-                        else if (foundStart && !dm.typeOfDisbursement.type.Equals(disModel.typeOfDisbursement.type) && !foundEnd) // if the types are not equal, and the start has been found, and the end has not been found.
-                        {
-                            foundEnd = true;
-                            typeEndIndex = index-1;
-                            break;
-                        }
+                        em.usedDisbursementTypes[typeDropDown.SelectedIndex].numDisbursements++;
+                        em.disbursements.Insert(0, dm);
                     }
-
-                    if (!foundStart)
-                    {
-                        MessageBox.Show("Was not able to find disbursement type to enter");
-                        return;
-                    } else if (foundStart && !foundEnd)
+                    else
                     {
                         em.usedDisbursementTypes[typeDropDown.SelectedIndex].numDisbursements++;
                         em.disbursements.Add(dm);
-                    } else
+                    }
+                } else //If either the date or the disType is different, and this is not the first disbursement of that type.
+                {
+                    int disIndex = locateEntry(dm);
+
+                    if (disIndex < 0)
                     {
-                        DateTime hold = em.disbursements[typeEndIndex].date;
-                        int holdResult = DateTime.Compare(date, hold);
-
-                        if (holdResult >= 0) //if the entry is the latest for that particular disbursement type.
-                        {
-                            em.usedDisbursementTypes[typeDropDown.SelectedIndex].numDisbursements++;
-                            em.disbursements.Insert(typeEndIndex + 1, dm);
-                        } else //if it is not the latest for that type of disbursement.
-                        {
-                            for (int i = typeStartIndex; i <= typeEndIndex; i++)
-                            {
-                                DateTime dt = em.disbursements[i].date;
-
-                                int result = DateTime.Compare(date, dt);
-                                if (result < 0) //If the new entry is earlier than the one if it is being compared to.
-                                {
-                                    em.usedDisbursementTypes[typeDropDown.SelectedIndex].numDisbursements++;
-                                    em.disbursements.Insert(i, dm);
-                                }
-                            }
-                        }
+                        MessageBox.Show("Cannot find location to enter disbursement.");
+                        return;
                     }
 
+                    em.usedDisbursementTypes[typeDropDown.SelectedIndex].numDisbursements++;
+                    em.disbursements.Insert(disIndex, dm);
+
+                    if(disIndex < index) //If the new entry has been inserted before the old entry.
+                    {
+                        index++;
+                    }
+
+                    em.disbursements.RemoveAt(index);   // remove the relevant disbursement, that has already been edited.
                 }
-                
+
+            } else // If this is a new entry
+            {
+
+                if(dm.typeOfDisbursement.numDisbursements < 1)
+                {
+                    if (dm.typeOfDisbursement.type.Equals("Unknown"))
+                    {
+                        em.usedDisbursementTypes[typeDropDown.SelectedIndex].numDisbursements++;
+                        em.disbursements.Insert(0,dm);
+                    } else
+                    {
+                        em.usedDisbursementTypes[typeDropDown.SelectedIndex].numDisbursements++;
+                        em.disbursements.Add(dm);
+                    }
+                    
+                }
+                else
+                {
+                    int disIndex = locateEntry(dm);
+
+                    if(disIndex < 0)
+                    {
+                        MessageBox.Show("Cannot find location to enter disbursement.");
+                        return;
+                    }
+
+                    em.usedDisbursementTypes[typeDropDown.SelectedIndex].numDisbursements++;
+                    em.disbursements.Insert(disIndex, dm);
+
+                }
+
             }
 
             leaveScreen();
+        }
+
+        /// <summary>
+        /// Finds the location that the disbursement should be entered into in the 
+        /// disbursements list.
+        /// </summary>
+        /// <param name="dm"></param>
+        private int locateEntry(DisbursementsModel dm)
+        {
+            int ans = -1;
+
+            int typeStartIndex = -1;
+            int typeEndIndex = -1;
+            bool foundStart = false;
+            bool foundEnd = false;
+            int index = -1;
+
+            foreach (DisbursementsModel disModel in em.disbursements)
+            {
+                index++;
+                if (dm.typeOfDisbursement.type.Equals(disModel.typeOfDisbursement.type) && !foundStart) // if the types are equal and the first index has not yet been found
+                {
+                    foundStart = true;
+                    typeStartIndex = index;
+                }
+                else if (foundStart && !dm.typeOfDisbursement.type.Equals(disModel.typeOfDisbursement.type) && !foundEnd) // if the types are not equal, and the start has been found, and the end has not been found.
+                {
+                    foundEnd = true;
+                    typeEndIndex = index - 1;
+                    break;
+                }
+            }
+
+            if (!foundEnd) //If we have not found the end, set it to be the last entry in the list (as it is part of the last group of disbursements).
+            {
+                typeEndIndex = em.disbursements.Count - 1;
+            }
+
+            if (!foundStart)
+            {
+                //MessageBox.Show("Was not able to find disbursement type to enter");
+                return -1;
+            }
+            else
+            {
+                DateTime hold = em.disbursements[typeEndIndex].date;
+                DateTime date = dm.date;
+                int holdResult = DateTime.Compare(date, hold);
+
+                if (holdResult >= 0) //if the entry is the latest for that particular disbursement type.
+                {
+                    //em.usedDisbursementTypes[typeDropDown.SelectedIndex].numDisbursements++;
+                    //em.disbursements.Insert(typeEndIndex + 1, dm);
+
+                    ans = typeEndIndex + 1;
+                }
+                else //if it is not the latest for that type of disbursement.
+                {
+                    for (int i = typeStartIndex; i <= typeEndIndex; i++)
+                    {
+                        DateTime dt = em.disbursements[i].date;
+
+                        int result = DateTime.Compare(date, dt);
+                        if (result < 0) //If the new entry is earlier than the one if it is being compared to.
+                        {
+                            //em.usedDisbursementTypes[typeDropDown.SelectedIndex].numDisbursements++;
+                            //em.disbursements.Insert(i, dm);
+
+                            ans = i;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return ans;
         }
 
         /// <summary>

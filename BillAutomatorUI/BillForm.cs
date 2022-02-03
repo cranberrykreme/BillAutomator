@@ -1571,18 +1571,8 @@ namespace BillAutomatorUI
                 {
                     dtm.numDisbursements = dtm.numDisbursements - 1;
                     disTypeIndex = i;
-                    if(dtm.numDisbursements < 1)
-                    {
-                        deleteType = true;
-                    }
                     break;
                 }
-            }
-
-
-            if (deleteType && disTypeIndex > -1)
-            {
-                em.usedDisbursementTypes.RemoveAt(disTypeIndex);
             }
 
 
@@ -1914,7 +1904,22 @@ namespace BillAutomatorUI
                 string selected = entriesBox.Items[selectedIndex].ToString();
 
                 // Find if this is the final type of disbursement, show message and return.
-                string finalType = em.disbursements[em.disbursements.Count - 1].typeOfDisbursement.type.ToUpper();
+                int numDis = 0;
+                int nonZeroIndex = em.disbursements.Count - 1;
+                while(numDis == 0 && nonZeroIndex >= 0)
+                {
+                    numDis = em.disbursements[nonZeroIndex].typeOfDisbursement.numDisbursements;
+                    
+                    nonZeroIndex--;
+                }
+
+                //If the index has iterated past zero, then find the first type of disbursement
+                if (nonZeroIndex < 0)
+                {
+                    nonZeroIndex = 0;
+                }
+
+                string finalType = em.disbursements[nonZeroIndex].typeOfDisbursement.type.ToUpper();
                 if (finalType.Equals(selected))
                 {
                     MessageBox.Show("Cannot move final disbursement type downwards.");
@@ -2061,7 +2066,7 @@ namespace BillAutomatorUI
             int index = entriesBox.SelectedIndex;
             bool isType = selectedIndexIsDisbursementType(index);
 
-            if (isType)
+            if (isType) //If the selected index has a type of disbursement in it.
             {
                 string selected = entriesBox.Items[index].ToString();
 
