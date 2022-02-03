@@ -315,7 +315,6 @@ namespace BillAutomatorUI
                     }
                 }
             }
-
             return ans;
         }
 

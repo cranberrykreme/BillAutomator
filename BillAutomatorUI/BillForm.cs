@@ -315,7 +315,7 @@ namespace BillAutomatorUI
 
                                 int numList = 0; // is there a number at the start of this row?
 
-                                if (currentType > 1)
+                                if (currentType > 1) //Only make additional rows and write the title if not 'unknown' type.
                                 {
                                     //Add another additional row.
                                     rows.Add(rows[index]);
@@ -1903,6 +1903,12 @@ namespace BillAutomatorUI
                 //MessageBox.Show("This is a type");
                 string selected = entriesBox.Items[selectedIndex].ToString();
 
+                if (selected.Equals("UNKNOWN"))
+                {
+                    MessageBox.Show("Cannot change position of unknown type.");
+                    return;
+                }
+
                 // Find if this is the final type of disbursement, show message and return.
                 int numDis = 0;
                 int nonZeroIndex = em.disbursements.Count - 1;
@@ -2091,6 +2097,42 @@ namespace BillAutomatorUI
             if (isType) //If the selected index has a type of disbursement in it.
             {
                 string selected = entriesBox.Items[index].ToString();
+
+                if (selected.Equals("UNKNOWN"))
+                {
+                    MessageBox.Show("Cannot change position of unknown type.");
+                    return;
+                }
+
+                // Get the index of the disbursement model
+                int disIndex = 0;
+                foreach(DisbursementTypeModel disModel in em.usedDisbursementTypes)
+                {
+                    string str = disModel.type.ToUpper();
+
+                    if (selected.Equals(str))
+                    {
+                        break;
+                    }
+
+                    disIndex++;
+                }
+
+                //If the disbursement type is right below the 'Unknown' type, then it cannot move upwards.
+                string isUnk = em.usedDisbursementTypes[disIndex - 1].type;
+
+                while(em.usedDisbursementTypes[disIndex - 1].numDisbursements < 0 && !isUnk.Equals("Unknown"))
+                {
+                    isUnk = em.usedDisbursementTypes[disIndex - 1].type;
+                    disIndex--;
+                }
+
+                bool cantMove = isUnk.Equals("Unknown");
+                if(disIndex > em.usedDisbursementTypes.Count || cantMove)
+                {
+                    MessageBox.Show("Cannot move this entry down. Unknown type's location cannot be moved.");
+                    return;
+                }
 
                 int i = -1;
                 int indexType = -1; //Stores the final index of the type of disbursement
