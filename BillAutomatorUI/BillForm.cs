@@ -1960,6 +1960,7 @@ namespace BillAutomatorUI
                 }
 
                 int nextTypeEnd = -1;
+
                 string nextType = em.disbursements[endOfType+1].typeOfDisbursement.type;
                 // Store number of entries for the next type of disbursement
                 for(int q = endOfType+2; q < em.disbursements.Count; q++)
@@ -1992,9 +1993,30 @@ namespace BillAutomatorUI
                 
                 //Have to update the ordering of the used disbursement list too.
                 DisbursementTypeModel typeModel = new DisbursementTypeModel();
-                typeModel = em.usedDisbursementTypes[indexType + 1];
-                em.usedDisbursementTypes.RemoveAt(indexType + 1);
-                em.usedDisbursementTypes.Insert(indexType, typeModel);
+
+                typeModel = em.usedDisbursementTypes[indexType]; //Get type
+                em.usedDisbursementTypes.RemoveAt(indexType);    //Remove type from list
+
+                int insertIndex = indexType;
+                while(insertIndex < em.usedDisbursementTypes.Count && em.usedDisbursementTypes[insertIndex].numDisbursements < 1)
+                {
+                    insertIndex++;
+                }
+
+                insertIndex++; //This will add it AFTER the first entry with disbursements > 0.
+
+                if(insertIndex < em.usedDisbursementTypes.Count)
+                {
+                    em.usedDisbursementTypes.Insert(insertIndex, typeModel); //Insert at new location
+                } else
+                {
+                    em.usedDisbursementTypes.Add(typeModel); //Insert at end of list.
+                }
+                
+
+                //typeModel = em.usedDisbursementTypes[indexType + 1];
+                //em.usedDisbursementTypes.RemoveAt(indexType + 1);
+                //em.usedDisbursementTypes.Insert(indexType, typeModel);
 
             } else // If the selected entry is a simple disbursement.
             {
@@ -2142,9 +2164,21 @@ namespace BillAutomatorUI
 
                 //Have to update the ordering of the used disbursement list too.
                 DisbursementTypeModel typeModel = new DisbursementTypeModel();
-                typeModel = em.usedDisbursementTypes[indexType - 1];
-                em.usedDisbursementTypes.RemoveAt(indexType - 1);
-                em.usedDisbursementTypes.Insert(indexType, typeModel);
+
+                typeModel = em.usedDisbursementTypes[indexType]; //Get type
+                em.usedDisbursementTypes.RemoveAt(indexType);    //Remove type from list
+
+                int insertIndex = indexType - 1;
+                while (insertIndex > -1 && em.usedDisbursementTypes[insertIndex].numDisbursements < 1)
+                {
+                    insertIndex--;
+                }
+
+                em.usedDisbursementTypes.Insert(insertIndex, typeModel); //Insert at new location
+
+                //typeModel = em.usedDisbursementTypes[indexType - 1];
+                //em.usedDisbursementTypes.RemoveAt(indexType - 1);
+                //em.usedDisbursementTypes.Insert(indexType, typeModel);
 
             } else
             {
@@ -2651,7 +2685,7 @@ namespace BillAutomatorUI
 
                 //Find if the type of this disbursement is the same as the previous one.
                 string dmType = dm.typeOfDisbursement.type;
-                if (!type.Contains(dmType))
+                if (!type.Equals(dmType))
                 {
                     type = dmType;
 

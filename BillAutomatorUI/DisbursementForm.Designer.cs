@@ -93,6 +93,11 @@
             0,
             131072});
             this.totalInput.Location = new System.Drawing.Point(348, 277);
+            this.totalInput.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
             this.totalInput.Name = "totalInput";
             this.totalInput.Size = new System.Drawing.Size(120, 35);
             this.totalInput.TabIndex = 38;
