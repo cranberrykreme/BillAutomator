@@ -1578,7 +1578,7 @@ namespace BillAutomatorUI
 
             em.disbursements.RemoveAt(disIndex);
 
-            displayDisbursements();
+            displayDisbursements(disIndex);
 
         }
 
@@ -2062,7 +2062,7 @@ namespace BillAutomatorUI
                 }
             }
 
-            displayDisbursements();
+            displayDisbursements(-1);
         }
 
         /// <summary>
@@ -2121,16 +2121,16 @@ namespace BillAutomatorUI
                 //If the disbursement type is right below the 'Unknown' type, then it cannot move upwards.
                 string isUnk = em.usedDisbursementTypes[disIndex - 1].type;
 
-                while(em.usedDisbursementTypes[disIndex - 1].numDisbursements < 0 && !isUnk.Equals("Unknown"))
+                while(em.usedDisbursementTypes[disIndex - 1].numDisbursements <= 0 && !isUnk.Equals("Unknown"))
                 {
-                    isUnk = em.usedDisbursementTypes[disIndex - 1].type;
                     disIndex--;
+                    isUnk = em.usedDisbursementTypes[disIndex - 1].type; //Get the next type
                 }
 
                 bool cantMove = isUnk.Equals("Unknown");
-                if(disIndex > em.usedDisbursementTypes.Count || cantMove)
+                if((disIndex > em.usedDisbursementTypes.Count - 1) || disIndex < 0 || cantMove)
                 {
-                    MessageBox.Show("Cannot move this entry down. Unknown type's location cannot be moved.");
+                    MessageBox.Show("Cannot move this entry up. Unknown type's location cannot be moved.");
                     return;
                 }
 
@@ -2263,7 +2263,7 @@ namespace BillAutomatorUI
                 }
             }
 
-            displayDisbursements();
+            displayDisbursements(-1);
         }
 
         private void entriesBox_doubleClick(object sender, EventArgs e)
@@ -2702,13 +2702,13 @@ namespace BillAutomatorUI
         /// <param name="e"></param>
         private void displayAllDisbursementsButton_Click(object sender, EventArgs e)
         {
-            displayDisbursements();
+            displayDisbursements(-1);
         }
 
         /// <summary>
         /// Clears the displaybox and shows only the disbursements.
         /// </summary>
-        private void displayDisbursements()
+        private void displayDisbursements(int selectedIndex)
         {
             if (!hasDisTable)
             {
@@ -2738,10 +2738,15 @@ namespace BillAutomatorUI
                 entriesBox.Items.Add(date + " - " + dm.description);
             });
 
-            em.usedDisbursementTypes.ForEach(delegate (DisbursementTypeModel dtm)
+            //em.usedDisbursementTypes.ForEach(delegate (DisbursementTypeModel dtm)
+            //{
+            //    entriesBox.Items.Add(dtm.type.ToUpper() + " - " + dtm.numDisbursements);
+            //});
+
+            if(selectedIndex > -1)
             {
-                entriesBox.Items.Add(dtm.type.ToUpper() + " - " + dtm.numDisbursements);
-            });
+                Console.WriteLine("Should choose index #" + selectedIndex);
+            }
         }
 
         /// <summary>
@@ -2785,7 +2790,7 @@ namespace BillAutomatorUI
         /// </summary>
         public void showDis()
         {
-            displayDisbursements();
+            displayDisbursements(-1);
         }
     }
 }
