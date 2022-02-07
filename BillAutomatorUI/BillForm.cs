@@ -137,6 +137,7 @@ namespace BillAutomatorUI
                 numRows = rows.Count; //to compare the index of the row to the final index.
                 cols = tbl.Columns;
                 finalIndex = -1;
+                double entriesSum = 0;
 
                 for (int i = 0; i < em.entries.Count; i++)
                 {
@@ -164,6 +165,7 @@ namespace BillAutomatorUI
 
                     //Add the cost of the entry.
                     double cost = em.entries[i].amount;
+                    entriesSum += cost;
                     string[] amt = cost.ToString().Split('.');
 
                     double decimalPt = Convert.ToDouble(amt[amt.Length - 1]);
@@ -209,8 +211,23 @@ namespace BillAutomatorUI
 
                 }
 
+                // Add the sum of all the entries.
+                rows.Add(rows[rows.Count]);
+                Range entriesSumRange = rows[rows.Count].Cells[5].Range;
+                entriesSumRange.Text = "$" + entriesSum;
+                int numBulletPoints = rows[rows.Count].Cells[1].Range.ListFormat.CountNumberedItems();
+
+                if(numBulletPoints > 0)
+                {
+                    rows[rows.Count].Cells[1].Range.ListFormat.ApplyNumberDefault();
+                }
+
+                entriesSumRange = rows[rows.Count].Cells[4].Range;
+                entriesSumRange.Text = "Total Amount for Professional Fee's Section";
+
+
                 // Only write to the disbursements table if there is a table there.
-                if(disTable != 0 && hasDisTable)
+                if (disTable != 0 && hasDisTable)
                 {
                     // Disbursements section.
                     try
@@ -239,7 +256,6 @@ namespace BillAutomatorUI
                                 Console.WriteLine(rows.Count);
                                 rows.Add(rows[rows.Count - 1]);
                                 numRows++;
-
                             }
 
                             // If the current type is the same as the previous disbursement type.
@@ -376,8 +392,6 @@ namespace BillAutomatorUI
                                     currentType++;
                                 }
 
-                                
-
                                 //Add an additional row -> for space between the two sub-types.
                                 rows.Add(rows[index]);
                                 numRows++;
@@ -488,49 +502,57 @@ namespace BillAutomatorUI
                     string finalDisType = em.disbursements[em.disbursements.Count - 1].typeOfDisbursement.type;
                     int iterator = 0; // Get the very last entry.
 
-                    while (iterator < em.disbursements.Count)
+                    if (!finalDisType.Equals("Unknown")) // If the final disbursement type is not 'unknown'.
                     {
-                        totalSum += em.disbursements[iterator].amount;
-
-                        if (em.disbursements[iterator].typeOfDisbursement.type.Equals(finalDisType))
+                        while (iterator < em.disbursements.Count)
                         {
-                            subSum += em.disbursements[iterator].amount;
+                            totalSum += em.disbursements[iterator].amount;
+
+                            if (em.disbursements[iterator].typeOfDisbursement.type.Equals(finalDisType))
+                            {
+                                subSum += em.disbursements[iterator].amount;
+                            }
+                            iterator++;
                         }
-                        iterator++;
-                    }
 
-                    // Add the subtotal for the final disbursement type.
-                    Range holdRange = rows[subIndex].Cells[3].Range;
-                    holdRange.Underline = WdUnderline.wdUnderlineNone;
-                    holdRange.Text = "Subtotal for section: " + finalDisType;
-                    //rows[subIndex].Cells[4].Range.Text = "$" + subSum;
+                        // Add the subtotal for the final disbursement type.
+                        Range holdRange = rows[subIndex].Cells[3].Range;
+                        holdRange.Underline = WdUnderline.wdUnderlineNone;
+                        holdRange.Text = "Subtotal for section: " + finalDisType;
 
-                    // Add subtotal cost
-                    double holdCost = subSum;
-                    string[] holdAmt = holdCost.ToString().Split('.');
-                    double holdDecimalPt = Convert.ToDouble(holdAmt[holdAmt.Length - 1]);
-                    if (holdCost % 1 == 0)
-                    {
-                        rows[subIndex].Cells[4].Range.Text = "$" + holdCost.ToString() + ".00";
-                    }
-                    else
-                    {
-                        string[] numbers = holdCost.ToString().Split('.');
-                        string num = numbers[numbers.Length - 1];
-                        if (num.Length < 2)
+                        // Add subtotal cost
+                        double holdCost = subSum;
+                        string[] holdAmt = holdCost.ToString().Split('.');
+                        double holdDecimalPt = Convert.ToDouble(holdAmt[holdAmt.Length - 1]);
+                        if (holdCost % 1 == 0)
                         {
-                            rows[subIndex].Cells[4].Range.Text = "$" + holdCost.ToString() + "0";
+                            rows[subIndex].Cells[4].Range.Text = "$" + holdCost.ToString() + ".00";
                         }
                         else
                         {
-                            rows[subIndex].Cells[4].Range.Text = "$" + holdCost.ToString();
+                            string[] numbers = holdCost.ToString().Split('.');
+                            string num = numbers[numbers.Length - 1];
+                            if (num.Length < 2)
+                            {
+                                rows[subIndex].Cells[4].Range.Text = "$" + holdCost.ToString() + "0";
+                            }
+                            else
+                            {
+                                rows[subIndex].Cells[4].Range.Text = "$" + holdCost.ToString();
+                            }
                         }
+                    } else //If the last disbursement type is 'unknown'.
+                    {
+                        rows[finalIndex].Delete(); // Delete the extra row.
+                        numRows--;
                     }
 
+                    Range hRange;
+
                     // Add the subtotal for the entirety of the disbursement.
-                    holdRange = rows[rows.Count].Cells[3].Range;
-                    holdRange.Underline = WdUnderline.wdUnderlineNone;
-                    holdRange.Text = "Subtotal for entirety of disbursements";
+                    hRange = rows[rows.Count].Cells[3].Range;
+                    hRange.Underline = WdUnderline.wdUnderlineNone;
+                    hRange.Text = "Subtotal for entirety of disbursements";
                     rows[rows.Count].Cells[4].Range.Text = "$" + totalSum;
 
                 }
