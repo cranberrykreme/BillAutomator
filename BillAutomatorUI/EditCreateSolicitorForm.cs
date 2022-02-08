@@ -46,7 +46,14 @@ namespace BillAutomatorUI
             doaTextBox.Text = solicitor.dateOfAdmission;
             try
             {
-                hourlyRateInput.Value = Convert.ToDecimal(solicitor.hourlyRates[0]);
+                foreach(double price in solicitor.hourlyRates)
+                {
+                    hourlyRatesBox.Items.Add(price);
+                }
+
+                decimal rate = Convert.ToDecimal(solicitor.hourlyRates[0]);
+                hourlyRateInput.Value = rate;
+
             } catch (Exception ex)
             {
                 Console.WriteLine(ex);
@@ -81,6 +88,7 @@ namespace BillAutomatorUI
         private void saveButton_Click(object sender, EventArgs e)
         {
             //solicitor.changed = true; //The solicitor has now been edited.
+            //updateDescription();
 
             if (editing == true)
             { //To run if a profile is being edited
@@ -246,7 +254,7 @@ namespace BillAutomatorUI
                 
                 if(initialsTextBox.Text.Length > 0)
                 {
-                    MessageBox.Show("This textbox accepts only alphabetical characters");
+                    MessageBox.Show("This the initials can only begin with alphabetical characters");
                     initialsTextBox.Clear();
                 }
                 
@@ -298,6 +306,14 @@ namespace BillAutomatorUI
                 bf.Show();
             }
             
+        }
+
+        /// <summary>
+        /// Changes all short hyphens into long hypens in the description box (where gramatically correct).
+        /// </summary>
+        private void updateDescription()
+        {
+            initialsTextBox.Text = initialsTextBox.Text.Replace("-", "–");
         }
     }
 }

@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using Microsoft.Office.Interop.Word;
 using Word = Microsoft.Office.Interop.Word;
 using Application = Microsoft.Office.Interop.Word.Application;
+using System.Threading;
 //using Microsoft.VisualBasic;
 //using BillAutomator;
 
@@ -42,6 +43,10 @@ namespace BillAutomatorUI
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Writes the changes into the word document.
+        /// </summary>
+        /// <returns>Whether the writing process was sucessful or not.</returns>
         private bool writeChanges()
         {
             bool success = true;
@@ -55,7 +60,7 @@ namespace BillAutomatorUI
             //Initialise Loading Form. 
             LoadingForm lf = new LoadingForm();
             lf.Show();
-            lf.TopMost = true;
+            //lf.TopMost = true;
 
             int solList = em.solicitor.Count;
             int entryList = em.entries.Count;
@@ -219,7 +224,8 @@ namespace BillAutomatorUI
 
                 if(numBulletPoints > 0)
                 {
-                    rows[rows.Count].Cells[1].Range.ListFormat.ApplyNumberDefault();
+                    //rows[index].Cells[1].Range.ListFormat.ApplyNumberDefault();
+                    //rows[rows.Count].Cells[1].Range.ListFormat.RemoveNumbers();
                 }
 
                 entriesSumRange = rows[rows.Count].Cells[4].Range;
@@ -240,6 +246,14 @@ namespace BillAutomatorUI
                         finalIndex = -1;
                         int currentType = 0;
                         int currentDiff = 2; //the difference between the iterator number and the actual row we want to look at.
+
+                        // Delete other rows.
+                        //int holding = numRows;
+                        //while(holding > 3)
+                        //{
+                            //rows[holding].Delete();
+                            //holding--;
+                        //}
 
                         // Iterate through the entire list.
                         for (int i = 0; i < em.disbursements.Count; i++)
@@ -263,13 +277,31 @@ namespace BillAutomatorUI
                             {
                                 //rows.Add(index); // Add a new row where the new entry should be, will always have an index number.
 
-                                int numList = rows[index].Cells[1].Range.ListFormat.CountNumberedItems();
-                                Console.WriteLine("Number of numbered items: " + numList + " in row number: " + i);
+                                int numList = rows[index].Cells[1].Range.ListFormat.ListLevelNumber;
+                                Console.WriteLine("Number of numbered items: " + numList + " in row number: " + index);
 
                                 // If there are no numbers in the left-hand most column, then set one there.
-                                if (numList < 1)
+                                if (numList > 1)
                                 {
-                                    rows[index].Cells[1].Range.ListFormat.ApplyNumberDefault();
+                                    //ListTemplate template = rows[2].Cells[1].Range.ListFormat.ListTemplate;
+                                    //Console.WriteLine(rows[2].Cells[1].Range.ListFormat.ToString());
+                                    //rows[index].Cells[1].Range.ListFormat.ApplyListTemplate(template);
+
+                                    Range r = rows[index].Cells[1].Range;
+
+                                    //r.ListFormat.ApplyNumberDefault();
+
+                                    r.ListFormat.ListLevelNumber = 1;
+
+                                    //r.ListFormat.ListType = 1;
+
+                                    //ListTemplate template = WdListType.wdListListNumOnly;
+
+                                    Console.WriteLine(index);
+                                    Console.WriteLine("Type: " + rows[index].Cells[1].Range.ListFormat.ListType);
+                                    Console.WriteLine("Value: " + rows[index].Cells[1].Range.ListFormat.ListValue);
+                                    Console.WriteLine("String: " + rows[index].Cells[1].Range.ListFormat.ListString);
+                                    Console.WriteLine("level number: " + rows[index].Cells[1].Range.ListFormat.ListLevelNumber);
                                 }
 
                                 Range rType = rows[index].Cells[2].Range;
@@ -291,14 +323,14 @@ namespace BillAutomatorUI
                                 double decimalPt = Convert.ToDouble(amt[amt.Length - 1]);
                                 if (cost % 1 == 0)
                                 {
-                                    Console.WriteLine(cost);
+                                    //Console.WriteLine(cost);
                                     rows[index].Cells[4].Range.Text = "$" + em.disbursements[i].amount.ToString() + ".00";
-                                    Console.WriteLine(rows[index].Cells[4].Range.Text);
+                                    //Console.WriteLine(rows[index].Cells[4].Range.Text);
                                 }
                                 else
                                 {
                                     string[] numbers = em.disbursements[i].amount.ToString().Split('.');
-                                    Console.WriteLine(numbers[numbers.Length - 1]);
+                                    //Console.WriteLine(numbers[numbers.Length - 1]);
                                     string num = numbers[numbers.Length - 1];
                                     if (num.Length < 2)
                                     {
@@ -318,7 +350,12 @@ namespace BillAutomatorUI
 
                                 double subtotalSum = 0;
                                 int prevIndex = i - 1;
-                                string prevType = em.disbursements[prevIndex].typeOfDisbursement.type;
+                                string prevType = "Unknown";
+
+                                if(prevIndex > -1)
+                                {
+                                    prevType = em.disbursements[prevIndex].typeOfDisbursement.type;
+                                }
 
                                 //Only make additional rows and write the subtotal if not 'unknown' type.
                                 if (!prevType.Equals("Unknown")) 
@@ -341,7 +378,7 @@ namespace BillAutomatorUI
 
                                     try
                                     {
-                                        numberOfBulletPoints = rows[index].Cells[1].Range.ListFormat.CountNumberedItems();
+                                        numberOfBulletPoints = rows[index].Cells[1].Range.ListFormat.ListLevelNumber;
                                     }
                                     catch (Exception ex)
                                     {
@@ -350,9 +387,11 @@ namespace BillAutomatorUI
 
 
                                     // If there are numbers in the left-hand most column, remove them.
-                                    if (numberOfBulletPoints > 0)
+                                    if (numberOfBulletPoints < 5)
                                     {
-                                        rows[index].Cells[1].Range.ListFormat.ApplyNumberDefault();
+                                        //rows[index].Cells[1].Range.ListFormat.ApplyNumberDefault();
+                                        rows[index].Cells[1].Range.ListFormat.ListLevelNumber = 5;
+                                        //rows[index].Cells[1].Range.ListFormat.RemoveNumbers();
                                     }
 
                                     // Add the information necessary.
@@ -409,7 +448,7 @@ namespace BillAutomatorUI
 
                                     try
                                     {
-                                        numList = rows[index].Cells[1].Range.ListFormat.CountNumberedItems();
+                                        numList = rows[index].Cells[1].Range.ListFormat.ListLevelNumber;
                                     }
                                     catch (Exception ex)
                                     {
@@ -418,9 +457,11 @@ namespace BillAutomatorUI
 
 
                                     // If there are numbers in the left-hand most column, remove them.
-                                    if (numList > 0)
+                                    if (numList < 5)
                                     {
-                                        rows[index].Cells[1].Range.ListFormat.ApplyNumberDefault();
+                                        //rows[index].Cells[1].Range.ListFormat.ApplyNumberDefault();
+                                        rows[index].Cells[1].Range.ListFormat.ListLevelNumber = 5;
+                                        //rows[index].Cells[1].Range.ListFormat.RemoveNumbers();
                                     }
 
                                     index++; // iterate the index.
@@ -437,7 +478,7 @@ namespace BillAutomatorUI
 
                                 try
                                 {
-                                    numList = rows[index].Cells[1].Range.ListFormat.CountNumberedItems();
+                                    numList = rows[index].Cells[1].Range.ListFormat.ListLevelNumber;
                                 }
                                 catch (Exception ex)
                                 {
@@ -446,9 +487,11 @@ namespace BillAutomatorUI
 
 
                                 // If there are numbers in the left-hand most column, remove them.
-                                if (numList > 0)
+                                if (numList < 5)
                                 {
-                                    rows[index].Cells[1].Range.ListFormat.ApplyNumberDefault();
+                                    //rows[index].Cells[1].Range.ListFormat.ApplyNumberDefault();
+                                    rows[index].Cells[1].Range.ListFormat.ListLevelNumber = 5;
+                                    //rows[index].Cells[1].Range.ListFormat.RemoveNumbers();
                                 }
 
                                 // Add the information necessary.
@@ -520,6 +563,16 @@ namespace BillAutomatorUI
                         holdRange.Underline = WdUnderline.wdUnderlineNone;
                         holdRange.Text = "Subtotal for section: " + finalDisType;
 
+                        try
+                        {
+                            rows[subIndex].Cells[1].Range.ListFormat.ListLevelNumber = 5;
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex);
+                        }
+                        
+
                         // Add subtotal cost
                         double holdCost = subSum;
                         string[] holdAmt = holdCost.ToString().Split('.');
@@ -553,11 +606,18 @@ namespace BillAutomatorUI
                     hRange = rows[rows.Count].Cells[3].Range;
                     hRange.Underline = WdUnderline.wdUnderlineNone;
                     hRange.Text = "Subtotal for entirety of disbursements";
+
+                    try
+                    {
+                        rows[rows.Count].Cells[1].Range.ListFormat.ListLevelNumber = 5;
+                        rows[rows.Count - 1].Cells[1].Range.ListFormat.ListLevelNumber = 5;
+                    } catch (Exception ex)
+                    {
+                        Console.WriteLine(ex);
+                    }
+                    
                     rows[rows.Count].Cells[4].Range.Text = "$" + totalSum;
-
                 }
-
-
             } catch (Exception ex)
             {
                 Console.WriteLine(ex);
@@ -595,6 +655,21 @@ namespace BillAutomatorUI
 
             tbl.Columns[5].PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPercent;
             tbl.Columns[5].PreferredWidth = 12.0f;
+
+            // Reset table to solicitor's table.
+            tbl = doc.Tables[solTable];
+
+            tbl.Columns[1].PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPercent;
+            tbl.Columns[1].PreferredWidth = 24.3f;
+
+            tbl.Columns[2].PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPercent;
+            tbl.Columns[2].PreferredWidth = 10.8f;
+
+            tbl.Columns[3].PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPercent;
+            tbl.Columns[3].PreferredWidth = 49.2f;
+
+            tbl.Columns[4].PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPercent;
+            tbl.Columns[4].PreferredWidth = 15.5f;
 
             lf.Close();
 

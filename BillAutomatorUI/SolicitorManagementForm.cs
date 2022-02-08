@@ -36,13 +36,13 @@ namespace BillAutomatorUI
                 {
                     if (!String.IsNullOrEmpty(sol.firstName))
                     {
-                        solicitorsBox.Items.Add(sol.firstName + " " + sol.lastName + " - " +
-                        sol.initials + " - $" + sol.hourlyRates[0]);
+                        solicitorsBox.Items.Add(sol.firstName + " " + sol.lastName + " – " +
+                        sol.initials + " – $" + sol.hourlyRates[0]);
                     }
                     else
                     {
-                        solicitorsBox.Items.Add(sol.lastName + " - " +
-                        sol.initials + " - $" + sol.hourlyRates[0]);
+                        solicitorsBox.Items.Add(sol.lastName + " – " +
+                        sol.initials + " – $" + sol.hourlyRates[0]);
                     }
                     
                 });
@@ -91,7 +91,7 @@ namespace BillAutomatorUI
             }
             // Get the relevant initials
             string chosenSol = solicitorsBox.SelectedItem.ToString();
-            string[] solParameters = chosenSol.Split('-');
+            string[] solParameters = chosenSol.Split('–');
             string chosenSolInitials = solParameters[1];
             chosenSolInitials = chosenSolInitials.Replace(" ", ""); //remove whitespace
 
