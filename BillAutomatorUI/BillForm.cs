@@ -1924,14 +1924,16 @@ namespace BillAutomatorUI
                 return -1;
             }
 
-            string[] entryParams = chosenEntry.Split('-');
+            string[] entryParams = chosenEntry.Split(new[] {" - "}, StringSplitOptions.None);
             string description = "";
+
+            int startLoc = 2; //Where the description section should start.
 
             int curr = 2;
             while (curr < entryParams.Length)
             {
                 //If a hyphen has been taken out becuase of the search, put it back in.
-                if(curr > 2)
+                if(curr > startLoc)
                 {
                     description = description + "-" + entryParams[curr];
                 }
@@ -1943,7 +1945,7 @@ namespace BillAutomatorUI
                 curr++;
             }
 
-            description = description.Substring(1);
+            //description = description.Substring(1);
             //MessageBox.Show(description);
             int i = -1;
             int index = -1;
