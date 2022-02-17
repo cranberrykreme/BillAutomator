@@ -37,7 +37,8 @@ namespace BillAutomatorUI
             em = aEm;
             em.solicitor.ForEach(delegate (SolicitorsModel sm)
             {
-                solicitorDropDown.Items.Add(sm.firstName + " " + sm.lastName);
+                //solicitorDropDown.Items.Add(sm.firstName + " " + sm.lastName);
+                solicitorDropDown.Items.Add(sm.firstName + " " + sm.lastName + " – " + sm.initials);
             });
             percentageClaimedTextBox.Value = 100;
             descriptionTextBox.Text = " – 0.0 hours";
@@ -59,7 +60,8 @@ namespace BillAutomatorUI
             em.solicitor.ForEach(delegate (SolicitorsModel sm)
             {
                 i++;
-                solicitorDropDown.Items.Add(sm.firstName + " " + sm.lastName);
+                //solicitorDropDown.Items.Add(sm.firstName + " " + sm.lastName);
+                solicitorDropDown.Items.Add(sm.firstName + " " + sm.lastName + " – " + sm.initials);
                 string currentNames = String.Concat(sm.firstName, sm.lastName);
                 Console.WriteLine(currentNames);
                 Console.WriteLine(names);
@@ -405,7 +407,12 @@ namespace BillAutomatorUI
                 }
             }
 
-            string[] names = chosenSol.Split(' ');
+            string[] holding = chosenSol.Split('–');
+            string hold = holding[0];
+
+            hold = hold.Substring(0, hold.Length - 1);
+
+            string[] names = hold.Split(' ');
             string firstName = "";
 
             for (int loc = 0; loc < names.Length - 1; loc++)
@@ -420,6 +427,7 @@ namespace BillAutomatorUI
             }
             else
             {
+                //firstName = firstName.Substring(1, firstName.Length - 1);
                 firstName = firstName.Substring(1);
             }
 
@@ -427,11 +435,14 @@ namespace BillAutomatorUI
             int len = names.Length;
             string secondName = names[len - 1];
 
+            string smInitials = holding[holding.Length -1];
+            smInitials = smInitials.Substring(1);
+
             bool found = false;
             // Match names to solicitor profiles
             em.solicitor.ForEach(delegate (SolicitorsModel sm)
             {
-                if(String.Equals(sm.firstName, firstName) && String.Equals(sm.lastName, secondName))
+                if(String.Equals(sm.firstName, firstName) && String.Equals(sm.lastName, secondName) && String.Equals(sm.initials, smInitials))
                 {
                     workingSolicitor = sm;
                     hourlyRate = workingSolicitor.hourlyRates[0];

@@ -158,6 +158,18 @@ namespace BillAutomatorUI
                         numRows++;
                     }
 
+                    //Add to the row we are adding in, so that we can always keep the numbering.
+                    Console.WriteLine(rows.Count);
+                    rows.Add(rows[index]);
+                    numRows++;
+
+                    //int numNumbs = rows[index].Cells[1].Range.ListFormat.CountNumberedItems();
+
+                    //if(numNumbs < 1)
+                    //{
+                    //    rows[index].Cells[1].Range.ListFormat.ApplyNumberDefault();
+                    //}
+
                     Console.WriteLine(em.entries[i].date.ToString("dd.MM.yy"));
                     rows[index].Cells[2].Range.Text = em.entries[i].date.ToString("dd.MM.yy");    //Add the entries' date.
 
@@ -222,11 +234,12 @@ namespace BillAutomatorUI
                 entriesSumRange.Text = "$" + entriesSum;
                 int numBulletPoints = rows[rows.Count].Cells[1].Range.ListFormat.CountNumberedItems();
 
-                if(numBulletPoints > 0)
-                {
+                //If there is numbers there.
+                //if(numBulletPoints > 0)
+                //{
                     //rows[index].Cells[1].Range.ListFormat.ApplyNumberDefault();
                     //rows[rows.Count].Cells[1].Range.ListFormat.RemoveNumbers();
-                }
+                //}
 
                 entriesSumRange = rows[rows.Count].Cells[4].Range;
                 entriesSumRange.Text = "Total Amount for Professional Fee's Section";
@@ -423,7 +436,6 @@ namespace BillAutomatorUI
                                     }
 
                                     index++; // iterate the index.
-
                                 }
 
                                 while (!em.disbursements[i].typeOfDisbursement.type.Equals(em.usedDisbursementTypes[currentType].type))
@@ -617,6 +629,12 @@ namespace BillAutomatorUI
                     }
                     
                     rows[rows.Count].Cells[4].Range.Text = "$" + totalSum;
+                }
+
+                //If there is no unused disbursements, get rid of the second, unused row.
+                if(em.usedDisbursementTypes[0].numDisbursements < 1)
+                {
+                    rows[2].Delete();
                 }
             } catch (Exception ex)
             {
